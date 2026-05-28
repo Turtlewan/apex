@@ -36,6 +36,12 @@ you need. This prevents burning context on skills you won't use.
 | **apex-mobile** | React Native, Expo, EAS Build, OTA | topic keyword |
 | **apex-data** | Databases, schema design, migrations | topic keyword |
 | **apex-ai-systems** | LLM, RAG, AI SDK patterns | topic keyword |
+| **apex-auth** | Authentication flows, sessions, OAuth2, passkeys, RBAC, multi-tenant auth | topic keyword |
+| **apex-jobs** | Background job queues — BullMQ, workers, cron jobs, retry/backoff, dead letter queues | topic keyword |
+| **apex-realtime** | Real-time push — Socket.io, SSE, user-scoped rooms, Redis adapter, AI streaming | topic keyword |
+| **apex-search** | Search and retrieval — PostgreSQL FTS, pgvector, hybrid RRF, RAG chunking pipeline | topic keyword |
+| **apex-stack** | Tech stack selection — framework, database, ORM, auth, deploy for any new project | topic keyword |
+| **apex-storage** | File storage — MinIO (local), S3/R2 (cloud), presigned URLs, MIME validation | topic keyword |
 | **apex-observability** | OpenTelemetry, Sentry, Grafana, logging | topic keyword |
 | **apex-performance** | Profiling, Core Web Vitals, optimisation | topic keyword |
 | **apex-accessibility** | WCAG AA, a11y, screen readers | topic keyword |
@@ -119,6 +125,40 @@ EAS Update (OTA), SecureStore, push notifications, app store preparation.
 
 **apex-ai-systems** — LLM integration, RAG pipelines, AI SDK (Vercel), tool use,
 prompt engineering, streaming, evaluation patterns.
+
+**apex-stack** — Tech stack selection for new projects. Asks 7 structured questions (app type,
+deployment target, language familiarity, timeline, constraints, features, scale), then outputs
+an opinionated preset from 8 named profiles (SaaS fullstack, API-only, real-time, mobile+API,
+content, edge, AI-first, enterprise). Always includes a lock-in analysis table. Produces ADR-001.
+
+**apex-auth** — Authentication implementation. Covers signup/login/logout, password reset,
+magic links, OAuth2 social providers, MFA, passkeys/WebAuthn, session management (stateful
+vs JWT refresh rotation), RBAC, multi-tenant auth (per-tenant roles, invite flows, tenant
+isolation), and route protection patterns. Library decision table: Auth.js, Better Auth,
+Lucia, Clerk, Supabase Auth.
+
+**apex-jobs** — Background job queue implementation. Primary: BullMQ + Redis (persistent
+server, AWS ElastiCache at scale). Covers queue/worker setup, job options (attempts,
+backoff, delay, priority), cron/repeatable jobs, job chaining (FlowProducer), dead letter
+queues, graceful shutdown, Bull Board monitoring dashboard. Alternative: pg-boss for
+PostgreSQL-backed jobs without Redis.
+
+**apex-realtime** — Real-time server-to-client push. Primary: Socket.io + Redis adapter
+(multi-instance safe). Covers user-scoped rooms, socket auth middleware, external event
+→ broadcast flow (finance feeds, Home Assistant webhooks, Telegram), SSE for AI token
+streaming, reconnection handling, and catch-up REST pattern for missed events.
+
+**apex-storage** — File upload and storage. Local-first with MinIO (Docker, S3-compatible),
+zero-code migration to AWS S3 or Cloudflare R2 via env var swap. Covers generic file
+uploads, server-side MIME validation (bytes not filename), UUID-based storage keys,
+presigned GET URLs for private files, soft-delete pattern, and multipart uploads for
+large files.
+
+**apex-search** — Search and RAG retrieval. PostgreSQL full-text search + pgvector hybrid
+search (RRF reranking) as the default stack — no extra infra. Covers chunking strategies,
+embedding generation (Ollama local or OpenAI), HNSW index setup, hybrid search queries,
+idempotent ingest pipeline, and handoff to apex-ai-systems for LLM context injection.
+Optional: Typesense for typo-tolerant full-text with facets.
 
 **apex-data** — Schema design, migrations (Prisma/Drizzle), indexing strategies,
 query optimisation, connection pooling, multi-tenancy patterns.
@@ -211,4 +251,4 @@ These are **permanent** regardless of autonomy level:
 
 ---
 
-_Updated: 2026-05-28 | Skills count: 29 APEX + 40 GSD + 15 misc_
+_Updated: 2026-05-28 | Skills count: 35 APEX + 40 GSD + 15 misc_

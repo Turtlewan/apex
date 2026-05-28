@@ -5,6 +5,12 @@ One row per event — append new rows at the top when updating a skill.
 
 | Date | Skill | Files | Version | Event | What Changed | Sources |
 |------|-------|-------|---------|-------|-------------|---------|
+| 2026-05-28 | apex-storage | SKILL + impl | 1.0.0 | created | File storage — MinIO local-first, S3/R2 migration path, presigned URLs, MIME validation, soft-delete | AWS SDK v3 Docs, MinIO Docs, R2 Docs, file-type |
+| 2026-05-28 | apex-auth | SKILL + impl | 1.0.0 | created | Auth flows, sessions, OAuth2, passkeys/WebAuthn, RBAC, multi-tenant auth, invite flows | Auth.js Docs, Better Auth Docs, SimpleWebAuthn Docs, OWASP Auth Cheat Sheet |
+| 2026-05-28 | apex-jobs | SKILL + impl | 1.0.0 | created | Background job queues — BullMQ+Redis, workers, cron, retry/backoff, dead letter, Bull Board, AWS ElastiCache scaling | BullMQ Docs, Bull Board, pg-boss |
+| 2026-05-28 | apex-realtime | SKILL + impl | 1.0.0 | created | Real-time push — Socket.io+Redis adapter, user-scoped rooms, SSE for AI streaming, external event broadcast flow | Socket.io Docs, Redis Adapter, MDN SSE |
+| 2026-05-28 | apex-search | SKILL + impl | 1.0.0 | created | Search + RAG retrieval — pgvector hybrid search, chunking, Ollama/OpenAI embeddings, RRF reranking, Typesense option | pgvector, Ollama, OpenAI Embeddings, Typesense Docs, PostgreSQL FTS |
+| 2026-05-28 | apex-stack | SKILL + impl | 1.0.0 | created | Tech stack selection skill — 8 app-type presets, lock-in table, 7 structured questions, ADR-001 output | State of JS 2024, Next.js Docs, Prisma Docs, Drizzle Docs, Hono Docs, Auth.js Docs |
 | 2026-05-28 | apex-ui-ux-design | impl | 1.0.1 | updated (impl) | DeepSeek compat: language fix + backend frontmatter | — |
 | 2026-05-28 | apex-ui-testing | impl | 1.0.1 | updated (impl) | DeepSeek compat: language fix + backend frontmatter | — |
 | 2026-05-28 | apex-security | impl | 1.1.1 | updated (impl) | DeepSeek compat: language fix + backend frontmatter | — |
