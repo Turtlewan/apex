@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-05-28 (session 7)
+_Last updated by coding mode:_ 2026-05-28 (session 6)
 
 <!-- CODING:START -->
 ## In-Flight
@@ -21,14 +21,12 @@ _(empty — nothing in progress)_
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `apex-code-parallel-execution.md` | Add Wave Analysis step to apex-code AFK pre-flight; parallelise post-build docs+review agents |
-| `skill-impl-fixes.md` | Fix apex-search embedding insert (JSON.stringify → pgvector literal); add post-upload validation note to apex-storage impl |
-| `skill-metadata-fixes.md` | Add `backend: claude` + H1 heading to 5 SKILL.md files (apex-stack, apex-jobs, apex-realtime, apex-storage, apex-search) |
+| _(none — all specs completed)_ |
 
 ## Notes
-- Session 4 complete: 6 new skills created (apex-stack, apex-auth, apex-jobs, apex-realtime, apex-storage, apex-search) @ e08d6e7
-- `~/.claude/` skill files from session 4 still uncommitted — housekeeping deferred to next coding session
-- All 3 pending specs are independent and can be executed in any order or in parallel
+- Session 6 complete: all 3 pending specs from session 5 executed and committed (`ffe9388` in `~/apex/`, `e5f1391` in `~/.claude/`)
+- `~/.claude/` 8 skill files from session 6 committed; plugin/marketplace changes are pre-existing and unrelated
+- All specs moved to `docs/changes/done/`
 
 ## Open Questions
 - **Domain agent wiring** — 17 domain agents registered in registry but never dispatched. When to dispatch an agent vs load impl.md? Deferred.
