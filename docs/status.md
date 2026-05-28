@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-05-28 (session 3)
+_Last updated by planning mode:_ 2026-05-28 (session 7)
 
 <!-- CODING:START -->
 ## In-Flight
@@ -21,24 +21,22 @@ _(empty — nothing in progress)_
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `apex-code-session-start.md` | Replace handoff-doc read with git log + context discipline rule in apex-code session start |
-| `apex-docs-product-skill.md` | Create SKILL.md for apex-docs-product + fix registry `—` entry |
-| `apex-google-skill.md` | New apex-google skill: OAuth2, Sign in with Google, Gmail/Calendar/Drive APIs |
-| `backend-routing-rule.md` | Create BACKEND-ROUTING.md; add routing section to CLAUDE.md; add `backends:` field to status.md |
-| `karpathy-pipeline-discipline.md` | Bake Karpathy's 4 principles into apex-plan, apex-code, spec-template, and global CLAUDE.md as structural checkpoints |
-| `skill-deepseek-language-fixes.md` | Fix "Flag for Claude review" language in 6 impl.md files; add `backend:` frontmatter to all skill files; fix apex-figma image step |
-| `skill-history-tracker.md` | Create SKILL-HISTORY.md tracking table + pointer in SKILLS.md |
-| `spec-template-revision.md` | Tighten spec template — remove Scope prose and Risks section from ready specs; add split rule |
+| `apex-code-parallel-execution.md` | Add Wave Analysis step to apex-code AFK pre-flight; parallelise post-build docs+review agents |
+| `skill-impl-fixes.md` | Fix apex-search embedding insert (JSON.stringify → pgvector literal); add post-upload validation note to apex-storage impl |
+| `skill-metadata-fixes.md` | Add `backend: claude` + H1 heading to 5 SKILL.md files (apex-stack, apex-jobs, apex-realtime, apex-storage, apex-search) |
 
 ## Notes
-- `~/apex/CLAUDE.md` created this session — project-level rules for skill authoring, SKILL-HISTORY.md update contract, naming conventions.
-- Registry already up to date — all 11 session-2 skills confirmed present in `domains.md`. ✅
-- `apex-google` name confirmed (not `apex-g`).
+- Session 4 complete: 6 new skills created (apex-stack, apex-auth, apex-jobs, apex-realtime, apex-storage, apex-search) @ e08d6e7
+- `~/.claude/` skill files from session 4 still uncommitted — housekeeping deferred to next coding session
+- All 3 pending specs are independent and can be executed in any order or in parallel
 
 ## Open Questions
-- **apex-plan session start reads too much** — `apex-plan/SKILL.md` lines 19–23 tell planning mode to read the full handoff doc at session start, the same "read everything" problem fixed in `apex-code-session-start`. Fix: replace handoff doc read with a tighter scope (pending specs + open questions from status.md only). Write a spec when revisiting the full planning + development workflow.
+- **Domain agent wiring** — 17 domain agents registered in registry but never dispatched. When to dispatch an agent vs load impl.md? Deferred.
+- **apex-plan session start reads too much** — currently reads full handoff doc; should read only status.md. Parked.
 
 ## Future Discussions (parked)
-- **Full APEX planning + development workflow review** — improve the end-to-end experience of using APEX for any project: how planning mode is invoked, how discussions flow into specs, how the backend switch is communicated to new users. Includes apex-plan session start fix above.
-- **Potential new skill domains** — `apex-websockets`, `apex-payments`, `apex-auth`, `apex-email` — not prioritised.
+- **Domain agent dispatching** — registry Agent column is populated but unused; design decision needed on reviewer/enforcer agent invocation pattern.
+- **Full APEX planning + development workflow review** — end-to-end experience, apex-plan session-start tightening.
+- **Large-scale application development** — phase/milestone management, context scaling, handoff efficiency at project scale.
+- **Potential new skill domains** — `apex-payments`, `apex-email` — not prioritised.
 <!-- PLANNING:END -->

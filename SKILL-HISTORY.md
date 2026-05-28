@@ -5,6 +5,14 @@ One row per event — append new rows at the top when updating a skill.
 
 | Date | Skill | Files | Version | Event | What Changed | Sources |
 |------|-------|-------|---------|-------|-------------|---------|
+| 2026-05-28 | apex-code | SKILL | 1.3.0 | updated (SKILL) | Added Wave Analysis step for parallel task dispatch; parallelised post-build docs+review agents | superpowers:dispatching-parallel-agents |
+| 2026-05-28 | apex-storage | impl | 1.1.0 | updated (impl) | Added post-upload MIME validation requirement for presigned PUT uploads | — |
+| 2026-05-28 | apex-search | impl | 1.1.0 | updated (impl) | Fixed embedding insert: JSON.stringify → pgvector array literal with ::vector cast | pgvector docs |
+| 2026-05-28 | apex-search | SKILL | 1.0.1 | updated (SKILL) | Added H1 title heading; bumped to v1.0.1 | — |
+| 2026-05-28 | apex-storage | SKILL | 1.0.1 | updated (SKILL) | Bumped to v1.0.1 | — |
+| 2026-05-28 | apex-realtime | SKILL | 1.0.1 | updated (SKILL) | Added H1 title heading; bumped to v1.0.1 | — |
+| 2026-05-28 | apex-jobs | SKILL | 1.0.1 | updated (SKILL) | Added H1 title heading; bumped to v1.0.1 | — |
+| 2026-05-28 | apex-stack | SKILL | 1.0.1 | updated (SKILL) | Added H1 title heading; bumped to v1.0.1 | — |
 | 2026-05-28 | apex-storage | SKILL + impl | 1.0.0 | created | File storage — MinIO local-first, S3/R2 migration path, presigned URLs, MIME validation, soft-delete | AWS SDK v3 Docs, MinIO Docs, R2 Docs, file-type |
 | 2026-05-28 | apex-auth | SKILL + impl | 1.0.0 | created | Auth flows, sessions, OAuth2, passkeys/WebAuthn, RBAC, multi-tenant auth, invite flows | Auth.js Docs, Better Auth Docs, SimpleWebAuthn Docs, OWASP Auth Cheat Sheet |
 | 2026-05-28 | apex-jobs | SKILL + impl | 1.0.0 | created | Background job queues — BullMQ+Redis, workers, cron, retry/backoff, dead letter, Bull Board, AWS ElastiCache scaling | BullMQ Docs, Bull Board, pg-boss |
