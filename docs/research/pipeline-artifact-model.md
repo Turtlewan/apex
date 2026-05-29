@@ -191,9 +191,51 @@ That is the real price of a literal executor + reliable AFK builds.
 
 ---
 
+## 7. Debug loop & bug records
+
+`apex-debug` already mandates a regression test (Stage 6) and writes a structured
+mini-postmortem — but to the **handoff** (transient, read-once, archived). Apply
+one-home-per-fact: give each piece of a bug record a durable home; the handoff postmortem
+stays a transient *signal*.
+
+**Storage map — where each bug record lives:**
+
+| Record | Home | In git repo? |
+|---|---|---|
+| Root cause (the *why*) | commit message body | ✅ |
+| Fix (diff) | the commit | ✅ |
+| Prevention | regression test | ✅ (runs every build) |
+| High-recurrence-risk warning | code comment at the fix site | ✅ |
+| Session signal ("a bug was fixed") | handoff (transient → archived) | ✅ |
+| **Backlog ticket (unfixed/deferred)** | **GitHub Issue** | ❌ GitHub-hosted |
+
+Everything durable about a *fixed* bug stays in git (portable, offline, vendor-neutral).
+The only out-of-git record is the *unfixed*-bug backlog ticket.
+
+**Bug backlog → GitHub Issues** (decided: querying > portability — A2):
+- In-session-fixed-with-test bugs → **git + test only, no issue** (avoid created-and-closed noise).
+- Any **known-but-unfixed** bug (escalated, deferred, or recurrence-risk:high) → an open
+  GitHub Issue. `status.md` no longer carries a bug backlog — **Issues *is* the bug backlog**
+  (labels, search, queryable). Spec/design backlog stays in `status.md`.
+- The fix commit's `fixes #N` auto-closes the issue → the issue becomes the hub wiring
+  ticket ↔ commit ↔ test.
+
+**Visibility / security gate (hard rail, B2 + B1):**
+- Security / auth / data-loss bugs → **never auto-file details** to an issue (git-private only). [B2]
+- Before filing, check repo visibility (`gh repo view --json visibility`): public → minimal
+  stub or skip; private → full detail. [B1]
+
+No standing `decisions.md`/known-issues doc — `git log --grep` + Issues cover search;
+revisit only if *cross-bug* recall proves painful.
+
+(Project docs + spec artifacts are already covered: `apex-docs-product` CHANGELOG/README,
+`apex-docs-technical` handoff + ADR archival, specs → `done/`. Bug-knowledge was the real gap.)
+
+---
+
 ## Concrete capturable changes (when implemented)
 
-**Execute these on the Claude backend (planning, Claude-direct) — NOT DeepSeek.** All 7 are
+**Execute these on the Claude backend (planning, Claude-direct) — NOT DeepSeek.** All of these are
 `.md` skill/instruction authoring: judgment-heavy, gated behind `apex-skill-author`'s Iron
 Law (baseline RED → GREEN, a planning-mode loop), and for skill edits the spec *and* the
 implementation collapse into the same act (writing the exact `.md` prose) — so there is no
@@ -222,12 +264,18 @@ them together or in a deliberate order. Root edits hit the private global
 6. **`apex-orchestrate` handoff template:** slim to match #1/#4.
 7. **status.md hygiene:** define a rotation rule — status.md holds *current state only*;
    no rolling session-log Notes; relocate durable facts to their one home; merge duplicate
-   parked items.
+   parked items. (Also drops the bug backlog — see #8.)
+8. **Debug loop & bug records** (`apex-debug` + `apex-github`): split the Stage-6
+   mini-postmortem → root cause to the **commit message**, high-risk to a **code comment**,
+   handoff = transient signal only; route **unfixed/escalated** bugs to **GitHub Issues**
+   (A2) via `apex-github`, gated by the B2+B1 visibility/security rail; fix commits
+   `fixes #N` to auto-close. `status.md` stops carrying a bug backlog.
 
 ## Open / deferred
 
-- **Documentation & bug→fix recording** — separate parked item (status.md Future Discussions);
-  bug-fix docs are currently ephemeral → no durable root-cause trail. Extends this model.
+- **Documentation & bug→fix recording** — now resolved in design (§7 + change #8): bug
+  knowledge homed in git/test/code, unfixed-bug backlog → GitHub Issues. Project docs/spec
+  artifacts were deemed already-covered. Implementation pending.
 - **status.md Notes bloat** — captured as change #7; the diagnosis (history leaking into a
   state file) is in this doc.
 - Forward path was the higher tokens-per-build half; now covered alongside the return path.
