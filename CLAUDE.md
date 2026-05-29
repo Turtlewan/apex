@@ -44,63 +44,13 @@ these and flags for planning-mode review.
 
 ---
 
-## Rules: creating a new skill
+## Authoring & updating skills
 
-When creating a new `SKILL.md` or `impl.md`:
-
-1. **Frontmatter is required** — every skill file must start with:
-   ```yaml
-   ---
-   skill: apex-<name>
-   version: 1.0.0
-   last_updated: YYYY-MM-DD
-   sources:
-     - Source Name — url
-   staleness_threshold: 30d
-   ---
-   ```
-
-2. **Register it** — add a row to `~/.claude/registry/domains.md` with:
-   - Domain name, SKILL.md path, impl.md path (or `—` if missing), agent (or `—`), keywords
-
-3. **Index it** — add a row to `~/apex/SKILLS.md`:
-   - Quick reference table row
-   - One-paragraph entry in the correct section
-
-4. **Log it** — prepend a row to `~/apex/SKILL-HISTORY.md`:
-   ```
-   | YYYY-MM-DD | apex-<name> | SKILL + impl | 1.0.0 | created | Initial creation | Source1, Source2 |
-   ```
-
----
-
-## Rules: updating an existing skill
-
-When modifying any `SKILL.md` or `impl.md`:
-
-1. **Bump the version** in frontmatter (`1.0.0` → `1.1.0` for content changes, `1.0.0` → `1.0.1` for typo/formatting fixes)
-2. **Update `last_updated`** to today's date
-3. **Prepend a row to `~/apex/SKILL-HISTORY.md`**:
-   ```
-   | YYYY-MM-DD | apex-<name> | SKILL + impl | 1.1.0 | updated | Brief description of what changed | Sources used |
-   ```
-   Use `updated (SKILL)` or `updated (impl)` if only one file changed.
-
----
-
-## Rules: skill content quality
-
-Every `SKILL.md` must have:
-- **When to activate** — concrete trigger phrases, not vague ("use when X")
-- **Questions to ask before designing** — at least 3
-- **A decision table or checklist** — something scannable
-- **A review checklist** — `- [ ]` items
-- **Hard blocks** — things that are never acceptable
-
-Every `impl.md` must have:
-- **NEVER do / ALWAYS do** sections at the top
-- **Code examples** — working snippets, not pseudocode
-- **A verification checklist**
+**Creating, updating, or reviewing any skill → invoke `apex-skill-author` first.**
+It is the source of truth for skill authoring: the Iron Law (baseline-test before
+writing), the frontmatter contract (incl. the required `description` field), the
+registry + index + history triple-write, the SKILL-vs-impl decision, content-quality
+gates, and the 500-line cap. Don't author from memory of these rules — load the skill.
 
 ---
 

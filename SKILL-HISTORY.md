@@ -5,6 +5,8 @@ One row per event — append new rows at the top when updating a skill.
 
 | Date | Skill | Files | Version | Event | What Changed | Sources |
 |------|-------|-------|---------|-------|-------------|---------|
+| 2026-05-29 | apex-skill-author | SKILL | 1.0.0 | created | Meta-skill for creating/updating APEX skills: Iron Law (baseline-test-first), skill-type taxonomy, research-first grounding, frontmatter contract + description rule, triple-write, SKILL-vs-impl split, content rules, 500-line cap, per-edit execution gate. Built via dogfooded Iron Law (RED baseline + GREEN verify) | agentskills.io, superpowers:writing-skills, docs/research/skill-authoring-best-practices.md |
+| 2026-05-29 | apex-research | SKILL (impl deleted) | 1.1.0 | updated (SKILL) | Merged impl.md into SKILL → planning-only single file; added pre-flight scoping questions and Hard blocks; added output hand-off rule (inline / docs/research/ / ADR); confidence now derived from source tier; distinguished skill-doc vs research-output staleness; dropped unused Exa/Firecrawl from sources | Iron Law baseline test, agentskills.io |
 | 2026-05-28 | apex-code | SKILL | 1.3.0 | updated (SKILL) | Added Wave Analysis step for parallel task dispatch; parallelised post-build docs+review agents | superpowers:dispatching-parallel-agents |
 | 2026-05-28 | apex-storage | impl | 1.1.0 | updated (impl) | Added post-upload MIME validation requirement for presigned PUT uploads | — |
 | 2026-05-28 | apex-search | impl | 1.1.0 | updated (impl) | Fixed embedding insert: JSON.stringify → pgvector array literal with ::vector cast | pgvector docs |

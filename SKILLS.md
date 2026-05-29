@@ -21,6 +21,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-code** | Coding / implementing / building | auto via orchestrate |
 | **apex-debug** | Bug / root cause / broken / not working | auto via orchestrate |
 | **apex-research** | Research any topic before deciding | invoke explicitly |
+| **apex-skill-author** | Creating or editing any APEX skill | invoke explicitly |
 | **apex-architecture** | Codebase architecture, DDD, ADRs | topic keyword |
 | **apex-system-design** | Distributed systems, CAP, queues, caching | topic keyword |
 | **apex-security** | OWASP, auth, threat model | topic keyword |
@@ -215,9 +216,16 @@ API integration, local-first design, IoT VLAN security.
 (Gmail, Calendar, Drive), service account patterns, scope selection, token storage rules,
 `googleapis` npm client, `google-auth-library`. Distinct from `apex-gcp` (infrastructure).
 
-**apex-research** — Deep research workflow: tiered sources (Context7 official docs →
-WebSearch → WebFetch), confidence tagging ([VERIFIED]/[ASSUMED]/[COMMUNITY]),
-parallel research agents, ADR output format, staleness tracking.
+**apex-research** — Deep research workflow: pre-flight scoping questions, tiered sources
+(Context7 official docs → WebSearch → WebFetch) with confidence derived from tier
+([VERIFIED]/[ASSUMED]/[COMMUNITY]), parallel research agents, output hand-off
+(inline / `docs/research/` / ADR), and staleness tracking. Single-file, planning-only.
+
+**apex-skill-author** — How to create and update APEX skills: the Iron Law (baseline-test
+before writing), skill-type taxonomy → test style, research-first grounding via
+`apex-research`, frontmatter contract (incl. the `description` rule), the triple-write
+(registry + index + history), SKILL-vs-impl split, content rules, and the 500-line cap.
+Single-file, planning-only. The source of truth for skill authoring.
 
 **apex-animation** — Motion/GSAP animations, `prefers-reduced-motion` compliance,
 performance-safe animation patterns.
