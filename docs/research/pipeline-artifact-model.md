@@ -193,8 +193,19 @@ That is the real price of a literal executor + reliable AFK builds.
 
 ## Concrete capturable changes (when implemented)
 
-Each skill edit goes through `apex-skill-author` + the Iron Law. Root edits hit the user's
-private global `~/.claude/CLAUDE.md` — a deliberate decision to confirm at implementation.
+**Execute these on the Claude backend (planning, Claude-direct) — NOT DeepSeek.** All 7 are
+`.md` skill/instruction authoring: judgment-heavy, gated behind `apex-skill-author`'s Iron
+Law (baseline RED → GREEN, a planning-mode loop), and for skill edits the spec *and* the
+implementation collapse into the same act (writing the exact `.md` prose) — so there is no
+execution layer to offload and a DeepSeek round-trip adds overhead for zero gain. The
+per-edit execution gate lands on Claude-direct for all of these.
+
+These bullets are *identified*, not *spec-ready* — a worklist, not specs. Each needs its
+exact file/section + before-after text + acceptance check written at implementation time.
+They split into ~6–7 separate edits; sequencing matters — **#1 (CLAUDE.md handoff format),
+#4 (apex-handoff sections), and #6 (the template) must stay mutually consistent**, so land
+them together or in a deliberate order. Root edits hit the private global
+`~/.claude/CLAUDE.md` — a deliberate decision to confirm at implementation.
 
 1. **CLAUDE.md — handoff format:** replace the `| File | What changed | Status |` table spec
    with the thin handoff (Decisions / Flags / Blocks / discoveries-as-what's-next).
