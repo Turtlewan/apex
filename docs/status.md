@@ -39,6 +39,7 @@ _(empty — nothing in progress)_
 - **`description` backfill** — ~40 existing skills predate the new required `description:` field. Decided: backfill opportunistically when each skill is next edited (no bulk migration). Revisit if discovery proves weak.
 - **Domain agent dispatching** — registry Agent column is populated but unused; design decision needed on reviewer/enforcer agent invocation pattern.
 - **Full APEX planning + development workflow review** — end-to-end experience, apex-plan session-start tightening.
+- **Handoff efficiency** — analysis done, design captured in `docs/research/handoff-efficiency.md` (artifact-ownership model: git=changes, status.md=state, handoff=narrative-only; slim handoff + tighten apex-plan read; needs global CLAUDE.md edit). Implementation deferred — revisit when ready.
 - **Large-scale application development** — phase/milestone management, context scaling, handoff efficiency at project scale.
 - **Potential new skill domains** — `apex-payments`, `apex-email` — not prioritised.
 <!-- PLANNING:END -->
