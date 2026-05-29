@@ -7,6 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
+_Last updated by planning mode:_ 2026-05-29 (session 7)
 _Last updated by coding mode:_ 2026-05-28 (session 6)
 
 <!-- CODING:START -->
@@ -24,15 +25,17 @@ _(empty — nothing in progress)_
 | _(none — all specs completed)_ |
 
 ## Notes
-- Session 6 complete: all 3 pending specs from session 5 executed and committed (`ffe9388` in `~/apex/`, `e5f1391` in `~/.claude/`)
-- `~/.claude/` 8 skill files from session 6 committed; plugin/marketplace changes are pre-existing and unrelated
-- All specs moved to `docs/changes/done/`
+- Session 7 (planning, direct skill authoring): **apex-research → v1.1.0** (merged to single-file planning-only) and **apex-skill-author created** (source of truth for skill authoring). Iron Law dogfooded for both — real RED baseline + GREEN verification subagent runs. Committed: `597e9d4` (`~/apex/`), `bc40289` (`~/.claude/`).
+- Skill `.md` work is now done **directly in planning mode** (Claude), not specced to DeepSeek; a per-edit execution gate asks which backend each time. See memory `skill-authoring-workflow`.
+- `apex/CLAUDE.md` skill-authoring rules shrunk to a pointer → `apex-skill-author` is the single maintained source.
+- `docs/research/skill-authoring-best-practices.md` added — grounds apex-skill-author.
 
 ## Open Questions
 - **Domain agent wiring** — 17 domain agents registered in registry but never dispatched. When to dispatch an agent vs load impl.md? Deferred.
 - **apex-plan session start reads too much** — currently reads full handoff doc; should read only status.md. Parked.
 
 ## Future Discussions (parked)
+- **`description` backfill** — ~40 existing skills predate the new required `description:` field. Decided: backfill opportunistically when each skill is next edited (no bulk migration). Revisit if discovery proves weak.
 - **Domain agent dispatching** — registry Agent column is populated but unused; design decision needed on reviewer/enforcer agent invocation pattern.
 - **Full APEX planning + development workflow review** — end-to-end experience, apex-plan session-start tightening.
 - **Large-scale application development** — phase/milestone management, context scaling, handoff efficiency at project scale.
