@@ -224,8 +224,10 @@ API integration, local-first design, IoT VLAN security.
 **apex-skill-author** — How to create and update APEX skills: the Iron Law (baseline-test
 before writing), skill-type taxonomy → test style, research-first grounding via
 `apex-research`, frontmatter contract (incl. the `description` rule), the triple-write
-(registry + index + history), SKILL-vs-impl split, content rules, and the 500-line cap.
-Single-file, planning-only. The source of truth for skill authoring.
+(registry + index + history), SKILL-vs-impl split, content rules, the 500-line cap, and
+authoring each file to its executor's capability floor (no judgment calls in `impl.md` for
+DeepSeek Flash; explicit scope in `SKILL.md` for Claude). Single-file, planning-only. The
+source of truth for skill authoring.
 
 **apex-animation** — Motion/GSAP animations, `prefers-reduced-motion` compliance,
 performance-safe animation patterns.
