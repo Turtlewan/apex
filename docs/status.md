@@ -22,7 +22,7 @@ _(empty — nothing in progress)_
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| _(none — all specs completed)_ |
+| align-sessionstart-hook-spec-rules | Update planning policy text in `hooks/backend-session-start.ps1` to match new spec rules (one-line identity, no-why, files-per-task, no Risks). Coding-mode (non-`.md`). |
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
@@ -37,7 +37,7 @@ _status.md holds current state only — session history lives in git + handoff d
 
 ## Open Questions
 - **Domain agent wiring** — 17 domain agents registered in registry but never dispatched. When to dispatch an agent vs load impl.md? Deferred.
-- **SessionStart hook ↔ CLAUDE.md drift** — the planning SessionStart hook text (in `~/.claude/settings.json`) still says "Scope: one-paragraph summary"; the global CLAUDE.md spec rules now say one-line identity. settings.json is non-`.md` (blocked in planning) — needs an `update-config`/coding-mode edit to realign the hook text.
+- **SessionStart hook ↔ CLAUDE.md drift** — now specced (`docs/changes/align-sessionstart-hook-spec-rules.md`). The planning hook text lives in `hooks/backend-session-start.ps1` (not settings.json), still says "Scope: one-paragraph summary" + a Risks item — both contradict the new spec rules. Non-`.md` → coding mode executes the spec.
 
 ## Future Discussions (parked)
 - **`description` backfill** — most pre-`description` skills still lack the field; backfill opportunistically when each is next edited (apex-debug, apex-github done this session). Revisit if discovery proves weak.
