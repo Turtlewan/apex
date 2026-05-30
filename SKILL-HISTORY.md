@@ -3,9 +3,44 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+## Opus 4.8 first-pass tracker
+
+One-time-sweep marker — which skills have had their first review/edit by **Opus 4.8**.
+Purpose: avoid re-doing a skill already swept. When Opus 4.8 edits a skill, move it from
+**Pending** → **Done** with today's date. Tag-only — being in Done means "Opus 4.8 has
+touched it once," not a quality guarantee.
+
+**Done (Opus 4.8 first-pass complete):**
+- apex-code — 2026-05-30
+- apex-debug — 2026-05-30
+- apex-github — 2026-05-30
+- apex-handoff — 2026-05-30
+- apex-orchestrate — 2026-05-30
+- apex-plan — 2026-05-30
+- apex-research — 2026-05-29
+- apex-skill-author — 2026-05-29
+
+**Pending (no Opus 4.8 pass yet):**
+apex-accessibility, apex-ai-systems, apex-animation, apex-architecture, apex-auth, apex-aws,
+apex-azure, apex-backend, apex-data, apex-deep-dive, apex-design-system,
+apex-devcontainer, apex-devops, apex-docs-product, apex-docs-technical, apex-figma, apex-frontend,
+apex-gcp, apex-google, apex-governance, apex-homelab, apex-iac, apex-init, apex-jobs,
+apex-k8s, apex-mobile, apex-observability, apex-performance,
+apex-realtime, apex-refresh, apex-search, apex-security, apex-stack, apex-storage,
+apex-system-design, apex-testing, apex-ui-testing, apex-ui-ux-design
+
+---
+
 | Date | Skill | Files | Version | Event | What Changed | Sources |
 |------|-------|-------|---------|-------|-------------|---------|
-| 2026-05-29 | apex-skill-author | SKILL | 1.1.0 | updated (SKILL) | Added "Author to the executor's capability floor" section: no judgment calls in impl.md (pre-resolve or flag back to planning, apex-figma pattern), short checkpointed tool chains for DeepSeek V4 Flash, explicit scope in SKILL.md for Opus literalism; + matching hard block & checklist item. Built via dogfooded Iron Law (RED leaked SES judgment + 6-step chain → GREEN pre-resolved block + 5 checkpointed steps) | docs/research/model-specific-skill-authoring.md, Anthropic prompting best practices, DeepSeek API docs |
+| 2026-05-30 | apex-github | SKILL | 1.1.0 | updated (SKILL) | Added Bug backlog → Issues subsection: fixed-in-session-with-test → git+test only (no issue); known-but-unfixed → GitHub Issue (Issues IS the backlog, status.md carries none), fix commit fixes #N. Security/visibility gate (hard rail): never auto-file security/auth/data-loss details (private Security Advisory, human-driven); check `gh repo view --json visibility` before filing — public→non-exploitable stub or skip, private→full. Added trigger-style description (backfill). Dogfooded Iron Law (RED filed public issue for auth bypass on instinct only → GREEN gate routed to private advisory, no public repro). Pipeline-artifact-model cluster E (edit #8). Opus 4.8 | docs/research/pipeline-artifact-model.md, GitHub Docs |
+| 2026-05-30 | apex-debug | SKILL | 1.2.0 | updated (SKILL) | Stage 6 rewritten to one-home-per-fact storage map: root cause → commit body, prevention → regression test, high-recurrence-risk → code comment at fix site, signal → handoff (transient pointer only, not the record), unfixed → GitHub Issue via apex-github (gated). Slimmed handoff mini-postmortem → one-line signal. Added trigger-style description (backfill). Dogfooded Iron Law (RED duplicated record into handoff + opened public issue for security bug → GREEN commit-body root cause, no-issue-for-fixed, security gate). Pipeline-artifact-model cluster E (edit #8). Opus 4.8 | docs/research/pipeline-artifact-model.md |
+| 2026-05-30 | apex-code | SKILL | 1.4.0 | updated (SKILL) | Added Forks section: mechanical three-zone routing (SMALL fix-in-place / BIG route-to-planning / GRAY pause-and-ask-at-L2), park-and-continue-if-isolable in AFK, capture-at-halt to docs/progress/{spec}.md + In-Flight blocked/parked, blocked spec stays in changes/. Scoped the old conservative-choice rule to in-task micro-ambiguity only (a fork is no longer guessed). Authored to Flash floor (criteria not gut-feel). Dogfooded Iron Law (RED silently blocked-continued, no progress capture, refused user even on ambiguous fork → GREEN classified BIG, parked isolable task, capture-at-halt written, routed correctly). Pipeline-artifact-model cluster D (edit #5). Opus 4.8 | docs/research/pipeline-artifact-model.md |
+| 2026-05-30 | apex-orchestrate | template | 1.1.2 | updated (SKILL) | spec-template.md: added one-line **Identity** (replacing rationale-paragraph Scope) + spec-authoring rules comment (no why inline w/ litmus, list-files-per-task, conventions live in impl.md); Tasks now carry `— files: {paths}`. Pipeline-artifact-model cluster C (edit #2). Opus 4.8 | docs/research/pipeline-artifact-model.md |
+| 2026-05-30 | apex-plan | SKILL | 1.5.0 | updated (SKILL) | Forward-path spec authoring: spec = execution script not design doc — Scope→one-line identity (+optional ADR link), no why inline (litmus: does it change what's built?), list-files-per-task, cross-cutting conventions live in impl.md. Dogfooded Iron Law (RED leaked OTP/ADR rationale into Scope+simplicity-check, paragraph scope → GREEN one-line identity + pointer, rationale removed, files-per-task explicit). Pipeline-artifact-model cluster C (edit #2). Opus 4.8 | docs/research/pipeline-artifact-model.md |
+| 2026-05-30 | apex-plan | SKILL | 1.4.0 | updated (SKILL) | Session-start: added git/status.md read framing + the triage-drain / inbox-zero obligation (every handoff item terminates in Pending Spec / Open Question / Folded / Discarded, landed this session). Planning conversation: added the upfront elicitation front-end (resolve facts/defaults yourself; ask only build-changing decisions planning can't resolve; batch+target AskUserQuestion-style, not one-at-a-time drip). Dogfooded Iron Law (RED capable agent improvised triage but deferred landing + dripped questions → GREEN explicit terminal-disposition table + batched bounded elicitation). Pipeline-artifact-model cluster B (edit #3). Opus 4.8 | docs/research/pipeline-artifact-model.md |
+| 2026-05-30 | apex-orchestrate | template | 1.1.1 | updated (SKILL) | Slimmed handoff-from-coding.md template to the thin read-once handoff (Decisions / Specialist Flags / Blocked Actions / discoveries + inbox-zero header); dropped file/specs/current-state tables. Part of pipeline-artifact-model cluster A (edit #6). Opus 4.8 | docs/research/pipeline-artifact-model.md |
+| 2026-05-30 | apex-handoff | SKILL | 1.2.0 | updated (SKILL) | Thin handoff redesign: narrative-only sections + one-home-per-fact table (what-changed→git, live state→status.md, specs→done/); triage-drain / inbox-zero read rule; In-Flight State enum (partial/blocked/parked); reframed commit-status to status.md In-Flight. Dogfooded Iron Law (RED 54-line bloated handoff w/ file table + blocked spec spread across 3 sections → GREEN 25-line thin handoff, position in In-Flight). Part of pipeline-artifact-model cluster A (#1/#4/#6/#7). Opus 4.8 | docs/research/pipeline-artifact-model.md | Added "Author to the executor's capability floor" section: no judgment calls in impl.md (pre-resolve or flag back to planning, apex-figma pattern), short checkpointed tool chains for DeepSeek V4 Flash, explicit scope in SKILL.md for Opus literalism; + matching hard block & checklist item. Built via dogfooded Iron Law (RED leaked SES judgment + 6-step chain → GREEN pre-resolved block + 5 checkpointed steps) | docs/research/model-specific-skill-authoring.md, Anthropic prompting best practices, DeepSeek API docs |
 | 2026-05-29 | apex-skill-author | SKILL | 1.0.0 | created | Meta-skill for creating/updating APEX skills: Iron Law (baseline-test-first), skill-type taxonomy, research-first grounding, frontmatter contract + description rule, triple-write, SKILL-vs-impl split, content rules, 500-line cap, per-edit execution gate. Built via dogfooded Iron Law (RED baseline + GREEN verify) | agentskills.io, superpowers:writing-skills, docs/research/skill-authoring-best-practices.md |
 | 2026-05-29 | apex-research | SKILL (impl deleted) | 1.1.0 | updated (SKILL) | Merged impl.md into SKILL → planning-only single file; added pre-flight scoping questions and Hard blocks; added output hand-off rule (inline / docs/research/ / ADR); confidence now derived from source tier; distinguished skill-doc vs research-output staleness; dropped unused Exa/Firecrawl from sources | Iron Law baseline test, agentskills.io |
 | 2026-05-28 | apex-code | SKILL | 1.3.0 | updated (SKILL) | Added Wave Analysis step for parallel task dispatch; parallelised post-build docs+review agents | superpowers:dispatching-parallel-agents |

@@ -1,9 +1,11 @@
 # Design Note: APEX Pipeline Artifact Model
 
 **Date:** 2026-05-29 (session 8)
-**Status:** Design note — analysis/decisions only, no skill or CLAUDE.md changes made yet.
+**Status:** ✅ IMPLEMENTED 2026-05-30 (session 9, clusters A–E). All 8 concrete changes landed
+via apex-skill-author + dogfooded Iron Law. One follow-up open: the SessionStart hook text in
+`settings.json` ("Scope: one-paragraph summary") still needs realigning to the one-line-identity
+rule (non-`.md`, blocked in planning mode). See `SKILL-HISTORY.md` 2026-05-30 rows.
 **Supersedes:** `handoff-efficiency.md` (which only covered the return path).
-**Revisit:** when ready to implement — see *Concrete capturable changes* at the end.
 
 ## Purpose
 

@@ -66,16 +66,26 @@ in every session. Contains pause/resume workflows and governance hard-blocks.
 orchestrate when no `docs/status.md` exists.
 
 **apex-plan** — Planning workflow. Guides spec creation, ADR writing, decision-making.
-Produces `docs/changes/<name>.md` specs for coding mode to execute.
+Front-loads build-changing decisions via upfront targeted elicitation, and drains the
+read-once handoff to inbox-zero at session start. Produces `docs/changes/<name>.md` specs
+for coding mode to execute.
 
 **apex-code** — Coding workflow. Reads specs from `docs/changes/`, implements, moves
-completed specs to `docs/changes/done/`, writes handoff docs.
+completed specs to `docs/changes/done/`, writes handoff docs. At a fork (spec can't run as
+written) classifies small/big/gray mechanically — fix-in-place / route-to-planning /
+pause-and-ask-at-L2 — with capture-at-halt to `docs/progress/` and park-and-continue for
+isolable tasks.
 
 **apex-debug** — Bug investigation workflow. Scientific method for root cause analysis.
-Produces hypotheses, verification steps, fix recommendations.
+Produces hypotheses, verification steps, fix recommendations. Routes the bug record to one
+durable home per fact (root cause → commit body, prevention → test, high-risk → code comment,
+signal → handoff, unfixed → GitHub Issue via apex-github).
 
-**apex-handoff** — Session end workflow. Writes `docs/handoff/YYYY-MM-DD.md` with build
-summary, files changed, current state, and next steps.
+**apex-handoff** — Bidirectional handoff protocol. Writes a *thin* read-once handoff
+(`docs/handoff/YYYY-MM-DD.md`: Decisions / Specialist Flags / Blocked Actions / discoveries —
+narrative only, since git + status.md own what-changed and live state); defines the
+triage-drain (inbox-zero) read rule and the status.md In-Flight State enum
+(`partial`/`blocked`/`parked`).
 
 ---
 
@@ -206,7 +216,9 @@ mocking patterns, coverage targets.
 
 **apex-github** — Repository setup, branch protection, issue taxonomy (type/priority/status/area
 labels), Conventional Commits, GitHub Projects v2, release management (semver +
-Keep a Changelog), Dependabot, CodeQL, secret scanning.
+Keep a Changelog), Dependabot, CodeQL, secret scanning. Issues *is* the unfixed-bug backlog
+(fixed-with-test → no issue), gated by a security/visibility rail (never auto-file security/
+auth/data-loss details; check repo visibility before filing).
 
 **apex-homelab** — Home Assistant hub, ESPHome ESP32 firmware, Zigbee/MQTT/Matter
 protocols, presence detection (mmWave radar), automation design, REST/WebSocket
