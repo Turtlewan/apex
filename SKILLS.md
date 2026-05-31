@@ -45,6 +45,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-storage** | File storage — MinIO (local), S3/R2 (cloud), presigned URLs, MIME validation | topic keyword |
 | **apex-nextjs** | Next.js 15+ App Router, Server Components, Server Actions, caching | stack skill via `stack_skills` |
 | **apex-python** | Typed Python / FastAPI — uv, ruff, mypy --strict, pydantic-settings, async boundaries | stack skill via `stack_skills` |
+| **apex-swift** | Swift 6 / SwiftUI (macOS/iOS/iPadOS) — strict concurrency, @Observable, SwiftData | stack skill via `stack_skills` _(v0.1.0 — recipe pending Mac validation)_ |
 | **apex-observability** | OpenTelemetry, Sentry, Grafana, logging | topic keyword |
 | **apex-performance** | Profiling, Core Web Vitals, optimisation | topic keyword |
 | **apex-accessibility** | WCAG AA, a11y, screen readers | topic keyword |
@@ -146,6 +147,13 @@ binding; provides the `## Verification Recipe` (tsc → lint → build) read by 
 typed config, schema/entity separation. The language/stack spine a RAG engine composes
 `apex-ai-systems`/`apex-search` onto. Loaded via `stack_skills` binding; provides the
 `## Verification Recipe` (uv sync → ruff → mypy --strict → pytest) read by apex-code.
+
+**apex-swift** — Stack skill for Swift 6 + SwiftUI across macOS / iOS / iPadOS. Swift 6 strict
+concurrency (the compiler-enforced verifiability gate), `@MainActor @Observable` view-models,
+SwiftData, NavigationStack, shared SPM module + platform-conditional UI. The native Apple
+client/hub layer; the RAG engine is the separate `apex-python` sidecar. _v0.1.0 — recipe authored
+from research but **not yet run** (needs a Mac); validate on first Xcode build, then → 1.0.0._
+Loaded via `stack_skills` binding; recipe = `swift build`/`test` + `xcodebuild` per platform + lint.
 
 **apex-mobile** — React Native, Expo managed workflow, Expo Router, EAS Build + Submit,
 EAS Update (OTA), SecureStore, push notifications, app store preparation.
