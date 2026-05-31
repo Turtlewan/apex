@@ -35,9 +35,13 @@ Mac. Roadmap + full detail: **`docs/research/apex-finalisation-plan.md`**.
   the app's ADR-001 at bootstrap. Runner-up MAUI ruled out (all-Apple → native SwiftUI wins).
 - **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
   (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.
-- **SP2 / SP3 / SP4 / SP6 ⚠️** — proposed resolutions recorded (review-needed); see plan §6. SP2+SP6
-  both touch `apex-code` loading → bundle into one Iron-Law edit. SP4 settings land at app `apex-init`.
-- **SP5** — Opus-4.8 skill sweep, ongoing track; ~36 skills pending (triage: app-critical first).
+- **SP2 ✅ / SP3 ✅ / SP4 ✅ decided** (plan §6): SP2 = Method C (no capability binding — capability
+  skills are stack-coupled, so de-couple them via SP5 + a `## Stack assumptions` header; stack recipe
+  is the single verifier; research in `sp2-capability-composition.md`); SP3 = let it emerge; SP4 =
+  app autonomy **L3** + lean profile at bootstrap. **SP6** (the `impl.md` always-load convention +
+  `apex-code` loading edit) is the **next-session focus**; SP2's `## Stack assumptions` rides it.
+- **SP5** — Opus-4.8 skill sweep, ongoing; ~36 skills pending. **Top priority: de-couple
+  `apex-search`/`apex-jobs`/`apex-storage` from JS/pgvector** so they fit the Python/SQLite app.
 
 _Prior buildability layer (clusters 1–5, ADR-005/006) is complete — see git history + `SKILL-HISTORY.md`._
 
@@ -52,13 +56,9 @@ _status.md holds current state only — session history lives in git + handoff d
 - Skill `.md` work is done **directly in planning mode** (Claude); per-edit backend gate. See memory `skill-authoring-workflow`.
 
 ## Open Questions
-_Detail in `docs/research/apex-finalisation-plan.md` §5–6; these are the calls that need the user._
-- **SP4 autonomy level** — app-project default of `L3` (AFK/"auto mode") is behaviour-altering;
-  confirm before locking. Also `token_profile` (lean?) + `specialists_default` seed.
-- **SP2 binding shape** — do capability-skill recipes join the existing `stack_skills` binding or a
-  new `capability_skills` binding? + domain-agent dispatch-vs-load-impl (17 agents, never dispatched).
-- **SP3 milestone construct** — introduce a milestone layer above specs now, or let it emerge from
-  the app's first real milestone? (leaning *emerge* / YAGNI).
+_SP2-composition, SP3, SP4 resolved this session (see plan §6). Remaining:_
+- **SP2 agent-wiring half** — 17 domain agents registered but never dispatched: dispatch an agent vs
+  load `impl.md` inline? (composition half decided; this half still open, needs its own baseline).
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
 - **doc-writer status.md template divergence** — frontmatter-less fallback template still diverges
   from the orchestrate `status-template.md`; reconcile.

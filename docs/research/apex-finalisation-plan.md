@@ -201,29 +201,34 @@ PENDING Mac validation). Both triple-written + committed. Research in `docs/rese
 The rest are **proposed directions ⚠️ review-needed**, not yet implemented (each needs either the
 app project to exist or its own Iron-Law skill edit):
 
-- **SP4 — settings (decision for app `apex-init`, can't apply to a non-existent project yet).**
-  Proposed app-project defaults: `autonomy_level: L3` (user runs "auto mode" / AFK), `token_profile`
-  lean (ties SP6), `specialists_default` seeded with the security + AI specialists the RAG app always
-  wants. ⚠️ Autonomy level is behaviour-altering — confirm before locking.
-- **SP2 — composition rule.** Proposed: (a) capability skills that carry build-verifiable steps
-  (`apex-auth`, `apex-search`) may declare an optional `## Verification Recipe`; `apex-code` unions
-  stack-skill recipes (already) **+** bound capability recipes — capability steps are *additive,
-  never override* the stack recipe. (b) Mismatch-guard: a capability skill states its assumptions
-  (e.g. `apex-search` assumes a vector store); a stack/capability conflict (sqlite-vec vs pgvector)
-  is resolved by planning at spec time, flagged by coding at run time. **Open:** do capability skills
-  join the existing `stack_skills` binding or a new `capability_skills` binding? Agent-wiring half
-  (dispatch-vs-load-impl for the 17 domain agents) still unresolved.
+- **SP4 — settings ✅ DECIDED (applies at app `apex-init`).** App-project defaults: `autonomy_level:
+  L3` (user runs "auto mode" / AFK — confirmed), `token_profile` lean (ties SP6),
+  `specialists_default` seeded with the security + AI specialists. _(Note: L3 runs the recipe but
+  does **no git commits** — L4 adds commits; revisit if fuller AFK automation is wanted. APEX's own
+  project stays L2 unless separately bumped.)_
+- **SP2 — composition rule ✅ DECIDED: Method C (no new binding).** Research
+  (`docs/research/sp2-capability-composition.md`) found capability skills are *stack-coupled*
+  (`apex-search` = TS+pgvector), so A/B (any recipe binding) would inject wrong-stack commands.
+  Decision: **no `capability_skills` binding**; capability skills stay planning-layer concept advice;
+  the **stack recipe is the single verifier**; each capability `impl.md` gets a one-line
+  `## Stack assumptions` header that planning checks against the bound stack and adapts on mismatch.
+  Implementation moves off `apex-code` → onto `apex-skill-author` (the `## Stack assumptions`
+  convention) + `apex-plan` (the mismatch-check) + **SP5** (de-couple `apex-search`/`apex-jobs`/
+  `apex-storage` from JS/pgvector — now a top SP5 priority). App RAG choices (sqlite-vec + MLX) →
+  app ADR at bootstrap. **Still open:** agent-wiring half (dispatch-vs-load-impl, 17 agents).
+- **SP3 — large-scale project mgmt ✅ DECIDED: let it emerge.** Build the app's first real milestone
+  with current tooling (thin handoff + `status.md` In-Flight), extract the pattern from experience,
+  then formalise a milestone layer. No speculative process up front (YAGNI).
 - **SP6 — context efficiency.** Proposed `impl.md` convention: an **always-loaded core**
   (frontmatter + NEVER/ALWAYS + `## Verification Recipe`) and an optional `## Reference` tail moved
   to `references/*.md` loaded on demand; `apex-code` loads the bound impl's recipe + hard-rules by
-  default, not the whole file. Must land **before** SP5 hardens ~38 `impl.md` files. Both SP2 and SP6
-  modify `apex-code`'s loading protocol → bundle them into one `apex-code` edit (one baseline).
-- **SP3 — large-scale project mgmt.** Proposed: a **milestone layer** above specs (a
-  `docs/roadmap`/milestone construct; `status.md` gains a milestone pointer; thin handoff unchanged;
-  per-milestone archival for context scaling). **Open:** adopt a milestone construct now, or let it
-  emerge from the first real milestone of the app build? Leaning *emerge* (YAGNI) — build the app's
-  first milestone, extract the pattern, then formalise.
-- **SP5 — skill sweep.** Not started; triage order stands (app-critical capability skills first).
+  default, not the whole file. Must land **before** SP5 hardens ~38 `impl.md` files. SP6 owns the
+  `apex-code` loading edit; SP2's `## Stack assumptions` convention rides the same `impl.md`-section
+  schema (do them together so the section convention lands once). _This is the chosen next-session
+  focus._
+- **SP5 — skill sweep.** Not started; triage order stands (app-critical capability skills first),
+  with **de-coupling `apex-search`/`apex-jobs`/`apex-storage` from JS/pgvector now the top priority**
+  (per the SP2 decision).
   `apex-python`/`apex-swift` count as Opus-native; `apex-stack`/`apex-code`/etc. already swept.
   ~36 remain. Ongoing track — run in dedicated sessions.
 - **Cross-cutting:** Verification Recipes for `apex-swift` can only be *run-validated* once the Mac
