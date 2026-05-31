@@ -14,9 +14,8 @@ _Last updated by coding mode:_ 2026-05-28 (session 6)
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| align-sessionstart-hook-spec-rules | coding | `🟡 uncommitted` | `~/.claude/hooks/backend-session-start.ps1` + spec moved to `done/` + `status.md` | executed — commit only | 🟡 |
-| apex-plan-confirmation-digest | planning | `🟡 uncommitted` | `~/.claude/skills/apex-plan/SKILL.md` (v1.6.0) + `~/apex/SKILL-HISTORY.md` | done — commit only | 🟡 |
-| per-project-docs (ADR-001, edits 1–4/4 ✅) | planning | `🟡 uncommitted` | `~/apex/docs/technical/adr/ADR-001-*.md` (new) + `~/.claude/skills/apex-docs-technical/SKILL.md` (v1.1.0) + `~/.claude/skills/apex-init/SKILL.md` (v1.2.0) + `~/.claude/skills/apex-plan/SKILL.md` (v1.7.0) + `~/.claude/skills/apex-handoff/SKILL.md` (v1.3.0) + `~/.claude/skills/apex-orchestrate/templates/handoff-from-coding.md` (v1.1.3) + `~/apex/SKILL-HISTORY.md` + `~/apex/SKILLS.md` + memory files | complete — commit only | 🟡 |
+
+_None in flight — session-11 work committed (`~/.claude` 797b437, bab8bc8 · `~/apex` c0ce7eb)._
 <!-- CODING:END -->
 
 <!-- PLANNING:START -->
@@ -58,9 +57,10 @@ _status.md holds current state only — session history lives in git + handoff d
   skill edits landed: apex-docs-technical v1.1.0 (System Overview doc type), apex-init v1.2.0 (seed
   overview.md stub), apex-plan v1.7.0 (readiness-gate ADR-coverage + overview-currency + session-start
   coverage check), apex-handoff v1.3.0 + handoff template v1.1.3 (`[arch]`-tag → required ADR drain).
-  Design rationale lives in ADR-001; change log in SKILL-HISTORY. **Follow-up:** the contract is wired
-  but APEX has not yet *exercised it on itself* — only ADR-001 exists; no real System Overview for APEX,
-  and pre-ADR-001 architectural decisions are un-ADR'd. Dogfood pass deferred.
+  Design rationale lives in ADR-001; change log in SKILL-HISTORY. **Dogfooded on APEX itself 2026-05-31:**
+  wrote the real System Overview (`docs/technical/architecture/overview.md`, non-stub) + back-filled
+  ADR-002 (dual-backend two-mode workflow), ADR-003 (pipeline artifact model), ADR-004 (skill-system
+  structure). The contract now holds on its own author.
 - **`description` backfill** — most pre-`description` skills still lack the field; backfill opportunistically when each is next edited (apex-debug, apex-github done this session). Revisit if discovery proves weak.
 - **Domain agent dispatching** — registry Agent column is populated but unused; design decision needed on reviewer/enforcer agent invocation pattern.
 - **Opus 4.8 content sweep** — tag-only tracker is built; the actual one-time Opus 4.8 review/upgrade pass over the ~40 Pending skills is not yet started.
