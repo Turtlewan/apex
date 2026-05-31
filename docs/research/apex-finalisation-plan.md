@@ -60,6 +60,7 @@ specific, optional, interface-isolated).
 | 3 | **Large-scale project mgmt** | phase/milestone management, context scaling, handoff-at-scale | 1–2 |
 | 4 | **Settings & autonomy** | tuned autonomy level, token profile, AFK build, `specialists_default` | independent |
 | 5 | **Opus 4.8 skill sweep** | ~38 Pending skills reviewed + improved via Iron Law + research; `SKILL-HISTORY.md` tracker Pending→Done | independent, ongoing |
+| 6 | **DeepSeek context efficiency** | minimise what loads into the coding (DeepSeek) context window per run — lean specs + tight `impl.md` loading | independent, ongoing |
 
 ### SP1 — Stack skills `apex-swift` + `apex-python`
 
@@ -134,14 +135,41 @@ of `SKILL-HISTORY.md` (**Done** vs **Pending**); this sub-project drains Pending
   It runs **in parallel / opportunistically** alongside SP1–SP4 — every skill SP1–SP4 edits is
   swept *for free* as part of that work (e.g. `apex-stack` was already Opus-touched in cluster 3).
 
+### SP6 — DeepSeek coding-context efficiency _(ongoing track)_
+
+Everything that loads into the **coding (DeepSeek) context window per run** is a recurring cost, and
+DeepSeek V4 Flash degrades faster than Claude on a bloated window. As the app grows (more specs, more
+runs), this compounds. Goal: keep the per-run loaded set minimal *without* losing enforcement signal.
+
+- **What loads per run (the audit surface):** the spec (`docs/changes/*.md`) · `apex-code` SKILL ·
+  each bound `stack_skills` `impl.md` (recipe + patterns) · any capability `impl.md` for the task ·
+  the latest handoff · `status.md`. Measure each; trim the fat.
+- **Levers:**
+  1. **Spec leanness** — the execution-script model (one-line identity, no *why*, files-per-task)
+     already does most of this; audit live specs for drift back toward design-doc bloat.
+  2. **`impl.md` structure — recipe + hard rules always-loaded; bulky reference patterns moved to
+     `references/*.md` with explicit load conditions** (a pattern `apex-skill-author` already
+     supports). The Verification Recipe and NEVER/ALWAYS blocks must stay; long worked examples
+     need not load every run.
+  3. **Enforce the 500-line cap** and "defaults not menus" — less prose, same behaviour control.
+  4. **Selective section loading (open question below)** — can coding mode load *only* a bound stack
+     skill's `## Verification Recipe` + gotchas, not the whole `impl.md`?
+- **Applied now:** `apex-python`'s `impl.md` is authored lean from the start (RED proved the base
+  model already nails FastAPI structure — spend lines only on uv-default, the pydantic×mypy gotcha,
+  the security note, and the recipe).
+- Ties to memory `parked-discussion-handover` (token-efficient specs / context minimisation for
+  DeepSeek) and `be-token-efficient`.
+
 ---
 
 ## 4. Sequence
 
 `0 ✅ → 1 → 2 → 3`, with **4** landing alongside any of them (low-risk, independent). SP2 depends on
 SP1 because the composition rule needs a real stack skill to compose against; SP3 best follows 1–2 so
-it wraps a working, composed build loop. **SP5 (skill sweep) runs continuously in parallel** —
-prioritised on the app-critical capability skills, and absorbing any skill SP1–SP4 happens to edit.
+it wraps a working, composed build loop. **SP5 (skill sweep) and SP6 (context efficiency) run
+continuously in parallel** — SP5 prioritised on app-critical capability skills and absorbing any
+skill SP1–SP4 edits; SP6 applied to every `impl.md`/spec as it's authored (starting with
+`apex-python`).
 
 ---
 
@@ -157,5 +185,46 @@ prioritised on the app-critical capability skills, and absorbing any skill SP1�
   baseline-test method per skill *type* (discipline → pressure, capability/reference → retrieval) —
   given the isolation gotcha (subagents get contaminated by repo roadmap/ADRs; forbid planning-doc
   reads during a sweep baseline).
+- **SP6:** can coding mode load *only* a bound stack skill's `## Verification Recipe` + gotchas
+  rather than the whole `impl.md`? Needs an `apex-code` loading-protocol change + an `impl.md`
+  section convention (e.g. an always-load vs on-demand marker). Decide before the skill sweep (SP5)
+  hardens ~38 `impl.md` structures, so the convention lands once.
+
+---
+
+## 6. Progress & proposed resolutions (planning session 16, 2026-05-31)
+
+**SP0 ✅ done** — stack decided (SwiftUI + Python).
+**SP1 ✅ done** — `apex-python` (RED/GREEN validated, recipe run) + `apex-swift` (v0.1.0, recipe
+PENDING Mac validation). Both triple-written + committed. Research in `docs/research/{python,swift}-stack-best-practices.md`.
+
+The rest are **proposed directions ⚠️ review-needed**, not yet implemented (each needs either the
+app project to exist or its own Iron-Law skill edit):
+
+- **SP4 — settings (decision for app `apex-init`, can't apply to a non-existent project yet).**
+  Proposed app-project defaults: `autonomy_level: L3` (user runs "auto mode" / AFK), `token_profile`
+  lean (ties SP6), `specialists_default` seeded with the security + AI specialists the RAG app always
+  wants. ⚠️ Autonomy level is behaviour-altering — confirm before locking.
+- **SP2 — composition rule.** Proposed: (a) capability skills that carry build-verifiable steps
+  (`apex-auth`, `apex-search`) may declare an optional `## Verification Recipe`; `apex-code` unions
+  stack-skill recipes (already) **+** bound capability recipes — capability steps are *additive,
+  never override* the stack recipe. (b) Mismatch-guard: a capability skill states its assumptions
+  (e.g. `apex-search` assumes a vector store); a stack/capability conflict (sqlite-vec vs pgvector)
+  is resolved by planning at spec time, flagged by coding at run time. **Open:** do capability skills
+  join the existing `stack_skills` binding or a new `capability_skills` binding? Agent-wiring half
+  (dispatch-vs-load-impl for the 17 domain agents) still unresolved.
+- **SP6 — context efficiency.** Proposed `impl.md` convention: an **always-loaded core**
+  (frontmatter + NEVER/ALWAYS + `## Verification Recipe`) and an optional `## Reference` tail moved
+  to `references/*.md` loaded on demand; `apex-code` loads the bound impl's recipe + hard-rules by
+  default, not the whole file. Must land **before** SP5 hardens ~38 `impl.md` files. Both SP2 and SP6
+  modify `apex-code`'s loading protocol → bundle them into one `apex-code` edit (one baseline).
+- **SP3 — large-scale project mgmt.** Proposed: a **milestone layer** above specs (a
+  `docs/roadmap`/milestone construct; `status.md` gains a milestone pointer; thin handoff unchanged;
+  per-milestone archival for context scaling). **Open:** adopt a milestone construct now, or let it
+  emerge from the first real milestone of the app build? Leaning *emerge* (YAGNI) — build the app's
+  first milestone, extract the pattern, then formalise.
+- **SP5 — skill sweep.** Not started; triage order stands (app-critical capability skills first).
+  `apex-python`/`apex-swift` count as Opus-native; `apex-stack`/`apex-code`/etc. already swept.
+  ~36 remain. Ongoing track — run in dedicated sessions.
 - **Cross-cutting:** Verification Recipes for `apex-swift` can only be *run-validated* once the Mac
   exists — until then they are authored-but-unproven (flag in SKILL-HISTORY as such).
