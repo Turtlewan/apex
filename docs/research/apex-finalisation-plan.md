@@ -59,6 +59,7 @@ specific, optional, interface-isolated).
 | 2 | **Composition + agent wiring** | stack-skill × capability-skill precedence rule; domain-agent dispatch decision | 1 |
 | 3 | **Large-scale project mgmt** | phase/milestone management, context scaling, handoff-at-scale | 1–2 |
 | 4 | **Settings & autonomy** | tuned autonomy level, token profile, AFK build, `specialists_default` | independent |
+| 5 | **Opus 4.8 skill sweep** | ~38 Pending skills reviewed + improved via Iron Law + research; `SKILL-HISTORY.md` tracker Pending→Done | independent, ongoing |
 
 ### SP1 — Stack skills `apex-swift` + `apex-python`
 
@@ -104,13 +105,43 @@ Deliberate tuning for a long-haul project (currently `autonomy_level: L2`, `toke
 `specialists_default: []`): right autonomy level, token profile, AFK build-mode posture, and a
 sensible default specialist set for an all-Apple RAG app.
 
+### SP5 — Opus 4.8 skill sweep _(ongoing track)_
+
+Bring every skill up to an Opus-4.8-reviewed, improved state. The tracker already exists at the top
+of `SKILL-HISTORY.md` (**Done** vs **Pending**); this sub-project drains Pending.
+
+- **Method (per skill):** run it through `apex-skill-author` — **Iron Law applies to edits too**
+  (baseline-test the changed behaviour first; don't tag-flip) — and `apex-research` where the domain
+  is stale. Improve content (gotchas/defaults/procedures), backfill the `description` field where
+  missing, then move the skill **Pending → Done** in the tracker with the date. Triple-write any
+  registry/index changes.
+- **Not a tag-flip.** "Done" must mean *reviewed and improved by Opus 4.8*, evidenced by a
+  `SKILL-HISTORY.md` row — not merely "touched."
+- **Triage order (app-driven, not alphabetical):**
+  1. **App-critical capability skills first** — `apex-ai-systems`, `apex-search`, `apex-auth`,
+     `apex-storage`, `apex-jobs`, `apex-realtime`, `apex-data`, `apex-backend`, `apex-testing`,
+     `apex-security`, `apex-observability`. These are what the RAG second brain composes on the
+     `apex-python`/`apex-swift` stack.
+  2. **Specialists/design the app touches** — `apex-system-design`, `apex-architecture`,
+     `apex-performance`, `apex-docs-technical`.
+  3. **Everything else opportunistically** — `apex-aws/azure/gcp`, `apex-k8s`, `apex-iac`,
+     `apex-homelab`, `apex-mobile` (RN/Expo — superseded for this app by `apex-swift`), `apex-figma`,
+     `apex-animation`, `apex-design-system`, `apex-frontend`, `apex-accessibility`,
+     `apex-ui-testing`, `apex-ui-ux-design`, `apex-docs-product`, `apex-devcontainer`,
+     `apex-devops`, `apex-google`, `apex-governance`, `apex-deep-dive`, `apex-refresh`,
+     `apex-stack` — swept when next touched or as time allows.
+- **Scale caveat:** ~38 Pending skills × (baseline + research + rewrite) is a long-running track.
+  It runs **in parallel / opportunistically** alongside SP1–SP4 — every skill SP1–SP4 edits is
+  swept *for free* as part of that work (e.g. `apex-stack` was already Opus-touched in cluster 3).
+
 ---
 
 ## 4. Sequence
 
 `0 ✅ → 1 → 2 → 3`, with **4** landing alongside any of them (low-risk, independent). SP2 depends on
 SP1 because the composition rule needs a real stack skill to compose against; SP3 best follows 1–2 so
-it wraps a working, composed build loop.
+it wraps a working, composed build loop. **SP5 (skill sweep) runs continuously in parallel** —
+prioritised on the app-critical capability skills, and absorbing any skill SP1–SP4 happens to edit.
 
 ---
 
@@ -122,5 +153,9 @@ it wraps a working, composed build loop.
   agent-dispatch-vs-impl trigger.
 - **SP3:** does the thin-handoff + status.md In-Flight model survive project scale, or need a
   milestone layer above it?
+- **SP5:** how deep is "improve" per skill (light refresh vs full re-author), and what's the
+  baseline-test method per skill *type* (discipline → pressure, capability/reference → retrieval) —
+  given the isolation gotcha (subagents get contaminated by repo roadmap/ADRs; forbid planning-doc
+  reads during a sweep baseline).
 - **Cross-cutting:** Verification Recipes for `apex-swift` can only be *run-validated* once the Mac
   exists — until then they are authored-but-unproven (flag in SKILL-HISTORY as such).
