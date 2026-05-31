@@ -43,6 +43,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-search** | Search and retrieval — PostgreSQL FTS, pgvector, hybrid RRF, RAG chunking pipeline | topic keyword |
 | **apex-stack** | Tech stack selection — framework, database, ORM, auth, deploy for any new project | topic keyword |
 | **apex-storage** | File storage — MinIO (local), S3/R2 (cloud), presigned URLs, MIME validation | topic keyword |
+| **apex-nextjs** | Next.js 15+ App Router, Server Components, Server Actions, caching | stack skill via `stack_skills` |
 | **apex-observability** | OpenTelemetry, Sentry, Grafana, logging | topic keyword |
 | **apex-performance** | Profiling, Core Web Vitals, optimisation | topic keyword |
 | **apex-accessibility** | WCAG AA, a11y, screen readers | topic keyword |
@@ -133,6 +134,11 @@ authentication patterns (JWT, sessions), input validation (Zod).
 
 **apex-frontend** — React, Next.js 15 App Router, TypeScript, TanStack Query, Zustand,
 component patterns, routing, server components.
+
+**apex-nextjs** — Stack skill for Next.js 15+ App Router depth. Server/Client component
+boundaries, Server Action security (auth-checked + Zod-validated + revalidatePath), explicit
+cache intent, server-only Data Access Layer, route file conventions. Loaded via `stack_skills`
+binding; provides the `## Verification Recipe` (tsc → lint → build) read by apex-code.
 
 **apex-mobile** — React Native, Expo managed workflow, Expo Router, EAS Build + Submit,
 EAS Update (OTA), SecureStore, push notifications, app store preparation.
