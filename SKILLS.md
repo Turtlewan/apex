@@ -44,6 +44,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-stack** | Tech stack selection — framework, database, ORM, auth, deploy for any new project | topic keyword |
 | **apex-storage** | File storage — MinIO (local), S3/R2 (cloud), presigned URLs, MIME validation | topic keyword |
 | **apex-nextjs** | Next.js 15+ App Router, Server Components, Server Actions, caching | stack skill via `stack_skills` |
+| **apex-python** | Typed Python / FastAPI — uv, ruff, mypy --strict, pydantic-settings, async boundaries | stack skill via `stack_skills` |
 | **apex-observability** | OpenTelemetry, Sentry, Grafana, logging | topic keyword |
 | **apex-performance** | Profiling, Core Web Vitals, optimisation | topic keyword |
 | **apex-accessibility** | WCAG AA, a11y, screen readers | topic keyword |
@@ -139,6 +140,12 @@ component patterns, routing, server components.
 boundaries, Server Action security (auth-checked + Zod-validated + revalidatePath), explicit
 cache intent, server-only Data Access Layer, route file conventions. Loaded via `stack_skills`
 binding; provides the `## Verification Recipe` (tsc → lint → build) read by apex-code.
+
+**apex-python** — Stack skill for typed Python services. `uv` project tooling, `mypy --strict`
+(the verifiability buy-back for dynamic Python), FastAPI async boundaries, `pydantic-settings`
+typed config, schema/entity separation. The language/stack spine a RAG engine composes
+`apex-ai-systems`/`apex-search` onto. Loaded via `stack_skills` binding; provides the
+`## Verification Recipe` (uv sync → ruff → mypy --strict → pytest) read by apex-code.
 
 **apex-mobile** — React Native, Expo managed workflow, Expo Router, EAS Build + Submit,
 EAS Update (OTA), SecureStore, push notifications, app store preparation.
