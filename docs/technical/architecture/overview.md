@@ -63,6 +63,8 @@ The handful of decisions that define APEX's architecture — each links to its A
 | One home per fact; thin handoff drained to inbox-zero; spec = execution script | [ADR-003](../adr/ADR-003-pipeline-artifact-model.md) |
 | Skill structure — single-file default, triple-write registry, author-to-capability-floor, Iron Law | [ADR-004](../adr/ADR-004-skill-system-structure.md) |
 | Every APEX-built project maintains this Overview + an ADR log (enforced-capture) | [ADR-001](../adr/ADR-001-per-project-documentation-contract.md) |
+| Stack skills — a global best-practices family per language/framework, picked by merit-based, buildability-weighted selection and bound per project *(in implementation)* | [ADR-005](../adr/ADR-005-stack-best-practice-skills.md) |
+| Buildability layer — stack skills declare the Verification Recipe; coding runners go stack-agnostic *(in implementation)* | [ADR-006](../adr/ADR-006-buildability-layer-verification-inversion.md) |
 
 ## Where to look next
 
