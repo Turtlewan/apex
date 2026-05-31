@@ -31,8 +31,9 @@ Goal: ready APEX before building the user's largest app — a RAG-heavy personal
 **100% Apple** (Mac Mini/Studio host + iPhone/iPad clients), desktop-is-the-hub, built entirely on
 Mac. Roadmap + full detail: **`docs/research/apex-finalisation-plan.md`**.
 
-- **SP0 ✅ Stack** — SwiftUI + Python (FastAPI sidecar, SQLite/local-vectors, optional MLX). Seeds
-  the app's ADR-001 at bootstrap. Runner-up MAUI ruled out (all-Apple → native SwiftUI wins).
+- **SP0 ⚠️ Stack — PROVISIONAL** — SwiftUI + Python pre-selected from high-level answers, not real
+  requirements. **Deferred:** proper app requirements-gathering → re-confirm/revise the stack, **after**
+  the APEX process is hardened and **before** app `apex-init`. Strong candidate seed, not locked.
 - **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
   (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.
 - **SP2 ✅ / SP3 ✅ / SP4 ✅ decided** (plan §6): SP2 = Method C (no capability binding — capability

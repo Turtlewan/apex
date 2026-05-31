@@ -194,9 +194,15 @@ skill SP1–SP4 edits; SP6 applied to every `impl.md`/spec as it's authored (sta
 
 ## 6. Progress & proposed resolutions (planning session 16, 2026-05-31)
 
-**SP0 ✅ done** — stack decided (SwiftUI + Python).
+**SP0 ⚠️ PROVISIONAL** — stack pre-selected (SwiftUI + Python) from high-level answers, **not** from
+real requirements. **Deferred: proper app requirements-gathering → re-confirm or revise the stack,
+to be done AFTER the APEX process is hardened and BEFORE app `apex-init`.** Treat SwiftUI + Python as
+a strong candidate seed, not a locked decision (§2 reasoning still holds *if* the requirements match).
 **SP1 ✅ done** — `apex-python` (RED/GREEN validated, recipe run) + `apex-swift` (v0.1.0, recipe
-PENDING Mac validation). Both triple-written + committed. Research in `docs/research/{python,swift}-stack-best-practices.md`.
+PENDING Mac validation). Both triple-written + committed. _Note: built against the provisional stack.
+`apex-python` is broadly useful regardless; `apex-swift` only applies if the all-Apple direction
+survives the requirements pass — low sunk cost (research-grounded draft)._ Research in
+`docs/research/{python,swift}-stack-best-practices.md`.
 
 The rest are **proposed directions ⚠️ review-needed**, not yet implemented (each needs either the
 app project to exist or its own Iron-Law skill edit):
