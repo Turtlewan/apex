@@ -7,50 +7,39 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-05-31 (session 13)
-_Last updated by coding mode:_ 2026-05-31 (session 14)
+_Last updated by planning mode:_ 2026-05-31 (session 16)
+_Last updated by coding mode:_ 2026-05-31 (session 15)
 
 <!-- CODING:START -->
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| stack_skills session-start live-test (gap #2) | coding | queued for DeepSeek | docs/validation/apex-code-stack-skills-session-start.md | not started | — |
+| stack_skills session-start live-test (gap #2) | coding | **🟢 CLOSED** | docs/validation/apex-code-stack-skills-session-start.md | ✅ PASS (O2+O3) | — |
 
-_Session-11 work committed (`~/.claude` 797b437, bab8bc8 · `~/apex` c0ce7eb)._
-
-**Session 14 (2026-05-31):** apex-nextjs-pilot — done · ✅ 9b53702 (3 files changed)_
 <!-- CODING:END -->
 
 <!-- PLANNING:START -->
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-_No pending specs — clusters 1–4 built (planning), cluster 5 pilot complete (coding)._
+_No specs in `docs/changes/` yet. The active initiative is the **finalisation plan** below; its
+SP2/SP3/SP6 implementation steps will be authored as `docs/changes/` specs (or direct skill edits)
+when each is picked up._
 
-_Clusters 1–4 were planning-mode skill edits (direct `.md` authoring). Cluster 5 now done — apex-nextjs authored, recipe empirically validated, triple-write complete, E2E loop exercised._
+## Finalisation initiative — gearing APEX for the "second brain" app
+Goal: ready APEX before building the user's largest app — a RAG-heavy personal **second brain**,
+**100% Apple** (Mac Mini/Studio host + iPhone/iPad clients), desktop-is-the-hub, built entirely on
+Mac. Roadmap + full detail: **`docs/research/apex-finalisation-plan.md`**.
 
-## Buildability layer — clusters 1–4 BUILT, cluster 5 queued (pilot)
-Design: **ADR-005** (stack-skill family + coverage gate + `stack_skills` binding + merit-based
-selection) and **ADR-006** (verification inversion + layered Verification Recipe + composition).
-Dependency order **1 → 2 → (3 ∥ 4) → 5**. Built 2026-05-31 (session 13) via the
-`apex-skill-author` Iron Law + triple-write. See `SKILL-HISTORY.md` for per-cluster detail.
+- **SP0 ✅ Stack** — SwiftUI + Python (FastAPI sidecar, SQLite/local-vectors, optional MLX). Seeds
+  the app's ADR-001 at bootstrap. Runner-up MAUI ruled out (all-Apple → native SwiftUI wins).
+- **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
+  (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.
+- **SP2 / SP3 / SP4 / SP6 ⚠️** — proposed resolutions recorded (review-needed); see plan §6. SP2+SP6
+  both touch `apex-code` loading → bundle into one Iron-Law edit. SP4 settings land at app `apex-init`.
+- **SP5** — Opus-4.8 skill sweep, ongoing track; ~36 skills pending (triage: app-critical first).
 
-1. ✅ **`apex-skill-author` v1.2.0** — teaches the stack-skill family + required `## Verification
-   Recipe` + the two baked-in rules (always `apex-research`; recipe run-validated, not doc-sourced).
-2. ✅ **`stack_skills:` binding** — added to the orchestrate status-template + `apex-init` seed +
-   surfaced at `apex-orchestrate` session-start (`apex-orchestrate` v1.1.3, `apex-init` v1.2.1).
-3. ✅ **`apex-stack` v1.1.0** — merit-based cross-ecosystem selection (AI-buildability +
-   verifiability weighted heavily); cross-ecosystem candidate menu; coverage gate writing `stack_skills`.
-4. ✅ **The inversion** — `apex-code` v1.5.0 + `apex-testing` v1.1.0 are now stack-agnostic
-   recipe-driven runners (read recipe via binding, run per task, verify-fail recovery, context7 at write).
-5. ✅ **Pilot `apex-nextjs`** — done (session 14). Pre-draft promoted → skill dir; recipe
-   empirically validated against real Next.js 16.2.6 app (tsc/lint/build all pass); E2E loop
-   exercised (feature built via recipe, recovery loop demonstrated). Triple-wrote registry +
-   SKILLS.md + SKILL-HISTORY.md. Empirical GREEN for clusters 4 & 5.
-   - **Live-test gap (#2) — protocol ready, DeepSeek run pending.** The programmatic `stack_skills`
-     read + recipe load was never exercised by a real apex-code session (pilot read it manually).
-     Static format chain audited PASS (planning, 2026-05-31). Runnable DeepSeek protocol at
-     `docs/validation/apex-code-stack-skills-session-start.md` — run it on the coding backend to close.
+_Prior buildability layer (clusters 1–5, ADR-005/006) is complete — see git history + `SKILL-HISTORY.md`._
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
@@ -63,31 +52,23 @@ _status.md holds current state only — session history lives in git + handoff d
 - Skill `.md` work is done **directly in planning mode** (Claude); per-edit backend gate. See memory `skill-authoring-workflow`.
 
 ## Open Questions
-- **Loop granularity** — ADR-006 keeps verification at task-level, not per-edit. Revisit if
-  convergence proves too slow in the pilot.
-- **Stack ↔ capability skill composition** — when a stack skill and a capability skill both
-  apply (e.g. a Next.js project doing auth; `apex-search` assuming pgvector), what is the
-  precedence / mismatch-guard rule? Deferred by ADR-005/006 to the umbrella.
-- **Domain agent wiring** — 17 domain agents registered but never dispatched; dispatch an agent
-  vs load impl.md? Not resolved by ADR-005/006. Deferred.
+_Detail in `docs/research/apex-finalisation-plan.md` §5–6; these are the calls that need the user._
+- **SP4 autonomy level** — app-project default of `L3` (AFK/"auto mode") is behaviour-altering;
+  confirm before locking. Also `token_profile` (lean?) + `specialists_default` seed.
+- **SP2 binding shape** — do capability-skill recipes join the existing `stack_skills` binding or a
+  new `capability_skills` binding? + domain-agent dispatch-vs-load-impl (17 agents, never dispatched).
+- **SP3 milestone construct** — introduce a milestone layer above specs now, or let it emerge from
+  the app's first real milestone? (leaning *emerge* / YAGNI).
+- **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
+- **doc-writer status.md template divergence** — frontmatter-less fallback template still diverges
+  from the orchestrate `status-template.md`; reconcile.
 
 ## Future Discussions (parked)
-- **Stack-skill ↔ project binding** *(✅ DECIDED 2026-05-31 — ADR-005 + ADR-006)* — the
-  selection / binding / buildability facet is resolved; implementation is the roadmap above.
-  Still parked: the *richer* binding manifest (pinned versions, `docs/technical/stack.md`) and
-  the stack↔capability composition rule (now an Open Question). *Large-scale application
-  development* remains a separate open facet.
-- **doc-writer status.md template divergence** *(discovered session 13)* —
-  `agents/doc-writer.md`'s "initial template" is a frontmatter-less format (no `stack` /
-  `token_profile` / `specialists_default` / `stack_skills`), divergent from the canonical
-  `apex-orchestrate/templates/status-template.md`. Coding mode uses it only as a "status.md
-  missing" fallback. Reconcile the two (or have doc-writer defer to the orchestrate template) —
-  left out of cluster 2 to stay surgical.
-- **Opus 4.8 content sweep** — tag-only tracker built; the one-time Opus 4.8 review/upgrade pass
-  over the ~40 Pending skills is not yet started.
-- **`description` backfill** — most pre-`description` skills still lack the field; backfill
-  opportunistically when each is next edited.
-- **Large-scale application development** — phase/milestone management, context scaling, handoff
-  efficiency at project scale.
+- **Richer stack binding manifest** — pinned versions + a `docs/technical/stack.md` beyond the
+  `stack_skills` list (the selection/binding facet itself is decided — ADR-005/006).
+- **Opus 4.8 content sweep** → now **SP5** of the finalisation plan (~36 skills pending;
+  `description` backfill folds into each sweep). Tracker at the top of `SKILL-HISTORY.md`.
 - **Potential new skill domains** — `apex-payments`, `apex-email` — not prioritised.
+_(Large-scale app dev → now SP3; stack↔capability composition + agent wiring → now SP2; both moved
+out of "parked" into the active finalisation plan.)_
 <!-- PLANNING:END -->
