@@ -7,14 +7,14 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-05-31 (session 16)
+_Last updated by planning mode:_ 2026-05-31 (session 17)
 _Last updated by coding mode:_ 2026-05-31 (session 15)
 
 <!-- CODING:START -->
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| stack_skills session-start live-test (gap #2) | coding | **🟢 CLOSED** | docs/validation/apex-code-stack-skills-session-start.md | ✅ PASS (O2+O3) | — |
+| SP5 de-couple capability skills (apex-search/jobs/storage) | planning | 🔄 in-progress | ~/.claude/skills/apex-storage/{SKILL,impl}.md | apex-search ✅ + apex-jobs ✅ done+registered; **apex-storage next** (read only, no edits) | 🟡 all SP6+SP5 edits uncommitted — see git status |
 
 <!-- CODING:END -->
 
@@ -43,10 +43,15 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
 - **SP2 ✅ / SP3 ✅ / SP4 ✅ decided** (plan §6): SP2 = Method C (no capability binding — capability
   skills are stack-coupled, so de-couple them via SP5 + a `## Stack assumptions` header; stack recipe
   is the single verifier; research in `sp2-capability-composition.md`); SP3 = let it emerge; SP4 =
-  app autonomy **L3** + lean profile at bootstrap. **SP6** (the `impl.md` always-load convention +
-  `apex-code` loading edit) is the **next-session focus**; SP2's `## Stack assumptions` rides it.
-- **SP5** — Opus-4.8 skill sweep, ongoing; ~36 skills pending. **Top priority: de-couple
-  `apex-search`/`apex-jobs`/`apex-storage` from JS/pgvector** so they fit the Python/SQLite app.
+  app autonomy **L3** + lean profile at bootstrap. **SP6 ✅ convention landed** (`apex-skill-author`
+  v1.3.0 + `apex-code` v1.6.0): impl.md two-tier core/references split by section identity, `apex-code`
+  loads the core (hard-rules + recipe) not the whole file, and SP2's `## Stack assumptions` is now a
+  named core section. _Ongoing-track audit remains (spec drift + apply split during SP5 sweeps)._
+- **SP5** — Opus-4.8 skill sweep, ongoing. **Top-priority de-couple from JS/pgvector:** `apex-search`
+  ✅ (1.2.0) + `apex-jobs` ✅ (1.1.0) done — each got a `## Stack assumptions` swap-table, generalised
+  NEVER/ALWAYS, stack-specific worked code moved to `references/*.md` (the SP6 convention's first live
+  use). **`apex-storage` is next** (S3/MinIO/R2 → +local-filesystem for the Mac hub). ~34 skills then
+  remain on the broader app-critical list.
 
 _Prior buildability layer (clusters 1–5, ADR-005/006) is complete — see git history + `SKILL-HISTORY.md`._
 

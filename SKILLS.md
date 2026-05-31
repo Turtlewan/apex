@@ -38,9 +38,9 @@ you need. This prevents burning context on skills you won't use.
 | **apex-data** | Databases, schema design, migrations | topic keyword |
 | **apex-ai-systems** | LLM, RAG, AI SDK patterns | topic keyword |
 | **apex-auth** | Authentication flows, sessions, OAuth2, passkeys, RBAC, multi-tenant auth | topic keyword |
-| **apex-jobs** | Background job queues — BullMQ, workers, cron jobs, retry/backoff, dead letter queues | topic keyword |
+| **apex-jobs** | Background jobs — queue/worker, retry/backoff, cron, DLQ, graceful shutdown; stack-neutral (BullMQ/arq/APScheduler illustration) | topic keyword |
 | **apex-realtime** | Real-time push — Socket.io, SSE, user-scoped rooms, Redis adapter, AI streaming | topic keyword |
-| **apex-search** | Search and retrieval — PostgreSQL FTS, pgvector, hybrid RRF, RAG chunking pipeline | topic keyword |
+| **apex-search** | Search and retrieval — keyword + vector hybrid (RRF), chunking, idempotent ingest; stack-neutral (pgvector/sqlite-vec illustration) | topic keyword |
 | **apex-stack** | Tech stack selection — framework, database, ORM, auth, deploy for any new project | topic keyword |
 | **apex-storage** | File storage — MinIO (local), S3/R2 (cloud), presigned URLs, MIME validation | topic keyword |
 | **apex-nextjs** | Next.js 15+ App Router, Server Components, Server Actions, caching | stack skill via `stack_skills` |
@@ -174,11 +174,12 @@ vs JWT refresh rotation), RBAC, multi-tenant auth (per-tenant roles, invite flow
 isolation), and route protection patterns. Library decision table: Auth.js, Better Auth,
 Lucia, Clerk, Supabase Auth.
 
-**apex-jobs** — Background job queue implementation. Primary: BullMQ + Redis (persistent
-server, AWS ElastiCache at scale). Covers queue/worker setup, job options (attempts,
-backoff, delay, priority), cron/repeatable jobs, job chaining (FlowProducer), dead letter
-queues, graceful shutdown, Bull Board monitoring dashboard. Alternative: pg-boss for
-PostgreSQL-backed jobs without Redis.
+**apex-jobs** — Background job queue implementation. **Stack-neutral** concepts — queue/worker
+separation, retry + exponential backoff, idempotent handlers, cron/repeatable jobs, dead letter
+queues, graceful shutdown, durable backing. Concrete examples illustrate **BullMQ + Redis + Node**
+and adapt to the bound stack (Python arq / Celery / APScheduler, or a SQLite-backed queue for a
+local single-user app) via a `## Stack assumptions` swap-table; the BullMQ/TS worked code lives in
+`references/bullmq-typescript.md`. Backing options: Redis / Postgres (pg-boss) / SQLite.
 
 **apex-realtime** — Real-time server-to-client push. Primary: Socket.io + Redis adapter
 (multi-instance safe). Covers user-scoped rooms, socket auth middleware, external event
@@ -191,11 +192,12 @@ uploads, server-side MIME validation (bytes not filename), UUID-based storage ke
 presigned GET URLs for private files, soft-delete pattern, and multipart uploads for
 large files.
 
-**apex-search** — Search and RAG retrieval. PostgreSQL full-text search + pgvector hybrid
-search (RRF reranking) as the default stack — no extra infra. Covers chunking strategies,
-embedding generation (Ollama local or OpenAI), HNSW index setup, hybrid search queries,
-idempotent ingest pipeline, and handoff to apex-ai-systems for LLM context injection.
-Optional: Typesense for typo-tolerant full-text with facets.
+**apex-search** — Search and RAG retrieval. **Stack-neutral** concepts — keyword + vector hybrid
+search (RRF reranking), chunking strategies, embedding generation (Ollama local or OpenAI),
+dimension-locking, idempotent ingest, and handoff to apex-ai-systems for LLM context injection.
+Concrete DDL/code illustrates **Postgres + pgvector + TypeScript** and adapts to the bound stack
+(e.g. SQLite + sqlite-vec + Python) via a `## Stack assumptions` swap-table; the TS/pgvector worked
+examples live in `references/postgres-typescript.md`. Optional: Typesense for typo-tolerant facets.
 
 **apex-data** — Schema design, migrations (Prisma/Drizzle), indexing strategies,
 query optimisation, connection pooling, multi-tenancy patterns.

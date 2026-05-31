@@ -237,13 +237,18 @@ app project to exist or its own Iron-Law skill edit):
 - **SP3 — large-scale project mgmt ✅ DECIDED: let it emerge.** Build the app's first real milestone
   with current tooling (thin handoff + `status.md` In-Flight), extract the pattern from experience,
   then formalise a milestone layer. No speculative process up front (YAGNI).
-- **SP6 — context efficiency.** Proposed `impl.md` convention: an **always-loaded core**
-  (frontmatter + NEVER/ALWAYS + `## Verification Recipe`) and an optional `## Reference` tail moved
-  to `references/*.md` loaded on demand; `apex-code` loads the bound impl's recipe + hard-rules by
-  default, not the whole file. Must land **before** SP5 hardens ~38 `impl.md` files. SP6 owns the
-  `apex-code` loading edit; SP2's `## Stack assumptions` convention rides the same `impl.md`-section
-  schema (do them together so the section convention lands once). _This is the chosen next-session
-  focus._
+- **SP6 — context efficiency ✅ convention LANDED (2026-05-31).** Now in `apex-skill-author` v1.3.0
+  + `apex-code` v1.6.0: an **always-load core** defined by *fixed section identity* (frontmatter +
+  `## Stack assumptions` [capability only] + NEVER/ALWAYS + `## Verification Recipe` + a compact
+  ≤~15-row `## Common errors → fix` table) and an **on-demand tail** in `references/<topic>.md` with
+  inline load conditions. `apex-code` now loads the core (hard-rules **+** recipe — previously only
+  the recipe, so the stack's NEVER/ALWAYS never reached the coder), not the whole file. SP2's
+  `## Stack assumptions` one-liner rode the same schema (now a named core section). Full Iron-Law
+  dogfood (user-authorised): RED divergence on file-naming / errors-table-disposition / flag-vs-identity
+  → drove **identity-based core** + the **errors-table size rule**; GREEN reproduced the canonical
+  structure + a correct pgvector→sqlite-vec `## Stack assumptions` line. Landed before SP5 hardens
+  the ~38 `impl.md` files, as required. _Ongoing track remains: audit live specs for design-doc
+  drift; apply the core/references split during each SP5 sweep._
 - **SP5 — skill sweep.** Not started; triage order stands (app-critical capability skills first),
   with **de-coupling `apex-search`/`apex-jobs`/`apex-storage` from JS/pgvector now the top priority**
   (per the SP2 decision).
