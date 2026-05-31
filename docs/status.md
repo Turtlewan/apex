@@ -41,9 +41,11 @@ Dependency order **1 → 2 → (3 ∥ 4) → 5**. Built 2026-05-31 (session 13) 
    verifiability weighted heavily); cross-ecosystem candidate menu; coverage gate writing `stack_skills`.
 4. ✅ **The inversion** — `apex-code` v1.5.0 + `apex-testing` v1.1.0 are now stack-agnostic
    recipe-driven runners (read recipe via binding, run per task, verify-fail recovery, context7 at write).
-5. ⏳ **Pilot `apex-nextjs`** — spec written: `docs/changes/apex-nextjs-pilot.md`. **Coding-mode** —
-   authors apex-nextjs + validates the recipe + exercises the loop against a real Next.js app.
-   Proves 1–4 end-to-end; its result is the empirical GREEN for clusters 4 & 5 (deferred from planning).
+5. ⏳ **Pilot `apex-nextjs`** — content **pre-drafted** (planning, context7-grounded, recipe
+   unvalidated) at `docs/drafts/apex-nextjs-{SKILL,impl}.draft.md`; execution spec at
+   `docs/changes/apex-nextjs-pilot.md`. **Coding-mode** promotes the draft, validates the recipe
+   by running it, and exercises the loop against a real Next.js app. Proves 1–4 end-to-end;
+   empirical GREEN for clusters 4 & 5.
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._

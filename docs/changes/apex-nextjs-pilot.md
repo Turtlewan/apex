@@ -9,14 +9,13 @@ a `## Verification Recipe` proven by *running* it, plus an exercised build loop 
 executing commands against a real project. Planning cannot close it (a doc-sourced recipe is
 forbidden by the cluster-1 rule).
 
-**Pre-requisite flag (resolve before building):** `apex-nextjs`'s *best-practice content* is
-judgment-heavy (Server/Client boundaries, Server-Action security, caching model) — DeepSeek's
-weak area. **Recommended:** a planning (Claude) session pre-drafts `apex-nextjs/SKILL.md` +
-`impl.md` content first, referencing `apex-skill-author` (stack-skill family rules) + `context7`,
-leaving the `## Verification Recipe` marked `DRAFT — unvalidated`. This spec then *validates and
-corrects* the recipe and exercises the loop. If no pre-draft exists, Task 2 authors the content
-in-session against `apex-skill-author` + `context7` (higher risk; flag any judgment calls back to
-planning per the apex-figma pattern).
+**Pre-requisite — DONE (session 13):** the judgment-heavy `apex-nextjs` content is **already
+pre-drafted by planning (Claude)**, grounded in current Next.js 15 docs (context7), at
+`docs/drafts/apex-nextjs-SKILL.draft.md` + `docs/drafts/apex-nextjs-impl.draft.md`. The `##
+Verification Recipe` in the impl draft is marked **DRAFT — unvalidated**. This spec **promotes**
+that draft to the live skill dir, then *validates + corrects* the recipe by running it and
+exercises the loop. Do **not** re-author the content from scratch — extend only if the pilot
+exposes a gap.
 
 ---
 
@@ -26,8 +25,9 @@ planning per the apex-figma pattern).
 |------|----|-------|
 | `C:\Users\User\apex-nextjs-pilot\` (whole dir) | create | Throwaway Next.js app (scaffolded; not committed to either skills repo) |
 | `C:\Users\User\apex-nextjs-pilot\docs\status.md` | create | Minimal — carries `stack_skills: [apex-nextjs]` binding |
-| `~/.claude/skills/apex-nextjs/SKILL.md` | create | Planning-side "what to weigh" (thin) |
-| `~/.claude/skills/apex-nextjs/impl.md` | create | Patterns + the **`## Verification Recipe`** (the load-bearing section) |
+| `docs/drafts/apex-nextjs-SKILL.draft.md`, `…-impl.draft.md` | source (read) | Planning pre-draft (session 13) — promote in Task 2.1 |
+| `~/.claude/skills/apex-nextjs/SKILL.md` | create (from draft) | Planning-side "what to weigh" (thin) |
+| `~/.claude/skills/apex-nextjs/impl.md` | create (from draft) | Patterns + the **`## Verification Recipe`** (the load-bearing section) |
 | `~/.claude/registry/domains.md` | modify | Add `nextjs` row (triple-write) |
 | `~/apex/SKILLS.md` | modify | Add apex-nextjs quick-ref row + paragraph (triple-write) |
 | `~/apex/SKILL-HISTORY.md` | modify | Prepend `created` row (triple-write) |
@@ -48,11 +48,13 @@ planning per the apex-figma pattern).
 
 ### Phase 2 — Author + EMPIRICALLY VALIDATE apex-nextjs
 
-- **Task 2.1** — Create `~/.claude/skills/apex-nextjs/SKILL.md` and `impl.md` per
-  `apex-skill-author`'s stack-skill family rules (always SKILL+impl; `apex-research`/`context7`
-  for current Next.js 15 facts; altitude = framework). If a planning pre-draft exists, use it.
-  - done when: both files exist with valid frontmatter (incl. trigger-style `description`) and
-    `impl.md` contains a `## Verification Recipe` section.
+- **Task 2.1** — Promote the planning pre-draft to the live skill dir: copy
+  `docs/drafts/apex-nextjs-SKILL.draft.md` → `~/.claude/skills/apex-nextjs/SKILL.md` and
+  `docs/drafts/apex-nextjs-impl.draft.md` → `~/.claude/skills/apex-nextjs/impl.md`. Remove the
+  `DRAFT — pre-validation` banners. Do not re-author the content (it is context7-grounded); extend
+  only if Phase 3 exposes a gap.
+  - done when: both files exist in the skill dir, DRAFT banners removed, valid frontmatter (incl.
+    trigger-style `description`), `impl.md` has a `## Verification Recipe` section.
 - **Task 2.2** — **Validate the recipe by running it** against the Phase-1 app. The recipe is
   the layered command set (language ⊂ framework), e.g.:
   - language: `npx tsc --noEmit` (with `tsconfig` `strict: true`)
@@ -61,7 +63,8 @@ planning per the apex-figma pattern).
     spuriously, or does not converge, **fix the recipe text** and re-run until every command
     executes clean. Record the actual final command output.
   - done when: every recipe command runs against the real app and exits 0; the recipe in
-    `impl.md` matches what was actually run (NOT doc-sourced).
+    `impl.md` matches what was actually run (NOT doc-sourced); the recipe's `DRAFT — UNVALIDATED`
+    banner is removed and both skill files are bumped to `version: 1.0.0`.
 - **Task 2.3** — Triple-write `apex-nextjs`: registry row, `SKILLS.md` quick-ref + paragraph,
   `SKILL-HISTORY.md` `created` row (note "recipe empirically validated against pilot app").
   - done when: all three files updated and the registry `nextjs` row points at both skill files.
