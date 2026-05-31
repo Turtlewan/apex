@@ -26,14 +26,18 @@ _No specs in `docs/changes/` yet. The active initiative is the **finalisation pl
 SP2/SP3/SP6 implementation steps will be authored as `docs/changes/` specs (or direct skill edits)
 when each is picked up._
 
-## Finalisation initiative — gearing APEX for the "second brain" app
-Goal: ready APEX before building the user's largest app — a RAG-heavy personal **second brain**,
-**100% Apple** (Mac Mini/Studio host + iPhone/iPad clients), desktop-is-the-hub, built entirely on
-Mac. Roadmap + full detail: **`docs/research/apex-finalisation-plan.md`**.
+## Finalisation initiative — gearing APEX for the "Jarvis" platform
+Goal: ready APEX before building the user's largest app — a **"Jarvis-like" personal assistant that
+integrates with everything**, with a RAG-heavy **second brain** as its knowledge subsystem. A
+multi-subsystem platform (assistant/orchestration + integrations + knowledge core + interface(s)).
+Stack/surfaces are **provisional** pending the deferred requirements pass (see SP0). Roadmap + full
+detail: **`docs/research/apex-finalisation-plan.md`**.
 
 - **SP0 ⚠️ Stack — PROVISIONAL** — SwiftUI + Python pre-selected from high-level answers, not real
-  requirements. **Deferred:** proper app requirements-gathering → re-confirm/revise the stack, **after**
-  the APEX process is hardened and **before** app `apex-init`. Strong candidate seed, not locked.
+  requirements, and against an under-scoped target. **Real target = a "Jarvis-like" personal
+  assistant that integrates with everything; the RAG second brain is one subsystem.** **Deferred:**
+  proper requirements-gathering for the whole Jarvis platform → decompose → re-confirm/revise the
+  stack, **after** APEX hardening and **before** app `apex-init`. Candidate seed only, not locked.
 - **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
   (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.
 - **SP2 ✅ / SP3 ✅ / SP4 ✅ decided** (plan §6): SP2 = Method C (no capability binding — capability

@@ -8,10 +8,19 @@ own `docs/changes/` spec when it reaches the front of the queue._
 
 ## 1. Target application (context that drives every decision)
 
+> **⚠️ Scope correction (post-session-16):** the app is **not** just a second brain. It is a
+> **"Jarvis-like" personal assistant that integrates with everything**, of which the **second brain
+> (RAG knowledge core) is one subsystem**. This is a **multi-subsystem platform** — assistant /
+> orchestration layer, integration/tool framework, the knowledge core, the interface(s) — and the
+> deferred requirements pass must scope the *whole* vision and decompose it, not just the RAG part.
+> The bullets below describe the second-brain subsystem and are an under-scope of the real target.
+
 The application APEX is being geared up to build:
 
-- **What:** a personal **"second brain"** — a RAG-heavy private knowledge system. RAG is the *core*
-  of the app, not a side feature.
+- **What:** a **"Jarvis-like" personal assistant** that integrates with everything (agent/tool
+  orchestration over a broad integration surface), with a personal **"second brain"** — a RAG-heavy
+  private knowledge system — as its *knowledge subsystem*. RAG is the core of *that subsystem*, not of
+  the whole platform.
 - **Ecosystem:** **100% Apple.** Built and run **entirely on a Mac** (Mac Mini / Mac Studio). Windows
   is the *planning* surface only (this Markdown-only planning mode); no app code runs on Windows.
 - **Surfaces:** **desktop-is-the-hub.** The Mac desktop app is the brain — it hosts the RAG engine
@@ -195,9 +204,12 @@ skill SP1–SP4 edits; SP6 applied to every `impl.md`/spec as it's authored (sta
 ## 6. Progress & proposed resolutions (planning session 16, 2026-05-31)
 
 **SP0 ⚠️ PROVISIONAL** — stack pre-selected (SwiftUI + Python) from high-level answers, **not** from
-real requirements. **Deferred: proper app requirements-gathering → re-confirm or revise the stack,
-to be done AFTER the APEX process is hardened and BEFORE app `apex-init`.** Treat SwiftUI + Python as
-a strong candidate seed, not a locked decision (§2 reasoning still holds *if* the requirements match).
+real requirements, and against an **under-scoped target** (it was framed as a "second brain"; the real
+app is a **Jarvis-like assistant that integrates with everything**, second brain = one subsystem —
+see §1 scope correction). **Deferred: proper requirements-gathering for the WHOLE Jarvis platform →
+decompose into subsystems → re-confirm or revise the stack — AFTER the APEX process is hardened and
+BEFORE app `apex-init`.** SwiftUI + Python is a candidate seed only; a broad agent/integration
+platform may pull the stack differently (the §2 reasoning may not survive the fuller picture).
 **SP1 ✅ done** — `apex-python` (RED/GREEN validated, recipe run) + `apex-swift` (v0.1.0, recipe
 PENDING Mac validation). Both triple-written + committed. _Note: built against the provisional stack.
 `apex-python` is broadly useful regardless; `apex-swift` only applies if the all-Apple direction
