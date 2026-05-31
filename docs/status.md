@@ -8,24 +8,26 @@ specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
 _Last updated by planning mode:_ 2026-05-31 (session 13)
-_Last updated by coding mode:_ 2026-05-28 (session 6)
+_Last updated by coding mode:_ 2026-05-31 (session 14)
 
 <!-- CODING:START -->
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
+| stack_skills session-start live-test (gap #2) | coding | queued for DeepSeek | docs/validation/apex-code-stack-skills-session-start.md | not started | — |
 
-_None in flight — session-11 work committed (`~/.claude` 797b437, bab8bc8 · `~/apex` c0ce7eb)._
+_Session-11 work committed (`~/.claude` 797b437, bab8bc8 · `~/apex` c0ce7eb)._
+
+**Session 14 (2026-05-31):** apex-nextjs-pilot — done · ✅ 9b53702 (3 files changed)_
 <!-- CODING:END -->
 
 <!-- PLANNING:START -->
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| apex-nextjs-pilot.md | Cluster 5 — author apex-nextjs + validate the buildability layer end-to-end against a real Next.js app (coding-mode). |
+_No pending specs — clusters 1–4 built (planning), cluster 5 pilot complete (coding)._
 
-_Clusters 1–4 were planning-mode skill edits (direct `.md` authoring), not DeepSeek specs.
-Cluster 5 is the one coding-mode deliverable — queued above._
+_Clusters 1–4 were planning-mode skill edits (direct `.md` authoring). Cluster 5 now done — apex-nextjs authored, recipe empirically validated, triple-write complete, E2E loop exercised._
 
 ## Buildability layer — clusters 1–4 BUILT, cluster 5 queued (pilot)
 Design: **ADR-005** (stack-skill family + coverage gate + `stack_skills` binding + merit-based
@@ -41,11 +43,14 @@ Dependency order **1 → 2 → (3 ∥ 4) → 5**. Built 2026-05-31 (session 13) 
    verifiability weighted heavily); cross-ecosystem candidate menu; coverage gate writing `stack_skills`.
 4. ✅ **The inversion** — `apex-code` v1.5.0 + `apex-testing` v1.1.0 are now stack-agnostic
    recipe-driven runners (read recipe via binding, run per task, verify-fail recovery, context7 at write).
-5. ⏳ **Pilot `apex-nextjs`** — content **pre-drafted** (planning, context7-grounded, recipe
-   unvalidated) at `docs/drafts/apex-nextjs-{SKILL,impl}.draft.md`; execution spec at
-   `docs/changes/apex-nextjs-pilot.md`. **Coding-mode** promotes the draft, validates the recipe
-   by running it, and exercises the loop against a real Next.js app. Proves 1–4 end-to-end;
-   empirical GREEN for clusters 4 & 5.
+5. ✅ **Pilot `apex-nextjs`** — done (session 14). Pre-draft promoted → skill dir; recipe
+   empirically validated against real Next.js 16.2.6 app (tsc/lint/build all pass); E2E loop
+   exercised (feature built via recipe, recovery loop demonstrated). Triple-wrote registry +
+   SKILLS.md + SKILL-HISTORY.md. Empirical GREEN for clusters 4 & 5.
+   - **Live-test gap (#2) — protocol ready, DeepSeek run pending.** The programmatic `stack_skills`
+     read + recipe load was never exercised by a real apex-code session (pilot read it manually).
+     Static format chain audited PASS (planning, 2026-05-31). Runnable DeepSeek protocol at
+     `docs/validation/apex-code-stack-skills-session-start.md` — run it on the coding backend to close.
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
