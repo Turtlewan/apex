@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-05-31 (session 12)
+_Last updated by planning mode:_ 2026-05-31 (session 13)
 _Last updated by coding mode:_ 2026-05-28 (session 6)
 
 <!-- CODING:START -->
@@ -22,38 +22,28 @@ _None in flight — session-11 work committed (`~/.claude` 797b437, bab8bc8 · `
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
+| apex-nextjs-pilot.md | Cluster 5 — author apex-nextjs + validate the buildability layer end-to-end against a real Next.js app (coding-mode). |
 
-_None pending in `docs/changes/`. The stack-skill buildability work below is **planning-mode
-skill editing** (direct `.md` authoring per project convention), not DeepSeek specs — it does
-not queue here._
+_Clusters 1–4 were planning-mode skill edits (direct `.md` authoring), not DeepSeek specs.
+Cluster 5 is the one coding-mode deliverable — queued above._
 
-## Next implementation — stack-skill buildability layer (DECIDED, ready to build)
-Design captured in **ADR-005** (stack-skill family + coverage gate + `stack_skills` binding +
-merit-based selection) and **ADR-006** (verification inversion + layered Verification Recipe +
-composition). Five clusters; dependency order **1 → 2 → (3 ∥ 4) → 5**. Each is a direct
-planning-mode skill edit via `apex-skill-author` — Iron Law baseline + triple-write per edit.
+## Buildability layer — clusters 1–4 BUILT, cluster 5 queued (pilot)
+Design: **ADR-005** (stack-skill family + coverage gate + `stack_skills` binding + merit-based
+selection) and **ADR-006** (verification inversion + layered Verification Recipe + composition).
+Dependency order **1 → 2 → (3 ∥ 4) → 5**. Built 2026-05-31 (session 13) via the
+`apex-skill-author` Iron Law + triple-write. See `SKILL-HISTORY.md` for per-cluster detail.
 
-1. **`apex-skill-author`** — teach the stack-skill *family* + the required `## Verification
-   Recipe` section; bake in "stack skills always trigger `apex-research`; the recipe is
-   empirically validated in the pilot, not doc-sourced." *(foundation — do first)*
-2. **`stack_skills:` binding** — add the field to the status.md template (`apex-init` seed +
-   orchestrate / doc-writer templates). *(small; unblocks 3 & 4)*
-3. **`apex-stack` redesign** — requirements-driven, merit-based selection weighing
-   AI-buildability / verifiability heavily; cross-ecosystem candidates (drop the JS-only preset
-   bias); add the coverage gate (registry check → record-gap-and-proceed). *(large)*
-4. **The inversion** — `apex-code` + `apex-testing` become stack-agnostic, recipe-driven
-   runners: read the recipe via the binding, run it each task, verify-fail recovery loop, and
-   wire `context7` into the write step. *(large, load-bearing)*
-5. **Pilot stack skill `apex-nextjs`** — framework patterns + Verification Recipe; validates the
-   whole loop end-to-end. *(do last — it proves 1–4)*
-
-**DeepSeek element (don't skip):** each cluster has a coding-mode deliverable, not just planning
-prose. Stack-skill content lives in **`impl.md`**, authored to the **Flash floor** (no judgment
-calls; short checkpointed chains: read recipe → run command → on fail, one fix → re-run).
-Clusters **#4 and #5 are primarily coding-mode behaviour** and must be **empirically validated by
-DeepSeek building against a real project** — the pilot (#5) needs a real Next.js app + a
-`docs/changes/` execution spec, not a planning-only edit. The Verification Recipe is proven by
-running it, not by doc-sourcing.
+1. ✅ **`apex-skill-author` v1.2.0** — teaches the stack-skill family + required `## Verification
+   Recipe` + the two baked-in rules (always `apex-research`; recipe run-validated, not doc-sourced).
+2. ✅ **`stack_skills:` binding** — added to the orchestrate status-template + `apex-init` seed +
+   surfaced at `apex-orchestrate` session-start (`apex-orchestrate` v1.1.3, `apex-init` v1.2.1).
+3. ✅ **`apex-stack` v1.1.0** — merit-based cross-ecosystem selection (AI-buildability +
+   verifiability weighted heavily); cross-ecosystem candidate menu; coverage gate writing `stack_skills`.
+4. ✅ **The inversion** — `apex-code` v1.5.0 + `apex-testing` v1.1.0 are now stack-agnostic
+   recipe-driven runners (read recipe via binding, run per task, verify-fail recovery, context7 at write).
+5. ⏳ **Pilot `apex-nextjs`** — spec written: `docs/changes/apex-nextjs-pilot.md`. **Coding-mode** —
+   authors apex-nextjs + validates the recipe + exercises the loop against a real Next.js app.
+   Proves 1–4 end-to-end; its result is the empirical GREEN for clusters 4 & 5 (deferred from planning).
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
@@ -80,6 +70,12 @@ _status.md holds current state only — session history lives in git + handoff d
   Still parked: the *richer* binding manifest (pinned versions, `docs/technical/stack.md`) and
   the stack↔capability composition rule (now an Open Question). *Large-scale application
   development* remains a separate open facet.
+- **doc-writer status.md template divergence** *(discovered session 13)* —
+  `agents/doc-writer.md`'s "initial template" is a frontmatter-less format (no `stack` /
+  `token_profile` / `specialists_default` / `stack_skills`), divergent from the canonical
+  `apex-orchestrate/templates/status-template.md`. Coding mode uses it only as a "status.md
+  missing" fallback. Reconcile the two (or have doc-writer defer to the orchestrate template) —
+  left out of cluster 2 to stay surgical.
 - **Opus 4.8 content sweep** — tag-only tracker built; the one-time Opus 4.8 review/upgrade pass
   over the ~40 Pending skills is not yet started.
 - **`description` backfill** — most pre-`description` skills still lack the field; backfill

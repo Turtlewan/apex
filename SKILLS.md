@@ -46,7 +46,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-observability** | OpenTelemetry, Sentry, Grafana, logging | topic keyword |
 | **apex-performance** | Profiling, Core Web Vitals, optimisation | topic keyword |
 | **apex-accessibility** | WCAG AA, a11y, screen readers | topic keyword |
-| **apex-testing** | Vitest, Playwright, testing strategy | topic keyword |
+| **apex-testing** | TDD strategy, test pyramid, Playwright/axe-core (commands from the stack recipe) | topic keyword |
 | **apex-design-system** | shadcn/ui, Tailwind, Storybook | topic keyword |
 | **apex-ui-ux-design** | UI review, interactive states, a11y gaps | topic keyword |
 | **apex-github** | GitHub setup, issue tracking, PR workflow | topic keyword |
@@ -75,7 +75,9 @@ for coding mode to execute.
 completed specs to `docs/changes/done/`, writes handoff docs. At a fork (spec can't run as
 written) classifies small/big/gray mechanically — fix-in-place / route-to-planning /
 pause-and-ask-at-L2 — with capture-at-halt to `docs/progress/` and park-and-continue for
-isolable tasks.
+isolable tasks. Verifies each task by running the active stack's `## Verification Recipe` (read
+via the `stack_skills` binding, ADR-006) — stack-agnostic, no baked-in npm — with a
+one-hypothesis verify-fail recovery loop and context7 at the write step.
 
 **apex-debug** — Bug investigation workflow. Scientific method for root cause analysis.
 Produces hypotheses, verification steps, fix recommendations. Routes the bug record to one
@@ -139,9 +141,11 @@ EAS Update (OTA), SecureStore, push notifications, app store preparation.
 prompt engineering, streaming, evaluation patterns.
 
 **apex-stack** — Tech stack selection for new projects. Asks 7 structured questions (app type,
-deployment target, language familiarity, timeline, constraints, features, scale), then outputs
-an opinionated preset from 8 named profiles (SaaS fullstack, API-only, real-time, mobile+API,
-content, edge, AI-first, enterprise). Always includes a lock-in analysis table. Produces ADR-001.
+deployment target, language familiarity + AI-reliance, timeline, constraints, features, scale),
+then selects **merit-based across ecosystems** (Python/Go/Ruby/JVM/.NET/Rust/JS — never JS-by-
+default), weighing **AI-buildability and verifiability** heavily per ADR-005/006. Cross-ecosystem
+candidate menu + lock-in table; names the ruled-out runner-up. Runs the **coverage gate** (registry
+check → writes the `stack_skills` binding, or records a gap and proceeds). Produces ADR-001.
 
 **apex-auth** — Authentication implementation. Covers signup/login/logout, password reset,
 magic links, OAuth2 social providers, MFA, passkeys/WebAuthn, session management (stateful
@@ -208,8 +212,9 @@ caching strategies, CDN, lazy loading, React performance patterns.
 **apex-accessibility** — WCAG 2.1 AA compliance, ARIA patterns, keyboard navigation,
 screen reader testing, colour contrast, focus management.
 
-**apex-testing** — Test strategy, Vitest unit tests, Playwright E2E, testing pyramid,
-mocking patterns, coverage targets.
+**apex-testing** — Framework-agnostic test strategy: TDD/RED-GREEN, the test pyramid, DAMP
+naming, regression tests, Playwright E2E, axe-core a11y, coverage targets. Concrete test
+commands come from the bound stack's Verification Recipe (apex-code runs them), not hardcoded npm.
 
 ---
 
@@ -239,8 +244,10 @@ before writing), skill-type taxonomy → test style, research-first grounding vi
 `apex-research`, frontmatter contract (incl. the `description` rule), the triple-write
 (registry + index + history), SKILL-vs-impl split, content rules, the 500-line cap, and
 authoring each file to its executor's capability floor (no judgment calls in `impl.md` for
-DeepSeek Flash; explicit scope in `SKILL.md` for Claude). Single-file, planning-only. The
-source of truth for skill authoring.
+DeepSeek Flash; explicit scope in `SKILL.md` for Claude), and the **stack-skill family**
+(`apex-<framework>` — distinct category, always SKILL+impl, mandatory `apex-research`, and a
+runnable `## Verification Recipe` empirically validated against a real project, not doc-sourced).
+Single-file, planning-only. The source of truth for skill authoring.
 
 **apex-animation** — Motion/GSAP animations, `prefers-reduced-motion` compliance,
 performance-safe animation patterns.
