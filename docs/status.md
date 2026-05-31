@@ -47,6 +47,14 @@ planning-mode skill edit via `apex-skill-author` — Iron Law baseline + triple-
 5. **Pilot stack skill `apex-nextjs`** — framework patterns + Verification Recipe; validates the
    whole loop end-to-end. *(do last — it proves 1–4)*
 
+**DeepSeek element (don't skip):** each cluster has a coding-mode deliverable, not just planning
+prose. Stack-skill content lives in **`impl.md`**, authored to the **Flash floor** (no judgment
+calls; short checkpointed chains: read recipe → run command → on fail, one fix → re-run).
+Clusters **#4 and #5 are primarily coding-mode behaviour** and must be **empirically validated by
+DeepSeek building against a real project** — the pilot (#5) needs a real Next.js app + a
+`docs/changes/` execution spec, not a planning-only edit. The Verification Recipe is proven by
+running it, not by doc-sourcing.
+
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
 - **Pipeline artifact model is implemented** (clusters A–E, 2026-05-30): thin handoff +
