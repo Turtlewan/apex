@@ -62,8 +62,9 @@ you need. This prevents burning context on skills you won't use.
 in every session. Contains pause/resume workflows and governance hard-blocks.
 
 **apex-init** — Bootstrap a new project. Creates `docs/`, `PROJECT.md`, `REQUIREMENTS.md`,
-`ROADMAP.md`, `CHANGELOG.md`, `README.md`, and initial `docs/status.md`. Invoked by
-orchestrate when no `docs/status.md` exists.
+`ROADMAP.md`, `CHANGELOG.md`, `README.md`, initial `docs/status.md`, and the System Overview
+stub at `docs/technical/architecture/overview.md`. Invoked by orchestrate when no
+`docs/status.md` exists.
 
 **apex-plan** — Planning workflow. Guides spec creation, ADR writing, decision-making.
 Front-loads build-changing decisions via upfront targeted elicitation, and drains the
