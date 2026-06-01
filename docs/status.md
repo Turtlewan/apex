@@ -78,6 +78,10 @@ _status.md holds current state only — session history lives in git + handoff d
   drain + upfront elicitation; spec = execution-script (one-line identity, no-why, files-per-task);
   apex-code three-zone fork routing + capture-at-halt; bug records homed in git/test/comment +
   unfixed→GitHub Issues (gated). Design doc: `docs/research/pipeline-artifact-model.md`.
+- **Conceptual data-model artifact** (ADR-008): ground-up data-bearing projects seed
+  `docs/technical/architecture/data-model.md` (entities/relationships/invariants — *conceptual only*);
+  apex-init seeds it (scope-gated), apex-plan captures it early + coverage-checks the stub, apex-data
+  reconciles each phase's physical schema against it. Physical schema stays per-phase (SP3 intact).
 - **Opus 4.8 first-pass tracker** lives at the top of `SKILL-HISTORY.md` (Done/Pending list).
 - Skill `.md` work is done **directly in planning mode** (Claude); per-edit backend gate. See memory `skill-authoring-workflow`.
 
