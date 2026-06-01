@@ -295,8 +295,10 @@ DeepSeek Flash; explicit scope in `SKILL.md` for Claude), and the **stack-skill 
 runnable `## Verification Recipe` empirically validated against a real project, not doc-sourced).
 Single-file, planning-only. The source of truth for skill authoring.
 
-**apex-animation** — Motion/GSAP animations, `prefers-reduced-motion` compliance,
-performance-safe animation patterns.
+**apex-animation** — Motion / GSAP (now 100% free) web animation + SwiftUI native lane,
+reduced-motion compliance (`prefers-reduced-motion` / `accessibilityReduceMotion`),
+performance-safe patterns (animate transform/opacity, springs). Surface-neutral via
+§ Stack assumptions.
 
 **apex-figma** — Fetch Figma design context via MCP, translate to project components
 following design tokens and existing conventions.
