@@ -34,7 +34,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-gcp** | GCP architecture, Cloud Run, GKE, WIF | topic keyword |
 | **apex-backend** | REST APIs & services (stack-neutral: Fastify/Prisma or FastAPI/pydantic) | topic keyword |
 | **apex-frontend** | React 19 + Compiler, web-stack (Next → apex-nextjs) | topic keyword |
-| **apex-mobile** | React Native, Expo, EAS Build, OTA | topic keyword |
+| **apex-mobile** | Native-vs-cross choice: RN/Expo, Flutter, KMP, native | topic keyword |
 | **apex-data** | Databases, schema design, migrations (stack-neutral: Prisma/Alembic/SwiftData) | topic keyword |
 | **apex-ai-systems** | LLM, RAG gen, agents/MCP, evals (provider/framework-neutral) | topic keyword |
 | **apex-auth** | Authentication flows, sessions, OAuth2, passkeys, RBAC, multi-tenant auth | topic keyword |
@@ -162,8 +162,9 @@ client/hub layer; the RAG engine is the separate `apex-python` sidecar. _v0.1.0 
 from research but **not yet run** (needs a Mac); validate on first Xcode build, then → 1.0.0._
 Loaded via `stack_skills` binding; recipe = `swift build`/`test` + `xcodebuild` per platform + lint.
 
-**apex-mobile** — React Native, Expo managed workflow, Expo Router, EAS Build + Submit,
-EAS Update (OTA), SecureStore, push notifications, app store preparation.
+**apex-mobile** — Native-vs-cross-platform decision + the cross-platform framework choice
+(React Native/Expo with New Architecture, Flutter/Impeller, Kotlin Multiplatform), Expo Router,
+EAS Build/Submit/Update (OTA), SecureStore, push, app-store prep. Apple-native depth → apex-swift.
 
 **apex-ai-systems** — LLM generation, RAG generation half, tool-calling agents + MCP,
 structured output, prompt engineering, streaming, and evaluation (golden sets / LLM-as-judge
