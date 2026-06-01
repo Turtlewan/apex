@@ -7,15 +7,14 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-01 (session 19)
-_Last updated by coding mode:_ 2026-05-31 (session 15)
+_Last updated by planning mode:_ 2026-06-01 (session 22)
+_Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-_Empty — SP5 skill sweep complete (all de-couple targets swept + committed; only the
-deliberately-excluded cloud/base set — aws/azure/gcp/stack/refresh — remains, by design)._
+| SP2 agent-wiring — coding-side | wave domain review | Done | `apex-wave-reviewer.md`, `apex-code/SKILL.md` | — | 🟡 uncommitted |
 
 <!-- CODING:END -->
 
@@ -23,9 +22,8 @@ deliberately-excluded cloud/base set — aws/azure/gcp/stack/refresh — remains
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-_No specs in `docs/changes/` yet. The active initiative is the **finalisation plan** below; its
-SP2/SP3/SP6 implementation steps will be authored as `docs/changes/` specs (or direct skill edits)
-when each is picked up._
+| `wave-reviewer-baseline-test.md` | Throwaway fixture — confirms Flash can orchestrate the dispatch → BLOCK → retry → CLEAN loop (prerequisite for the spec below) |
+| `wave-reviewer-selective-dispatch.md` | New `apex-wave-reviewer` agent + apex-code wave domain review — **blocked until baseline test passes** |
 
 ## Finalisation initiative — gearing APEX for the Artemis platform
 Goal: ready APEX before building the user's largest app — **Artemis**, a personal assistant that
@@ -88,14 +86,12 @@ _status.md holds current state only — session history lives in git + handoff d
 ## Open Questions
 _SP2-composition + agent-wiring (planning slice), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
-- **SP2 agent-wiring — DeepSeek CODING-side verify-dispatch: STILL OPEN (not yet designed).** The
-  planning-side review role (ADR-007) does **not** touch coding. Coding already isolates context via
-  `apex-coder` wave-workers (each loads its domain `impl.md` inline into its *own* fresh context =
-  the enforce role, fine). Open question: should an independent domain **review/verify** pass be
-  dispatched *after* a wave completes (generic reviewer checks the wave's output against the domain
-  `impl.md`), and **how does Flash (DeepSeek V4) cope** with orchestrating that sub-dispatch + long
-  tool chains (its known weak spot)? Needs its **own baseline on the DeepSeek backend**. Now
-  unblocked — the planning slice has landed (ADR-007); pick up when a DeepSeek session is available.
+- **SP2 agent-wiring — DeepSeek CODING-side verify-dispatch: DESIGN DONE, baseline required.**
+  Selective dispatch design is fully specced (`docs/changes/wave-reviewer-selective-dispatch.md`):
+  file-path pattern trigger (auth/security/data), one `apex-wave-reviewer` agent per matched domain
+  per wave (parallel), BLOCK → one retry → BIG fork, FLAG → log. Blocked on a **baseline test**
+  confirming Flash can orchestrate dispatch → collect → BLOCK-retry without losing state. Design the
+  baseline test protocol before executing the spec.
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
 
 ## Future Discussions (parked)
