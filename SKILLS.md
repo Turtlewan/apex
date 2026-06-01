@@ -35,7 +35,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-backend** | REST APIs, Node.js, Prisma, Postgres | topic keyword |
 | **apex-frontend** | React, Next.js, TypeScript | topic keyword |
 | **apex-mobile** | React Native, Expo, EAS Build, OTA | topic keyword |
-| **apex-data** | Databases, schema design, migrations | topic keyword |
+| **apex-data** | Databases, schema design, migrations (stack-neutral: Prisma/Alembic/SwiftData) | topic keyword |
 | **apex-ai-systems** | LLM, RAG, AI SDK patterns | topic keyword |
 | **apex-auth** | Authentication flows, sessions, OAuth2, passkeys, RBAC, multi-tenant auth | topic keyword |
 | **apex-jobs** | Background jobs — queue/worker, retry/backoff, cron, DLQ, graceful shutdown; stack-neutral (BullMQ/arq/APScheduler illustration) | topic keyword |
@@ -202,8 +202,10 @@ Concrete DDL/code illustrates **Postgres + pgvector + TypeScript** and adapts to
 (e.g. SQLite + sqlite-vec + Python) via a `## Stack assumptions` swap-table; the TS/pgvector worked
 examples live in `references/postgres-typescript.md`. Optional: Typesense for typo-tolerant facets.
 
-**apex-data** — Schema design, migrations (Prisma/Drizzle), indexing strategies,
-query optimisation, connection pooling, multi-tenancy patterns.
+**apex-data** — Schema design & migrations. **Stack-neutral** safety invariants (expand/contract,
+nullable-then-backfill, FK indexing, immutable migrations, explicit cascade) with a `## Stack
+assumptions` swap-table; migration tool is per-stack — Prisma (TS) / Alembic+SQLAlchemy or SQLModel
+(Python) / SwiftData or GRDB (Apple). Indexing strategies, query optimisation, multi-tenancy.
 
 ---
 
