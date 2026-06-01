@@ -26,7 +26,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-system-design** | Distributed systems, CAP, queues, caching (scale-gated) | topic keyword |
 | **apex-security** | OWASP Top 10:2025, threat model, supply-chain, escalation gates (stack-neutral) | topic keyword |
 | **apex-devops** | CI/CD, Docker, GH Actions, supply-chain (stack-neutral) | topic keyword |
-| **apex-iac** | Terraform, Pulumi, Ansible, IaC | topic keyword |
+| **apex-iac** | OpenTofu/Terraform, Pulumi, Ansible, IaC | topic keyword |
 | **apex-k8s** | Kubernetes, Helm, ArgoCD, GitOps | topic keyword |
 | **apex-devcontainer** | Dev container, isolated Claude env | topic keyword |
 | **apex-aws** | AWS architecture, CDK, IAM, ECS | topic keyword |
@@ -102,9 +102,9 @@ supply-chain hardening (SHA-pinned actions, OIDC, least-priv permissions). Docke
 Node-default; per-stack via § Stack assumptions; CI steps from the bound recipe. IaC → apex-iac.
 Covers the deployment pipeline layer. Use `apex-iac` for resource provisioning.
 
-**apex-iac** — Terraform, Pulumi, Ansible, AWS CDK, SAM. Deep IaC patterns: remote state,
-module structure, workspaces, drift detection, Infracost. Use when provisioning cloud
-resources declaratively.
+**apex-iac** — OpenTofu/Terraform (OpenTofu = OSS default post-BSL), Pulumi, Ansible, CDK.
+Deep IaC patterns: remote state + encryption, no-secrets-in-state, module structure, drift,
+Infracost. Owns the tool choice; scale-gated (local hub may need none). Provisioning declaratively.
 
 **apex-k8s** — Kubernetes workloads, Helm charts, ArgoCD GitOps, HPA, network policies,
 RBAC, External Secrets Operator. Everything for running workloads on K8s.
