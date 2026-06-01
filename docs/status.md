@@ -14,7 +14,7 @@ _Last updated by coding mode:_ 2026-05-31 (session 15)
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| SP5 de-couple capability skills (apex-search/jobs/storage) | planning | 🔄 in-progress | ~/.claude/skills/apex-storage/{SKILL,impl,references/s3-typescript}.md + registry/SKILLS/SKILL-HISTORY | apex-search ✅ + apex-jobs ✅ + **apex-storage ✅** done+registered (top-3 capability de-couple complete) | 🟡 uncommitted (storage edits; new references/ file needs `git add -f`) |
+| SP5 de-couple capability skills (apex-search/jobs/storage) | planning | 🔄 in-progress | ~/.claude/skills/apex-storage/{SKILL,impl,references/s3-typescript}.md + registry/SKILLS/SKILL-HISTORY | apex-search ✅ + apex-jobs ✅ + **apex-storage ✅** done+registered (top-3 capability de-couple complete) | ✅ ~/.claude 8e74c92 · ~/apex e99bee8 |
 
 <!-- CODING:END -->
 
@@ -26,17 +26,18 @@ _No specs in `docs/changes/` yet. The active initiative is the **finalisation pl
 SP2/SP3/SP6 implementation steps will be authored as `docs/changes/` specs (or direct skill edits)
 when each is picked up._
 
-## Finalisation initiative — gearing APEX for the "Jarvis" platform
-Goal: ready APEX before building the user's largest app — a **"Jarvis-like" personal assistant that
-integrates with everything**, with a RAG-heavy **second brain** as its knowledge subsystem. A
+## Finalisation initiative — gearing APEX for the Artemis platform
+Goal: ready APEX before building the user's largest app — **Artemis**, a personal assistant that
+integrates with everything (a "Jarvis-like" assistant in spirit), with a RAG-heavy **second brain**
+as its knowledge subsystem. A
 multi-subsystem platform (assistant/orchestration + integrations + knowledge core + interface(s)).
 Stack/surfaces are **provisional** pending the deferred requirements pass (see SP0). Roadmap + full
 detail: **`docs/research/apex-finalisation-plan.md`**.
 
 - **SP0 ⚠️ Stack — PROVISIONAL** — SwiftUI + Python pre-selected from high-level answers, not real
-  requirements, and against an under-scoped target. **Real target = a "Jarvis-like" personal
+  requirements, and against an under-scoped target. **Real target = Artemis, a personal
   assistant that integrates with everything; the RAG second brain is one subsystem.** **Deferred:**
-  proper requirements-gathering for the whole Jarvis platform → decompose → re-confirm/revise the
+  proper requirements-gathering for the whole Artemis platform → decompose → re-confirm/revise the
   stack, **after** APEX hardening and **before** app `apex-init`. Candidate seed only, not locked.
 - **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
   (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.

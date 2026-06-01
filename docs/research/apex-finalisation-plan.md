@@ -8,16 +8,16 @@ own `docs/changes/` spec when it reaches the front of the queue._
 
 ## 1. Target application (context that drives every decision)
 
-> **⚠️ Scope correction (post-session-16):** the app is **not** just a second brain. It is a
-> **"Jarvis-like" personal assistant that integrates with everything**, of which the **second brain
-> (RAG knowledge core) is one subsystem**. This is a **multi-subsystem platform** — assistant /
+> **⚠️ Scope correction (post-session-16):** the app is **not** just a second brain. It is
+> **Artemis** — a **personal assistant that integrates with everything** (a "Jarvis-like" assistant
+> in spirit), of which the **second brain (RAG knowledge core) is one subsystem**. This is a **multi-subsystem platform** — assistant /
 > orchestration layer, integration/tool framework, the knowledge core, the interface(s) — and the
 > deferred requirements pass must scope the *whole* vision and decompose it, not just the RAG part.
 > The bullets below describe the second-brain subsystem and are an under-scope of the real target.
 
 The application APEX is being geared up to build:
 
-- **What:** a **"Jarvis-like" personal assistant** that integrates with everything (agent/tool
+- **What:** **Artemis** — a **personal assistant** that integrates with everything (agent/tool
   orchestration over a broad integration surface), with a personal **"second brain"** — a RAG-heavy
   private knowledge system — as its *knowledge subsystem*. RAG is the core of *that subsystem*, not of
   the whole platform.
@@ -205,8 +205,8 @@ skill SP1–SP4 edits; SP6 applied to every `impl.md`/spec as it's authored (sta
 
 **SP0 ⚠️ PROVISIONAL** — stack pre-selected (SwiftUI + Python) from high-level answers, **not** from
 real requirements, and against an **under-scoped target** (it was framed as a "second brain"; the real
-app is a **Jarvis-like assistant that integrates with everything**, second brain = one subsystem —
-see §1 scope correction). **Deferred: proper requirements-gathering for the WHOLE Jarvis platform →
+app is **Artemis**, a **personal assistant that integrates with everything**, second brain = one
+subsystem — see §1 scope correction). **Deferred: proper requirements-gathering for the WHOLE Artemis platform →
 decompose into subsystems → re-confirm or revise the stack — AFTER the APEX process is hardened and
 BEFORE app `apex-init`.** SwiftUI + Python is a candidate seed only; a broad agent/integration
 platform may pull the stack differently (the §2 reasoning may not survive the fuller picture).
