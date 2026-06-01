@@ -233,7 +233,9 @@ app project to exist or its own Iron-Law skill edit):
   Implementation moves off `apex-code` → onto `apex-skill-author` (the `## Stack assumptions`
   convention) + `apex-plan` (the mismatch-check) + **SP5** (de-couple `apex-search`/`apex-jobs`/
   `apex-storage` from JS/pgvector — now a top SP5 priority). App RAG choices (sqlite-vec + MLX) →
-  app ADR at bootstrap. **Still open:** agent-wiring half (dispatch-vs-load-impl, 17 agents).
+  app ADR at bootstrap. **Agent-wiring half ✅ planning slice landed (ADR-007):** review role
+  dispatched via a generic `apex-spec-reviewer`, per-domain agent roster retired; DeepSeek
+  coding-side verify-dispatch still open (own baseline needed).
 - **SP3 — large-scale project mgmt ✅ DECIDED: let it emerge.** Build the app's first real milestone
   with current tooling (thin handoff + `status.md` In-Flight), extract the pattern from experience,
   then formalise a milestone layer. No speculative process up front (YAGNI).

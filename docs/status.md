@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-01 (session 18)
+_Last updated by planning mode:_ 2026-06-01 (session 19)
 _Last updated by coding mode:_ 2026-05-31 (session 15)
 
 <!-- CODING:START -->
@@ -49,6 +49,16 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   v1.3.0 + `apex-code` v1.6.0): impl.md two-tier core/references split by section identity, `apex-code`
   loads the core (hard-rules + recipe) not the whole file, and SP2's `## Stack assumptions` is now a
   named core section. _Ongoing-track audit remains (spec drift + apply split during SP5 sweeps)._
+- **SP2 agent-wiring ✅ PLANNING SLICE LANDED** (ADR-007 + `apex-plan` v1.8.0 + `apex-orchestrate`
+  v1.1.5 + new `apex-spec-reviewer` agent + registry Agent column repointed). The *review* role is
+  now **dispatched**: a single generic `apex-spec-reviewer` pointed at `apex-<domain>/SKILL.md`,
+  auto-fired for the heavy set (security/auth/data/testing/a11y), judgment-fired otherwise, skipped
+  for trivial single-domain specs; findings → readiness-gate BLOCK/FLAG before a spec moves to
+  `docs/changes/`. Per-domain `apex-*-agent` roster retired (registry no longer routes to it). Backed
+  by an Iron-Law baseline — dispatched review beat inline self-review on gate-ready severity output
+  and caught a non-salient gap (reversible migration) inline missed. _Follow-up (deferred): delete
+  the 14 now-unreferenced `apex-*-agent` stubs (docs-product/docs-technical/security/figma kept)._
+  Coding-side verify-dispatch still open (see Open Questions).
 - **SP5 ✅ COMPLETE** — Opus-4.8 skill sweep = **de-couple + real-world refresh** (per
   [[sweep-includes-refresh]]). Every de-couple-target skill now has a `## Stack assumptions` swap-table
   (where multi-stack), generalised NEVER/ALWAYS, stack-specific code → `references/*.md` (SP6
@@ -72,28 +82,16 @@ _status.md holds current state only — session history lives in git + handoff d
 - Skill `.md` work is done **directly in planning mode** (Claude); per-edit backend gate. See memory `skill-authoring-workflow`.
 
 ## Open Questions
-_SP2-composition, SP3, SP4 resolved earlier (see plan §6). Remaining:_
+_SP2-composition + agent-wiring (planning slice), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
-- **SP2 agent-wiring — PLANNING slice DECIDED (session 18), pending baseline + impl.** Decision rule:
-  (1) **role-split** — *enforce* knowledge loads **inline** where writing happens; *review* knowledge
-  is **dispatched** to a fresh agent (the review role currently never fires). (2) Wire the review role
-  in **`apex-plan` (Claude) first** — review a draft spec in fresh context to keep the main planning
-  window lean. (3) **Option B — one generic parametrised reviewer** pointed at `apex-<domain>/SKILL.md`;
-  **no per-domain agent roster** → retire the 18 bespoke `apex-*-agent` defs (keep one only where real
-  per-domain *tooling* justifies it — ~security/figma, both coding-side anyway). (4) **Trigger:**
-  auto-fire for a heavy set (security, auth, data, testing, a11y) when touched; planner may fire on
-  judgment; **skip** trivial single-domain specs (don't pay the spawn). (5) Reviewer flags route into
-  risk-resolution **before** a spec moves to `docs/changes/`. **Next (own focused session):** Iron-Law
-  baseline — runnable in Claude/planning: multi-domain draft spec, inline-load vs dispatched-reviewer,
-  observe what inline misses/bloats → spec → **ADR** (alongside ADR-005/006) → edit `apex-orchestrate`
-  Step 5 + `apex-plan` + registry agent column.
 - **SP2 agent-wiring — DeepSeek CODING-side verify-dispatch: STILL OPEN (not yet designed).** The
-  planning slice above does **not** touch coding. Coding already isolates context via `apex-coder`
-  wave-workers (each loads its domain `impl.md` inline into its *own* fresh context = the enforce role,
-  fine). Open question: should an independent domain **review/verify** pass be dispatched *after* a wave
-  completes (generic reviewer checks the wave's output against the domain `impl.md`), and **how does
-  Flash (DeepSeek V4) cope** with orchestrating that sub-dispatch + long tool chains (its known weak
-  spot)? Needs its **own baseline on the DeepSeek backend**. Defer until the planning slice lands.
+  planning-side review role (ADR-007) does **not** touch coding. Coding already isolates context via
+  `apex-coder` wave-workers (each loads its domain `impl.md` inline into its *own* fresh context =
+  the enforce role, fine). Open question: should an independent domain **review/verify** pass be
+  dispatched *after* a wave completes (generic reviewer checks the wave's output against the domain
+  `impl.md`), and **how does Flash (DeepSeek V4) cope** with orchestrating that sub-dispatch + long
+  tool chains (its known weak spot)? Needs its **own baseline on the DeepSeek backend**. Now
+  unblocked — the planning slice has landed (ADR-007); pick up when a DeepSeek session is available.
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
 - **doc-writer status.md template divergence** — frontmatter-less fallback template still diverges
   from the orchestrate `status-template.md`; reconcile.
