@@ -54,7 +54,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-ui-ux-design** | UI review, interactive states, a11y gaps | topic keyword |
 | **apex-github** | GitHub setup, issue tracking, PR workflow | topic keyword |
 | **apex-homelab** | Home Assistant, ESPHome, IoT, smart home | topic keyword |
-| **apex-google** | Google OAuth2, Sign in with Google, Gmail/Calendar/Drive APIs | topic keyword |
+| **apex-google** | Google OAuth2, Sign in with Google, Gmail/Calendar/Drive (stack-neutral: googleapis/google-api-python-client) | topic keyword |
 
 ---
 
@@ -266,9 +266,11 @@ auth/data-loss details; check repo visibility before filing).
 protocols, presence detection (mmWave radar), automation design, REST/WebSocket
 API integration, local-first design, IoT VLAN security.
 
-**apex-google** — Google OAuth2 / OIDC (Sign in with Google), Google Workspace API integration
-(Gmail, Calendar, Drive), service account patterns, scope selection, token storage rules,
-`googleapis` npm client, `google-auth-library`. Distinct from `apex-gcp` (infrastructure).
+**apex-google** — Google OAuth2 / OIDC (Sign in with Google), Workspace API integration (Gmail,
+Calendar, Drive), service accounts, scope selection, token-storage rules. **Stack-neutral** platform
+invariants (use `sub` not email, verify ID token server-side, encrypt refresh tokens, minimal scopes)
+with a `## Stack assumptions` swap-table; client per-stack — `googleapis` (Node) / `google-api-python-client`
+(Python). Node+TS worked code in `references/nodejs-typescript.md`. Distinct from `apex-gcp` (infra).
 
 **apex-research** — Deep research workflow: pre-flight scoping questions, tiered sources
 (Context7 official docs → WebSearch → WebFetch) with confidence derived from tier
