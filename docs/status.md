@@ -14,7 +14,7 @@ _Last updated by coding mode:_ 2026-05-31 (session 15)
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| SP5 de-couple capability skills (apex-search/jobs/storage) | planning | 🔄 in-progress | ~/.claude/skills/apex-storage/{SKILL,impl,references/s3-typescript}.md + registry/SKILLS/SKILL-HISTORY | apex-search ✅ + apex-jobs ✅ + **apex-storage ✅** done+registered (top-3 capability de-couple complete) | ✅ ~/.claude 8e74c92 · ~/apex e99bee8 |
+| SP5 de-couple capability skills | planning | 🔄 in-progress | ~/.claude/skills/apex-*/{SKILL,impl,references}.md + registry/SKILLS/SKILL-HISTORY | **13 done+committed**: search ✅ jobs ✅ storage ✅ (+local-fs) · auth ✅ data ✅ backend ✅ realtime ✅ security ✅ performance ✅ google ✅ github ✅ devcontainer ✅ testing ✅. **Refreshes folded in:** auth (Better Auth default/Lucia dead, +Python/native), realtime (SSE-default for LLM streaming), security (OWASP Top 10:**2025**). Each skill committed separately (see git log). | ✅ all committed (per-skill SHAs in git log) |
 
 <!-- CODING:END -->
 
