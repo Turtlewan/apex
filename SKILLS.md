@@ -36,7 +36,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-frontend** | React 19 + Compiler, web-stack (Next → apex-nextjs) | topic keyword |
 | **apex-mobile** | React Native, Expo, EAS Build, OTA | topic keyword |
 | **apex-data** | Databases, schema design, migrations (stack-neutral: Prisma/Alembic/SwiftData) | topic keyword |
-| **apex-ai-systems** | LLM, RAG, AI SDK patterns | topic keyword |
+| **apex-ai-systems** | LLM, RAG gen, agents/MCP, evals (provider/framework-neutral) | topic keyword |
 | **apex-auth** | Authentication flows, sessions, OAuth2, passkeys, RBAC, multi-tenant auth | topic keyword |
 | **apex-jobs** | Background jobs — queue/worker, retry/backoff, cron, DLQ, graceful shutdown; stack-neutral (BullMQ/arq/APScheduler illustration) | topic keyword |
 | **apex-realtime** | Real-time push — stack-neutral (SSE default for streaming / WebSocket for bidi); Socket.io / sse-starlette / native | topic keyword |
@@ -163,8 +163,11 @@ Loaded via `stack_skills` binding; recipe = `swift build`/`test` + `xcodebuild` 
 **apex-mobile** — React Native, Expo managed workflow, Expo Router, EAS Build + Submit,
 EAS Update (OTA), SecureStore, push notifications, app store preparation.
 
-**apex-ai-systems** — LLM integration, RAG pipelines, AI SDK (Vercel), tool use,
-prompt engineering, streaming, evaluation patterns.
+**apex-ai-systems** — LLM generation, RAG generation half, tool-calling agents + MCP,
+structured output, prompt engineering, streaming, and evaluation (golden sets / LLM-as-judge
+/ RAG faithfulness / tracing). Provider- & framework-neutral (TS → AI SDK 5/6, Python →
+Pydantic AI) via § Stack assumptions; carries the June-2026 model landscape (Opus 4.8 /
+Sonnet 4.6 / Haiku 4.5). Retrieval half → apex-search.
 
 **apex-stack** — Tech stack selection for new projects. Asks 7 structured questions (app type,
 deployment target, language familiarity + AI-reliance, timeline, constraints, features, scale),
