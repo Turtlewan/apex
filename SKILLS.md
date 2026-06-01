@@ -33,7 +33,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-azure** | Azure architecture, Bicep, Entra, AKS | topic keyword |
 | **apex-gcp** | GCP architecture, Cloud Run, GKE, WIF | topic keyword |
 | **apex-backend** | REST APIs & services (stack-neutral: Fastify/Prisma or FastAPI/pydantic) | topic keyword |
-| **apex-frontend** | React, Next.js, TypeScript | topic keyword |
+| **apex-frontend** | React 19 + Compiler, web-stack (Next → apex-nextjs) | topic keyword |
 | **apex-mobile** | React Native, Expo, EAS Build, OTA | topic keyword |
 | **apex-data** | Databases, schema design, migrations (stack-neutral: Prisma/Alembic/SwiftData) | topic keyword |
 | **apex-ai-systems** | LLM, RAG, AI SDK patterns | topic keyword |
@@ -137,8 +137,10 @@ validate-at-boundary, services-not-handlers, transactions, timeouts, consistent 
 a `## Stack assumptions` swap-table; validation lib + ORM are per-stack — Zod+Prisma (TS) /
 pydantic+SQLAlchemy (Python/FastAPI). Pagination, idempotency, doubt-driven review for high-stakes endpoints.
 
-**apex-frontend** — React, Next.js 15 App Router, TypeScript, TanStack Query, Zustand,
-component patterns, routing, server components.
+**apex-frontend** — Generic React web frontend: React 19 (Actions/`useActionState`/
+`useOptimistic`/`use()`, ref-as-prop), React Compiler (stop hand-memoizing), TypeScript,
+client state, composition, Tailwind v4, Web Vitals. Web-stack — Next.js depth → apex-nextjs,
+native UI → apex-swift.
 
 **apex-nextjs** — Stack skill for Next.js 15+ App Router depth. Server/Client component
 boundaries, Server Action security (auth-checked + Zod-validated + revalidatePath), explicit
