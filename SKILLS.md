@@ -42,7 +42,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-realtime** | Real-time push — Socket.io, SSE, user-scoped rooms, Redis adapter, AI streaming | topic keyword |
 | **apex-search** | Search and retrieval — keyword + vector hybrid (RRF), chunking, idempotent ingest; stack-neutral (pgvector/sqlite-vec illustration) | topic keyword |
 | **apex-stack** | Tech stack selection — framework, database, ORM, auth, deploy for any new project | topic keyword |
-| **apex-storage** | File storage — MinIO (local), S3/R2 (cloud), presigned URLs, MIME validation | topic keyword |
+| **apex-storage** | File storage — stack-neutral (object store MinIO/S3/R2 or local filesystem), MIME-from-bytes, UUID keys, time-limited private access | topic keyword |
 | **apex-nextjs** | Next.js 15+ App Router, Server Components, Server Actions, caching | stack skill via `stack_skills` |
 | **apex-python** | Typed Python / FastAPI — uv, ruff, mypy --strict, pydantic-settings, async boundaries | stack skill via `stack_skills` |
 | **apex-swift** | Swift 6 / SwiftUI (macOS/iOS/iPadOS) — strict concurrency, @Observable, SwiftData | stack skill via `stack_skills` _(v0.1.0 — recipe pending Mac validation)_ |
@@ -186,11 +186,12 @@ local single-user app) via a `## Stack assumptions` swap-table; the BullMQ/TS wo
 → broadcast flow (finance feeds, Home Assistant webhooks, Telegram), SSE for AI token
 streaming, reconnection handling, and catch-up REST pattern for missed events.
 
-**apex-storage** — File upload and storage. Local-first with MinIO (Docker, S3-compatible),
-zero-code migration to AWS S3 or Cloudflare R2 via env var swap. Covers generic file
-uploads, server-side MIME validation (bytes not filename), UUID-based storage keys,
-presigned GET URLs for private files, soft-delete pattern, and multipart uploads for
-large files.
+**apex-storage** — File upload and storage. **Stack-neutral** core (MIME-from-bytes, opaque
+UUID keys, store-before-DB-record, time-limited private access, soft-delete + async GC, env-var
+config) with a `## Stack assumptions` swap-table. Object-store backends (MinIO/S3/R2) share one
+SDK — zero-code migration via env var swap; a **local-filesystem** backend (single-user hub) is a
+distinct code path (no SDK/presign — authenticated streaming route + path-traversal guard). The
+S3-SDK + TypeScript worked examples live in `references/s3-typescript.md`.
 
 **apex-search** — Search and RAG retrieval. **Stack-neutral** concepts — keyword + vector hybrid
 search (RRF reranking), chunking strategies, embedding generation (Ollama local or OpenAI),

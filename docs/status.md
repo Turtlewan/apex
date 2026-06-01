@@ -14,7 +14,7 @@ _Last updated by coding mode:_ 2026-05-31 (session 15)
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| SP5 de-couple capability skills (apex-search/jobs/storage) | planning | 🔄 in-progress | ~/.claude/skills/apex-storage/{SKILL,impl}.md | apex-search ✅ + apex-jobs ✅ done+registered; **apex-storage next** (read only, no edits) | ✅ ~/.claude 4cb89de · ~/apex 000e341 |
+| SP5 de-couple capability skills (apex-search/jobs/storage) | planning | 🔄 in-progress | ~/.claude/skills/apex-storage/{SKILL,impl,references/s3-typescript}.md + registry/SKILLS/SKILL-HISTORY | apex-search ✅ + apex-jobs ✅ + **apex-storage ✅** done+registered (top-3 capability de-couple complete) | 🟡 uncommitted (storage edits; new references/ file needs `git add -f`) |
 
 <!-- CODING:END -->
 
