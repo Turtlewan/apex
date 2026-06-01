@@ -23,7 +23,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-research** | Research any topic before deciding | invoke explicitly |
 | **apex-skill-author** | Creating or editing any APEX skill | invoke explicitly |
 | **apex-architecture** | Codebase architecture, DDD, ADRs | topic keyword |
-| **apex-system-design** | Distributed systems, CAP, queues, caching | topic keyword |
+| **apex-system-design** | Distributed systems, CAP, queues, caching (scale-gated) | topic keyword |
 | **apex-security** | OWASP Top 10:2025, threat model, supply-chain, escalation gates (stack-neutral) | topic keyword |
 | **apex-devops** | CI/CD, Docker, GH Actions, supply-chain (stack-neutral) | topic keyword |
 | **apex-iac** | Terraform, Pulumi, Ansible, IaC | topic keyword |
