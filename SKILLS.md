@@ -19,6 +19,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-init** | No `docs/status.md` found — bootstrap new project | auto via orchestrate |
 | **apex-plan** | Planning / designing / speccing | auto via orchestrate |
 | **apex-code** | Coding / implementing / building | auto via orchestrate |
+| **apex-coding-principles** | Universal coding standards — naming, formatting, errors, security, Git, testing | auto-loaded by apex-code |
 | **apex-debug** | Bug / root cause / broken / not working | auto via orchestrate |
 | **apex-research** | Research any topic before deciding | invoke explicitly |
 | **apex-skill-author** | Creating or editing any APEX skill | invoke explicitly |
@@ -82,6 +83,15 @@ pause-and-ask-at-L2 — with capture-at-halt to `docs/progress/` and park-and-co
 isolable tasks. Verifies each task by running the active stack's `## Verification Recipe` (read
 via the `stack_skills` binding, ADR-006) — stack-agnostic, no baked-in npm — with a
 one-hypothesis verify-fail recovery loop and context7 at the write step.
+
+**apex-coding-principles** — Universal coding standards enforced on every coding session.
+Auto-loaded by apex-code at pre-flight before any code is written. Provides NEVER/ALWAYS rules,
+pre/post-coding checklists, and a naming reference table covering 20 principles: syntax
+correctness, consistent formatting, clear naming, simplicity (KISS), single responsibility,
+DRY+YAGNI, error handling, input validation, useful comments, Git discipline, no hardcoding,
+project structure, testing, small focused changes, security basics, data flow, no premature
+optimisation, meaningful error messages, business logic separation, and maintainability.
+Applies to all stacks unless a project's CLAUDE.md explicitly overrides a specific rule.
 
 **apex-debug** — Bug investigation workflow. Scientific method for root cause analysis.
 Produces hypotheses, verification steps, fix recommendations. Routes the bug record to one
