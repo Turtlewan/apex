@@ -168,11 +168,13 @@ default), weighing **AI-buildability and verifiability** heavily per ADR-005/006
 candidate menu + lock-in table; names the ruled-out runner-up. Runs the **coverage gate** (registry
 check → writes the `stack_skills` binding, or records a gap and proceeds). Produces ADR-001.
 
-**apex-auth** — Authentication implementation. Covers signup/login/logout, password reset,
-magic links, OAuth2 social providers, MFA, passkeys/WebAuthn, session management (stateful
-vs JWT refresh rotation), RBAC, multi-tenant auth (per-tenant roles, invite flows, tenant
-isolation), and route protection patterns. Library decision table: Auth.js, Better Auth,
-Lucia, Clerk, Supabase Auth.
+**apex-auth** — Authentication. **Stack-neutral** invariants (OWASP argon2id, session-derived
+tenant scoping, passkey counter check, OAuth state, generic auth errors, refresh rotation) with a
+`## Stack assumptions` swap-table. Covers signup/login/logout, password reset, magic links, OAuth2,
+MFA, passkeys/WebAuthn, sessions vs JWT, RBAC, multi-tenant (invite flows, isolation), route
+protection. Library choice is per-stack: **Better Auth** (TS) / **FastAPI Users** (Python) /
+**AuthenticationServices** (Apple); Lucia deprecated. Node+TS worked code in
+`references/nodejs-typescript.md`.
 
 **apex-jobs** — Background job queue implementation. **Stack-neutral** concepts — queue/worker
 separation, retry + exponential backoff, idempotent handlers, cron/repeatable jobs, dead letter
