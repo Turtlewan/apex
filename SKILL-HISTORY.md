@@ -33,6 +33,7 @@ touched it once," not a quality guarantee.
 - apex-skill-author — 2026-05-29
 - apex-storage — 2026-06-01 (SP5 — de-coupled from S3-SDK/JS; +local-fs backend)
 - apex-testing — 2026-06-01 (SP5 — formalised recipe-sourcing into named § Stack assumptions)
+- apex-docs-product — 2026-06-01 (SP5 light — description + doc-comment Stack assumptions; already neutral)
 - apex-system-design — 2026-06-01 (SP5 light — description + scale-gating note; concepts already neutral)
 - apex-devops — 2026-06-01 (SP5 — de-coupled Node/Docker/CI + supply-chain refresh: SHA-pin, OIDC)
 - apex-observability — 2026-06-01 (SP5 — de-coupled logger/tracker SDK + OTel GenAI semconv note)
@@ -47,7 +48,7 @@ touched it once," not a quality guarantee.
 **Pending (no Opus 4.8 pass yet):**
 apex-architecture, apex-aws,
 apex-azure, apex-deep-dive,
-apex-docs-product, apex-docs-technical, apex-figma,
+apex-docs-technical, apex-figma,
 apex-gcp, apex-governance, apex-homelab, apex-iac,
 apex-k8s, apex-mobile,
 apex-refresh, apex-stack,
@@ -57,6 +58,7 @@ apex-ui-testing
 
 | Date | Skill | Files | Version | Event | What Changed | Sources |
 |------|-------|-------|---------|-------|-------------|---------|
+| 2026-06-01 | apex-docs-product | SKILL + impl | 1.1.0 | updated | SP5 light (already stack-neutral — Divio four-type model + Keep a Changelog are language-agnostic). Backfilled trigger-style `description` on both (+ boundary note vs apex-docs-technical). impl.md: added `## Stack assumptions` for the one coupled bit — doc-comment syntax (JSDoc shown → Python docstrings/Sphinx, Swift DocC `///`); OpenAPI example noted language-neutral. No content refresh — doc fundamentals stable (60-day bucket). Lightweight Iron Law. Opus 4.8 | Divio, Keep a Changelog, Google dev style |
 | 2026-06-01 | apex-system-design | SKILL + impl | 1.1.0 | updated | SP5 light (pattern skill; concepts timeless, already stack-neutral). SKILL.md: backfilled trigger-style `description`, added `## Scale assumptions` — tool names (DynamoDB/Kafka/SQS/Redis) are illustrative not prescriptions, and **scale-gate before applying** (a single-user/local hub like Artemis rarely needs sharding/replicas/distributed-locks/saga — premature distribution is the #1 failure here). impl.md: added `## Stack assumptions` (TS+Redis+SQS examples → swap mechanism per stack; SQL idempotency works in any RDBMS; scale-gate) + `description`. No content refresh — distributed-systems fundamentals (CAP/PACELC/idempotency/circuit-breaker) are stable (60-day bucket). Lightweight Iron Law. Opus 4.8 | Kleppmann DDIA |
 | 2026-06-01 | apex-devops | SKILL + impl | SKILL 1.2.0 / impl 1.1.0 | updated | SP5 de-couple + **supply-chain refresh** (standard). **De-couple:** added `## Stack assumptions` (Docker/CI examples Node-default → Python `python:3.x-slim`+uv; CI build/test/lint steps sourced from the bound stack's Verification Recipe, not hardcoded npm); trimmed the duplicated Terraform section to a pointer → **apex-iac** owns IaC depth. **Real-world refresh:** added a `## Supply-chain hardening` section (current baseline) — **pin GitHub Actions to commit SHA** not mutable tag (OWASP A03:2025 vector), **OIDC for cloud auth** (no long-lived keys in CI), least-priv `permissions:`, lockfile+audit+SLSA provenance; bumped example bases to current LTS (node:24 / python:3.13). impl.md: new NEVER (mutable-tag action, long-lived cloud keys) + ALWAYS (SHA-pin, OIDC) rules, generalised the Node Dockerfile/CI examples, added `permissions:` + SHA-pin to the workflow sample. Backfilled `description`. Lightweight Iron Law. Opus 4.8 | Docker, GH Actions security hardening, SLSA |
 | 2026-06-01 | apex-observability | SKILL + impl | SKILL 1.2.0 / impl 1.1.0 | updated | SP5 de-couple (standard; stable domain). SKILL.md already current (MCP tools, LLM observability) — added `## Stack assumptions` table (logger pino/structlog/`os.Logger`; error tracker @sentry/node / sentry-sdk / sentry-cocoa; OTel as the vendor-neutral spine) + noted the now-stable **OTel GenAI semantic conventions** supersede ad-hoc LLM attribute naming; backfilled `description`. impl.md: generalised the `console.log` NEVER → "no raw stdout logging (`console.log`/`print`/`NSLog`)", generalised the Sentry capture ALWAYS to the per-stack error tracker, labelled the TS pino/Sentry examples, added `## Stack assumptions`. No real refresh needed — OTel/Sentry/three-pillars stable. Lightweight Iron Law. Opus 4.8 | OTel docs + GenAI semconv, Sentry |
