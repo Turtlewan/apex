@@ -51,7 +51,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-accessibility** | WCAG 2.2 AA, EAA, a11y, screen readers (web + native) | topic keyword |
 | **apex-testing** | TDD strategy, test pyramid, Playwright/axe-core (commands from the stack recipe) | topic keyword |
 | **apex-design-system** | shadcn/ui, Tailwind, Storybook | topic keyword |
-| **apex-ui-ux-design** | UI review, interactive states, a11y gaps | topic keyword |
+| **apex-ui-ux-design** | UI review, interactive states, a11y gaps (web + native; 2026 calm/AI-native) | topic keyword |
 | **apex-github** | GitHub setup, issue tracking, PR workflow | topic keyword |
 | **apex-homelab** | Home Assistant, ESPHome, IoT, smart home | topic keyword |
 | **apex-google** | Google OAuth2, Sign in with Google, Gmail/Calendar/Drive (stack-neutral: googleapis/google-api-python-client) | topic keyword |
@@ -224,7 +224,9 @@ caching strategies (cache-aside/write-through), message queues (SQS/Kafka),
 rate limiting (token bucket), circuit breakers, distributed locking.
 
 **apex-ui-ux-design** — Pre-coding UI spec review: interactive states, accessibility gaps,
-design quality, mobile responsiveness, loading/error/empty states.
+design quality, responsiveness, loading/error/empty states. Surface-neutral — web
+(Tailwind/CSS) default, native (SwiftUI / Liquid Glass) via § Stack assumptions. Carries
+current 2026 practice: calm UI, AI-native/conversational UX, motion-as-structure.
 
 **apex-design-system** — shadcn/ui component library, Tailwind v4 design tokens,
 Storybook stories, component API design.
