@@ -24,7 +24,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-skill-author** | Creating or editing any APEX skill | invoke explicitly |
 | **apex-architecture** | Codebase architecture, DDD, ADRs | topic keyword |
 | **apex-system-design** | Distributed systems, CAP, queues, caching | topic keyword |
-| **apex-security** | OWASP, auth, threat model | topic keyword |
+| **apex-security** | OWASP Top 10:2025, threat model, supply-chain, escalation gates (stack-neutral) | topic keyword |
 | **apex-devops** | CI/CD pipelines, Docker, GitHub Actions | topic keyword |
 | **apex-iac** | Terraform, Pulumi, Ansible, IaC | topic keyword |
 | **apex-k8s** | Kubernetes, Helm, ArgoCD, GitOps | topic keyword |
@@ -232,8 +232,10 @@ Storybook stories, component API design.
 
 ## Quality & Operations
 
-**apex-security** — OWASP Top 10, threat modelling, authentication (JWT/OAuth2/OIDC),
-authorisation, input validation, secrets management, security headers.
+**apex-security** — **OWASP Top 10:2025** (incl. A03 Software Supply Chain, A10 Exceptional
+Conditions), threat modelling, BLOCK/FLAG escalation gates, authn/authz, input validation, secrets,
+security headers, dependency/supply-chain integrity. **Stack-neutral** principles; crypto/validation/
+audit tooling per-stack (Node `crypto`/bcrypt/Zod ↔ Python `secrets`/argon2/pydantic) via § Stack assumptions.
 
 **apex-observability** — OpenTelemetry instrumentation, Sentry error tracking,
 structured logging, Grafana dashboards, alerting, SLIs/SLOs.
