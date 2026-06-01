@@ -25,7 +25,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-architecture** | Codebase architecture, DDD, ADRs | topic keyword |
 | **apex-system-design** | Distributed systems, CAP, queues, caching | topic keyword |
 | **apex-security** | OWASP Top 10:2025, threat model, supply-chain, escalation gates (stack-neutral) | topic keyword |
-| **apex-devops** | CI/CD pipelines, Docker, GitHub Actions | topic keyword |
+| **apex-devops** | CI/CD, Docker, GH Actions, supply-chain (stack-neutral) | topic keyword |
 | **apex-iac** | Terraform, Pulumi, Ansible, IaC | topic keyword |
 | **apex-k8s** | Kubernetes, Helm, ArgoCD, GitOps | topic keyword |
 | **apex-devcontainer** | Dev container, isolated Claude env | topic keyword |
@@ -97,7 +97,9 @@ triage-drain (inbox-zero) read rule and the status.md In-Flight State enum
 
 ## Infrastructure & DevOps
 
-**apex-devops** — CI/CD pipelines, Docker, containerisation, GitHub Actions workflows.
+**apex-devops** — CI/CD pipelines, Docker, containerisation, GitHub Actions workflows,
+supply-chain hardening (SHA-pinned actions, OIDC, least-priv permissions). Docker/CI examples
+Node-default; per-stack via § Stack assumptions; CI steps from the bound recipe. IaC → apex-iac.
 Covers the deployment pipeline layer. Use `apex-iac` for resource provisioning.
 
 **apex-iac** — Terraform, Pulumi, Ansible, AWS CDK, SAM. Deep IaC patterns: remote state,
