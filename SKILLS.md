@@ -284,7 +284,10 @@ auth/data-loss details; check repo visibility before filing).
 **apex-homelab** — Home Assistant hub, ESPHome ESP32 firmware (2026.1+ ESP-IDF default,
 encryption-only API), Zigbee/MQTT/Matter+Thread 1.4 protocols (MG24 coordinators, ZBT-2),
 presence detection (mmWave radar), automation design, REST/WebSocket API integration,
-local-first design, IoT VLAN security.
+local-first design, IoT VLAN security. **Plus the homelab-infra layer** (host strategy —
+bare-metal/Compose/Proxmox VE 9.x, container runtime, reverse proxy + TLS, Tailscale/WireGuard
+remote access, ZFS/storage, 3-2-1 backups, monitoring, secrets) — options-with-trade-offs,
+scale-gated; Compose-in-git is the IaC at this scale (not apex-iac/k8s).
 
 **apex-google** — Google OAuth2 / OIDC (Sign in with Google), Workspace API integration (Gmail,
 Calendar, Drive), service accounts, scope selection, token-storage rules. **Stack-neutral** platform
