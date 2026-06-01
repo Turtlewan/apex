@@ -32,7 +32,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-aws** | AWS architecture, CDK, IAM, ECS | topic keyword |
 | **apex-azure** | Azure architecture, Bicep, Entra, AKS | topic keyword |
 | **apex-gcp** | GCP architecture, Cloud Run, GKE, WIF | topic keyword |
-| **apex-backend** | REST APIs, Node.js, Prisma, Postgres | topic keyword |
+| **apex-backend** | REST APIs & services (stack-neutral: Fastify/Prisma or FastAPI/pydantic) | topic keyword |
 | **apex-frontend** | React, Next.js, TypeScript | topic keyword |
 | **apex-mobile** | React Native, Expo, EAS Build, OTA | topic keyword |
 | **apex-data** | Databases, schema design, migrations (stack-neutral: Prisma/Alembic/SwiftData) | topic keyword |
@@ -131,8 +131,10 @@ org policies, BigQuery best practices.
 
 ## Application development
 
-**apex-backend** — REST API design, Node.js/TypeScript, Prisma ORM, PostgreSQL,
-authentication patterns (JWT, sessions), input validation (Zod).
+**apex-backend** — REST API & service design. **Stack-neutral** principles (HTTP semantics,
+validate-at-boundary, services-not-handlers, transactions, timeouts, consistent error contract) with
+a `## Stack assumptions` swap-table; validation lib + ORM are per-stack — Zod+Prisma (TS) /
+pydantic+SQLAlchemy (Python/FastAPI). Pagination, idempotency, doubt-driven review for high-stakes endpoints.
 
 **apex-frontend** — React, Next.js 15 App Router, TypeScript, TanStack Query, Zustand,
 component patterns, routing, server components.
