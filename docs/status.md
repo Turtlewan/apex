@@ -7,14 +7,15 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-05-31 (session 17)
+_Last updated by planning mode:_ 2026-06-01 (session 18)
 _Last updated by coding mode:_ 2026-05-31 (session 15)
 
 <!-- CODING:START -->
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| SP5 sweep — batch 2 + extras ⏳ resume at the tail | planning | 🔄 12 done, 8 queued | ~/.claude/skills/apex-*/{SKILL,impl}.md + registry/SKILLS/SKILL-HISTORY | **Batch 1 ✅ (13).** **This session ✅ (12 committed, 2 repos each):** UI cluster — accessibility (WCAG 2.2/EAA) · ui-ux-design (2026 UX + Liquid Glass) · frontend (React 19/Compiler/Next 16, web-stack) · design-system (shadcn CLI v4/radix-ui/Base UI, web-stack) · animation (GSAP-free + SwiftUI lane); plus **ai-systems ⭐ HEAVY** (2026 models/agents/MCP/evals) · observability (OTel GenAI) · devops (supply-chain: SHA-pin/OIDC) · system-design (scale-gate) · docs-product · **mobile HEAVY** (RN New Arch/Flutter/KMP/native-vs-cross) · **iac HEAVY** (OpenTofu/state-encryption). **TAIL QUEUE (8, standard de-couple + targeted refresh; resume here):** apex-k8s · apex-figma (Dev Mode/MCP; image caveat) · apex-docs-technical · apex-architecture · apex-ui-testing · apex-homelab (Home Assistant/Matter) · apex-deep-dive · apex-governance. **Excluded (base-knowledge, not de-couple targets):** apex-aws/azure/gcp/stack, apex-refresh. Per-skill commit; batch flags at end. | all committed |
+_Empty — SP5 skill sweep complete (all de-couple targets swept + committed; only the
+deliberately-excluded cloud/base set — aws/azure/gcp/stack/refresh — remains, by design)._
 
 <!-- CODING:END -->
 
@@ -48,14 +49,15 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   v1.3.0 + `apex-code` v1.6.0): impl.md two-tier core/references split by section identity, `apex-code`
   loads the core (hard-rules + recipe) not the whole file, and SP2's `## Stack assumptions` is now a
   named core section. _Ongoing-track audit remains (spec drift + apply split during SP5 sweeps)._
-- **SP5** — Opus-4.8 skill sweep = **de-couple + real-world refresh** (per [[sweep-includes-refresh]]).
-  Each skill gets a `## Stack assumptions` swap-table, generalised NEVER/ALWAYS, stack-specific code →
-  `references/*.md` (SP6 convention), `description` backfill, **and** a research pass on fast-moving
-  facts. **Batch 1 ✅ (13 committed):** search/jobs/storage (+local-fs) · auth (Better Auth/Lucia +
-  Python/native) · data · backend · realtime (SSE-default) · security (**OWASP 2025**) · performance ·
-  google (+Python client) · github · devcontainer · testing. **Batch 2 queued** — see In-Flight row
-  (ai-systems ⭐ first). Remaining after batch 2: cloud/stack/inherently-web skills are *not* de-couple
-  targets (excluded deliberately).
+- **SP5 ✅ COMPLETE** — Opus-4.8 skill sweep = **de-couple + real-world refresh** (per
+  [[sweep-includes-refresh]]). Every de-couple-target skill now has a `## Stack assumptions` swap-table
+  (where multi-stack), generalised NEVER/ALWAYS, stack-specific code → `references/*.md` (SP6
+  convention), a `description` backfill, and a research pass on fast-moving facts. Swept across
+  sessions 16–18: **Batch 1 (13)**, **Batch 2 (12, UI cluster + ai-systems/observability/devops/
+  system-design/docs-product/mobile/iac)**, **Tail (8, session 18):** k8s ⭐ + homelab ⭐ (heavy) ·
+  figma · ui-testing · architecture · deep-dive · governance · docs-technical (verified, no edit).
+  **Deliberately excluded** (base-knowledge, not de-couple targets): apex-aws/azure/gcp/stack,
+  apex-refresh. Full per-skill detail in `SKILL-HISTORY.md`.
 
 _Prior buildability layer (clusters 1–5, ADR-005/006) is complete — see git history + `SKILL-HISTORY.md`._
 
