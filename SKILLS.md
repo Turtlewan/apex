@@ -39,7 +39,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-ai-systems** | LLM, RAG, AI SDK patterns | topic keyword |
 | **apex-auth** | Authentication flows, sessions, OAuth2, passkeys, RBAC, multi-tenant auth | topic keyword |
 | **apex-jobs** | Background jobs — queue/worker, retry/backoff, cron, DLQ, graceful shutdown; stack-neutral (BullMQ/arq/APScheduler illustration) | topic keyword |
-| **apex-realtime** | Real-time push — Socket.io, SSE, user-scoped rooms, Redis adapter, AI streaming | topic keyword |
+| **apex-realtime** | Real-time push — stack-neutral (SSE default for streaming / WebSocket for bidi); Socket.io / sse-starlette / native | topic keyword |
 | **apex-search** | Search and retrieval — keyword + vector hybrid (RRF), chunking, idempotent ingest; stack-neutral (pgvector/sqlite-vec illustration) | topic keyword |
 | **apex-stack** | Tech stack selection — framework, database, ORM, auth, deploy for any new project | topic keyword |
 | **apex-storage** | File storage — stack-neutral (object store MinIO/S3/R2 or local filesystem), MIME-from-bytes, UUID keys, time-limited private access | topic keyword |
@@ -185,10 +185,12 @@ and adapt to the bound stack (Python arq / Celery / APScheduler, or a SQLite-bac
 local single-user app) via a `## Stack assumptions` swap-table; the BullMQ/TS worked code lives in
 `references/bullmq-typescript.md`. Backing options: Redis / Postgres (pg-boss) / SQLite.
 
-**apex-realtime** — Real-time server-to-client push. Primary: Socket.io + Redis adapter
-(multi-instance safe). Covers user-scoped rooms, socket auth middleware, external event
-→ broadcast flow (finance feeds, Home Assistant webhooks, Telegram), SSE for AI token
-streaming, reconnection handling, and catch-up REST pattern for missed events.
+**apex-realtime** — Real-time push. **Stack-neutral** invariants (auth-before-connect,
+identity-from-token, room-scoped emits, named events, clean close, reconnect + REST catch-up) with a
+`## Stack assumptions` transport matrix: **SSE = 2026 default for server→client streaming** (incl.
+LLM tokens) / **WebSocket** for bidirectional; pub/sub backplane only for multi-instance (a
+single-user hub needs none). Library per-stack — Socket.io (TS) / sse-starlette + native WebSocket
+(Python) / URLSessionWebSocketTask (Swift). Socket.io+SSE TS code in `references/socketio-typescript.md`.
 
 **apex-storage** — File upload and storage. **Stack-neutral** core (MIME-from-bytes, opaque
 UUID keys, store-before-DB-record, time-limited private access, soft-delete + async GC, env-var
