@@ -56,9 +56,9 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   for trivial single-domain specs; findings → readiness-gate BLOCK/FLAG before a spec moves to
   `docs/changes/`. Per-domain `apex-*-agent` roster retired (registry no longer routes to it). Backed
   by an Iron-Law baseline — dispatched review beat inline self-review on gate-ready severity output
-  and caught a non-salient gap (reversible migration) inline missed. _Follow-up (deferred): delete
-  the 14 now-unreferenced `apex-*-agent` stubs (docs-product/docs-technical/security/figma kept)._
-  Coding-side verify-dispatch still open (see Open Questions).
+  and caught a non-salient gap (reversible migration) inline missed. The 14 now-unreferenced
+  `apex-*-agent` stubs were deleted + `registry/agents.md` updated (session 19). Coding-side
+  verify-dispatch still open (see Open Questions).
 - **SP5 ✅ COMPLETE** — Opus-4.8 skill sweep = **de-couple + real-world refresh** (per
   [[sweep-includes-refresh]]). Every de-couple-target skill now has a `## Stack assumptions` swap-table
   (where multi-stack), generalised NEVER/ALWAYS, stack-specific code → `references/*.md` (SP6
@@ -93,8 +93,6 @@ _SP2-composition + agent-wiring (planning slice), SP3, SP4 resolved (see plan §
   tool chains (its known weak spot)? Needs its **own baseline on the DeepSeek backend**. Now
   unblocked — the planning slice has landed (ADR-007); pick up when a DeepSeek session is available.
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
-- **doc-writer status.md template divergence** — frontmatter-less fallback template still diverges
-  from the orchestrate `status-template.md`; reconcile.
 
 ## Future Discussions (parked)
 - **Richer stack binding manifest** — pinned versions + a `docs/technical/stack.md` beyond the
