@@ -108,8 +108,9 @@ resources declaratively.
 RBAC, External Secrets Operator. Everything for running workloads on K8s.
 
 **apex-devcontainer** — Dev Container spec (`devcontainer.json`), Features, lifecycle hooks,
-isolated Claude Code environment. Includes the `~/.claude` copy-on-start pattern for
-mounting skills into containers.
+isolated Claude Code environment, `~/.claude` copy-on-start pattern. **Stack-neutral** hygiene
+invariants (non-root, `secrets:` not ENV, named dep-volume, UID sync) with a `## Stack assumptions`
+note; language Feature + dep-volume + install command per-stack (Node ↔ Python uv).
 
 ---
 
