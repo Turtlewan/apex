@@ -27,7 +27,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-security** | OWASP Top 10:2025, threat model, supply-chain, escalation gates (stack-neutral) | topic keyword |
 | **apex-devops** | CI/CD, Docker, GH Actions, supply-chain (stack-neutral) | topic keyword |
 | **apex-iac** | OpenTofu/Terraform, Pulumi, Ansible, IaC | topic keyword |
-| **apex-k8s** | Kubernetes, Helm, ArgoCD, GitOps | topic keyword |
+| **apex-k8s** | Kubernetes, Helm, Argo CD, GitOps, Gateway API (scale-gated) | topic keyword |
 | **apex-devcontainer** | Dev container, isolated Claude env | topic keyword |
 | **apex-aws** | AWS architecture, CDK, IAM, ECS | topic keyword |
 | **apex-azure** | Azure architecture, Bicep, Entra, AKS | topic keyword |
@@ -50,6 +50,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-performance** | Profiling, Core Web Vitals, optimisation (stack-neutral: Prisma/SQLAlchemy eager-load) | topic keyword |
 | **apex-accessibility** | WCAG 2.2 AA, EAA, a11y, screen readers (web + native) | topic keyword |
 | **apex-testing** | TDD strategy, test pyramid, Playwright/axe-core (commands from the stack recipe) | topic keyword |
+| **apex-ui-testing** | Web UI tests — Storybook (Vitest addon), Playwright + MCP, @axe-core/playwright, Chromatic | topic keyword |
 | **apex-design-system** | shadcn CLI v4, Radix/Base UI, Tailwind v4, web-stack | topic keyword |
 | **apex-ui-ux-design** | UI review, interactive states, a11y gaps (web + native; 2026 calm/AI-native) | topic keyword |
 | **apex-github** | GitHub setup, issue tracking, PR workflow | topic keyword |
@@ -106,8 +107,10 @@ Covers the deployment pipeline layer. Use `apex-iac` for resource provisioning.
 Deep IaC patterns: remote state + encryption, no-secrets-in-state, module structure, drift,
 Infracost. Owns the tool choice; scale-gated (local hub may need none). Provisioning declaratively.
 
-**apex-k8s** — Kubernetes workloads, Helm charts, ArgoCD GitOps, HPA, network policies,
-RBAC, External Secrets Operator. Everything for running workloads on K8s.
+**apex-k8s** — Kubernetes workloads, Helm charts, Argo CD GitOps, autoscaling (HPA/VPA/Karpenter
+/in-place resize), **Gateway API** north-south (ingress-nginx is retired), Network Policies, RBAC,
+External Secrets Operator (`v1`), native sidecars, DRA for GPU. Scale-gates first — recommends a
+managed platform when a cluster isn't warranted.
 
 **apex-devcontainer** — Dev Container spec (`devcontainer.json`), Features, lifecycle hooks,
 isolated Claude Code environment, `~/.claude` copy-on-start pattern. **Stack-neutral** hygiene
@@ -225,7 +228,8 @@ assumptions` swap-table; migration tool is per-stack — Prisma (TS) / Alembic+S
 ## Architecture & Design
 
 **apex-architecture** — Codebase architecture, Domain-Driven Design, bounded contexts,
-CQRS, ADR authoring, dependency analysis, modularisation.
+monolith-vs-microservices, ADR-trigger, dependency direction, modularisation. The structural
+layer; distributed-systems/scale → apex-system-design, ADR file format → apex-docs-technical.
 
 **apex-system-design** — Distributed systems design: CAP theorem, consistency models,
 caching strategies (cache-aside/write-through), message queues (SQS/Kafka),
@@ -277,9 +281,10 @@ Keep a Changelog), Dependabot, CodeQL, secret scanning. Issues *is* the unfixed-
 (fixed-with-test → no issue), gated by a security/visibility rail (never auto-file security/
 auth/data-loss details; check repo visibility before filing).
 
-**apex-homelab** — Home Assistant hub, ESPHome ESP32 firmware, Zigbee/MQTT/Matter
-protocols, presence detection (mmWave radar), automation design, REST/WebSocket
-API integration, local-first design, IoT VLAN security.
+**apex-homelab** — Home Assistant hub, ESPHome ESP32 firmware (2026.1+ ESP-IDF default,
+encryption-only API), Zigbee/MQTT/Matter+Thread 1.4 protocols (MG24 coordinators, ZBT-2),
+presence detection (mmWave radar), automation design, REST/WebSocket API integration,
+local-first design, IoT VLAN security.
 
 **apex-google** — Google OAuth2 / OIDC (Sign in with Google), Workspace API integration (Gmail,
 Calendar, Drive), service accounts, scope selection, token-storage rules. **Stack-neutral** platform
@@ -307,8 +312,15 @@ reduced-motion compliance (`prefers-reduced-motion` / `accessibilityReduceMotion
 performance-safe patterns (animate transform/opacity, springs). Surface-neutral via
 § Stack assumptions.
 
-**apex-figma** — Fetch Figma design context via MCP, translate to project components
-following design tokens and existing conventions.
+**apex-ui-testing** — Web UI test layer: Storybook stories (run as tests via the Vitest addon
+on Vite; legacy test-runner on Webpack), Playwright E2E (+ official Playwright MCP for agents),
+`@axe-core/playwright` accessibility checks, and Chromatic visual regression. Web-only — mobile
+→ apex-mobile, strategy/pyramid → apex-testing, a11y criteria → apex-accessibility.
+
+**apex-figma** — Fetch Figma design context via MCP (official remote/desktop server or
+Framelink), translate to project components following design tokens and existing conventions.
+Target-neutral via § Stack assumptions (React/Tailwind default; SwiftUI/Flutter/Angular swaps).
+DeepSeek skips the screenshot visual-comparison (no image support) and flags it for planning.
 
 ---
 
