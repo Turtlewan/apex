@@ -46,7 +46,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-nextjs** | Next.js 15+ App Router, Server Components, Server Actions, caching | stack skill via `stack_skills` |
 | **apex-python** | Typed Python / FastAPI — uv, ruff, mypy --strict, pydantic-settings, async boundaries | stack skill via `stack_skills` |
 | **apex-swift** | Swift 6 / SwiftUI (macOS/iOS/iPadOS) — strict concurrency, @Observable, SwiftData | stack skill via `stack_skills` _(v0.1.0 — recipe pending Mac validation)_ |
-| **apex-observability** | OpenTelemetry, Sentry, Grafana, logging | topic keyword |
+| **apex-observability** | OpenTelemetry, Sentry, Grafana, logging (stack-neutral) | topic keyword |
 | **apex-performance** | Profiling, Core Web Vitals, optimisation (stack-neutral: Prisma/SQLAlchemy eager-load) | topic keyword |
 | **apex-accessibility** | WCAG 2.2 AA, EAA, a11y, screen readers (web + native) | topic keyword |
 | **apex-testing** | TDD strategy, test pyramid, Playwright/axe-core (commands from the stack recipe) | topic keyword |
@@ -246,8 +246,9 @@ Conditions), threat modelling, BLOCK/FLAG escalation gates, authn/authz, input v
 security headers, dependency/supply-chain integrity. **Stack-neutral** principles; crypto/validation/
 audit tooling per-stack (Node `crypto`/bcrypt/Zod ↔ Python `secrets`/argon2/pydantic) via § Stack assumptions.
 
-**apex-observability** — OpenTelemetry instrumentation, Sentry error tracking,
-structured logging, Grafana dashboards, alerting, SLIs/SLOs.
+**apex-observability** — OpenTelemetry instrumentation (incl. OTel GenAI semconv for LLM
+calls), Sentry error tracking, structured logging, Grafana dashboards, alerting, SLIs/SLOs.
+Stack-neutral pillars; logger/error-tracker SDK per stack (pino/structlog, @sentry/node/sentry-sdk).
 
 **apex-performance** — Core Web Vitals (LCP/INP/CLS), bundle analysis, DB query profiling, caching,
 CDN, lazy loading. **Stack-neutral** invariants (eager-load not N+1, index hot columns, paginate,
