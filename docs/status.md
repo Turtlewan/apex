@@ -14,7 +14,7 @@ _Last updated by coding mode:_ 2026-05-31 (session 15)
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
-| SP5 de-couple capability skills | planning | 🔄 in-progress | ~/.claude/skills/apex-*/{SKILL,impl,references}.md + registry/SKILLS/SKILL-HISTORY | **13 done+committed**: search ✅ jobs ✅ storage ✅ (+local-fs) · auth ✅ data ✅ backend ✅ realtime ✅ security ✅ performance ✅ google ✅ github ✅ devcontainer ✅ testing ✅. **Refreshes folded in:** auth (Better Auth default/Lucia dead, +Python/native), realtime (SSE-default for LLM streaming), security (OWASP Top 10:**2025**). Each skill committed separately (see git log). | ✅ all committed (per-skill SHAs in git log) |
+| SP5 sweep — batch 2 (next 10) ⏸ PAUSED, resume here | planning | ⏸ queued | ~/.claude/skills/apex-*/{SKILL,impl,references}.md + registry/SKILLS/SKILL-HISTORY | **Batch 1 ✅ (13 skills committed):** search/jobs/storage + auth/data/backend/realtime/security/performance/google/github/devcontainer/testing. **Batch 2 queue (do 10, same standard = de-couple **+** real-world refresh per [[sweep-includes-refresh]]):** 1.**apex-ai-systems** ⭐ (RAG/LLM core — heavy refresh: current models, AI SDK, eval tooling) · 2.apex-observability (OTel/Sentry) · 3.apex-devops (CI/CD/deploy) · 4.apex-system-design (light, mostly neutral) · 5.apex-accessibility (WCAG 2.2 refresh; cross-platform) · 6.apex-ui-ux-design (cross-platform incl. SwiftUI) · 7.apex-docs-product · 8.apex-frontend (React19/Next refresh; mark web-stack) · 9.apex-design-system (Tailwind v4/shadcn refresh) · 10.apex-animation (Motion/GSAP refresh +SwiftUI note). Per-skill commit; batch flags at end. | n/a (batch 1 all committed) |
 
 <!-- CODING:END -->
 
@@ -48,11 +48,14 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   v1.3.0 + `apex-code` v1.6.0): impl.md two-tier core/references split by section identity, `apex-code`
   loads the core (hard-rules + recipe) not the whole file, and SP2's `## Stack assumptions` is now a
   named core section. _Ongoing-track audit remains (spec drift + apply split during SP5 sweeps)._
-- **SP5** — Opus-4.8 skill sweep, ongoing. **Top-priority de-couple from JS/pgvector:** `apex-search`
-  ✅ (1.2.0) + `apex-jobs` ✅ (1.1.0) done — each got a `## Stack assumptions` swap-table, generalised
-  NEVER/ALWAYS, stack-specific worked code moved to `references/*.md` (the SP6 convention's first live
-  use). **`apex-storage` is next** (S3/MinIO/R2 → +local-filesystem for the Mac hub). ~34 skills then
-  remain on the broader app-critical list.
+- **SP5** — Opus-4.8 skill sweep = **de-couple + real-world refresh** (per [[sweep-includes-refresh]]).
+  Each skill gets a `## Stack assumptions` swap-table, generalised NEVER/ALWAYS, stack-specific code →
+  `references/*.md` (SP6 convention), `description` backfill, **and** a research pass on fast-moving
+  facts. **Batch 1 ✅ (13 committed):** search/jobs/storage (+local-fs) · auth (Better Auth/Lucia +
+  Python/native) · data · backend · realtime (SSE-default) · security (**OWASP 2025**) · performance ·
+  google (+Python client) · github · devcontainer · testing. **Batch 2 queued** — see In-Flight row
+  (ai-systems ⭐ first). Remaining after batch 2: cloud/stack/inherently-web skills are *not* de-couple
+  targets (excluded deliberately).
 
 _Prior buildability layer (clusters 1–5, ADR-005/006) is complete — see git history + `SKILL-HISTORY.md`._
 
