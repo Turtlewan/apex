@@ -75,12 +75,13 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
 - **Phase 1 — design slice ✅ DONE** (session 24): `apex-ui-ux-design` v1.2.0 (AI-slop detection +
   scored visual-audit rubric in SKILL; concentric-radius/optical-alignment/tabular-nums/text-wrap/
   font-smoothing/image-outline micro-polish in impl) + `apex-animation` v1.2.0 (SSR-safe initial,
-  `layoutId`, stagger 0.05–0.10s, `mode="wait"` in impl). 🟡 uncommitted.
+  `layoutId`, stagger 0.05–0.10s, `mode="wait"` in impl). ✅ committed (`~/.claude` 5efa3c2 · repo 5ee8446).
 - **Phase 1 — remaining ✅ DONE** (session 24): `apex-skill-author` v1.4.0 (prompt-independence /
   competing-prompt strictness in the Iron Law); prompt-defense baseline added to global
   `~/.claude/CLAUDE.md` §6 (agent self-defense); strategic-compact guidance → `apex-orchestrate`
-  v1.2.0 (§ Strategic compaction). 🟡 uncommitted (repo: SKILL-HISTORY.md, status.md).
-- **Phase 2 ⏳** : new `apex-context-budget` skill (planning-mode token audit).
+  v1.2.0 (§ Strategic compaction). ✅ committed (`~/.claude` 5efa3c2 · repo 5ee8446).
+- **▶ RESUME HERE — Phase 2 ⏳** : new `apex-context-budget` skill (planning-mode token audit).
+  Then Phase 4 → 5 → (gated) 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
 - **Phase 3 ⏳ (needs per-hook approval)** : deterministic-enforcement hooks — gateguard fact-forcing
   (apex-code pre-flight), safety-guard freeze/careful (apex-governance), design-quality-check (frontend anti-slop).
 - **Phase 4 ⏳** : santa-method dual-reviewer (→ apex-reviewer/wave-reviewer, likely ADR) + council four-voice (→ apex-deep-dive).
