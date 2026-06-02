@@ -37,6 +37,12 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   assistant that integrates with everything; the RAG second brain is one subsystem.** **Deferred:**
   proper requirements-gathering for the whole Artemis platform → decompose → re-confirm/revise the
   stack, **after** APEX hardening and **before** app `apex-init`. Candidate seed only, not locked.
+  - **Doc-coverage question for this pass:** APEX natively covers PRD (PROJECT/REQUIREMENTS),
+    TRD (ADRs + stack binding), Backend Schema (data-model.md + apex-data), and Implementation
+    plan (docs/changes specs); UI/UX is judgment (no persisted doc by default). The one gap vs the
+    common "6 docs before building" checklist is **Appflow** (screen-map / user journeys). **Decide
+    during this pass:** whether Artemis (UI-heavy assistant) warrants a first-class app-flow artifact
+    + a persisted UI/UX design doc (or borrow GSD's `UI-SPEC.md`), or folds them into REQUIREMENTS.
 - **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
   (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.
 - **SP2 ✅ / SP3 ✅ / SP4 ✅ decided** (plan §6): SP2 = Method C (no capability binding — capability
@@ -153,6 +159,15 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
 
 ## Future Discussions (parked)
+- **Vercel `agent-browser` for agentic UI verification** (gated on a live Mac coding env) — trial
+  `vercel-labs/agent-browser` (Rust CLI, accessibility refs `@e1` over stdout, ships as a CC skill via
+  `npx skills add`) as the *in-the-loop* verification driver in place of the Playwright MCP. Fit for this
+  stack: text-over-Bash suits image-less DeepSeek + leaner context. Keep `@playwright/test` for the
+  authored regression suite (unchanged). If adopted: swap the `browser_snapshot` command in
+  `apex-ui-testing/impl.md` (v1.2.0) → `agent-browser snapshot` — the snapshot-first/no-pixels-to-a-
+  text-model *principle* is unchanged, only the command. Caveats: launched 2026-01-13 (young vs mature
+  Playwright); the "93% less context vs Playwright MCP" figure is third-party, not in the repo. Can't be
+  validated on the Windows planning box.
 - **Richer stack binding manifest** — pinned versions + a `docs/technical/stack.md` beyond the
   `stack_skills` list (the selection/binding facet itself is decided — ADR-005/006).
 - **Opus 4.8 content sweep** → now **SP5** of the finalisation plan (~36 skills pending;
