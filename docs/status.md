@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-01 (session 22)
+_Last updated by planning mode:_ 2026-06-02 (session 23)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -20,10 +20,7 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- PLANNING:START -->
 ## Pending Specs
-| Spec | Summary |
-|------|---------|
-| `wave-reviewer-baseline-test.md` | Throwaway fixture — confirms Flash can orchestrate the dispatch → BLOCK → retry → CLEAN loop (prerequisite for the spec below) |
-| `wave-reviewer-selective-dispatch.md` | New `apex-wave-reviewer` agent + apex-code wave domain review — **blocked until baseline test passes** |
+_None — `docs/changes/` is empty; all specs completed (see `docs/changes/done/`)._
 
 ## Finalisation initiative — gearing APEX for the Artemis platform
 Goal: ready APEX before building the user's largest app — **Artemis**, a personal assistant that
@@ -56,7 +53,7 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   by an Iron-Law baseline — dispatched review beat inline self-review on gate-ready severity output
   and caught a non-salient gap (reversible migration) inline missed. The 14 now-unreferenced
   `apex-*-agent` stubs were deleted + `registry/agents.md` updated (session 19). Coding-side
-  verify-dispatch still open (see Open Questions).
+  verify-dispatch **now landed** (coding session 16, `427da16`) — **SP2 agent-wiring fully complete**.
 - **SP5 ✅ COMPLETE** — Opus-4.8 skill sweep = **de-couple + real-world refresh** (per
   [[sweep-includes-refresh]]). Every de-couple-target skill now has a `## Stack assumptions` swap-table
   (where multi-stack), generalised NEVER/ALWAYS, stack-specific code → `references/*.md` (SP6
@@ -84,14 +81,8 @@ _status.md holds current state only — session history lives in git + handoff d
 - Skill `.md` work is done **directly in planning mode** (Claude); per-edit backend gate. See memory `skill-authoring-workflow`.
 
 ## Open Questions
-_SP2-composition + agent-wiring (planning slice), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
+_SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
-- **SP2 agent-wiring — DeepSeek CODING-side verify-dispatch: DESIGN DONE, baseline required.**
-  Selective dispatch design is fully specced (`docs/changes/wave-reviewer-selective-dispatch.md`):
-  file-path pattern trigger (auth/security/data), one `apex-wave-reviewer` agent per matched domain
-  per wave (parallel), BLOCK → one retry → BIG fork, FLAG → log. Blocked on a **baseline test**
-  confirming Flash can orchestrate dispatch → collect → BLOCK-retry without losing state. Design the
-  baseline test protocol before executing the spec.
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
 
 ## Future Discussions (parked)
