@@ -13,8 +13,14 @@ This project runs under two AI backends. The active backend is detected from
 | contains `deepseek` | **DeepSeek V4 Flash** | Coding |
 
 The harness enforces this automatically via a PreToolUse hook:
-- Planning mode blocks Write/Edit on non-`.md` files
+- Planning mode gates Write/Edit on non-`.md` files behind an approval prompt (default
+  guidance: do code edits in a DeepSeek coding session). The APEX project itself and any file
+  under `~/.claude/` (APEX system files) are exempt and pass silently — APEX is self-hosting.
 - Coding mode has no such restriction
+
+A SessionStart hook also injects the active backend/mode and directs the session to invoke
+`apex-orchestrate` first; each session opens with a `[APEX] Using APEX system -- {MODE} mode`
+banner confirming the orchestrator ran. (See [ADR-009](./docs/technical/adr/ADR-009-harden-session-start-and-write-guard.md).)
 
 ---
 
@@ -101,8 +107,11 @@ same way regardless of which backend is active.
 
 ### Claude planning mode limitations
 
-- Cannot write/edit source files (`.ts`, `.js`, `.py`, etc.) — harness blocks these
-- Can only write `.md`, `.markdown`, `.txt` files
+- Write/Edit on non-`.md` source files (`.ts`, `.js`, `.py`, etc.) is gated behind an approval
+  prompt — default guidance is to do code work in a DeepSeek coding session
+  - Exception: the APEX project itself and `~/.claude/` system files pass without prompting,
+    since APEX is self-hosting (planning mode maintains its own skills and hooks)
+- Writes `.md`, `.markdown`, `.txt` files freely
 - Cannot run build commands
 
 ---
@@ -144,4 +153,4 @@ Planning session (Claude)
 
 ---
 
-_Last updated: 2026-05-27 | DeepSeek: V4 Flash | Claude: Sonnet 4.6 / Opus 4.7_
+_Last updated: 2026-06-02 | DeepSeek: V4 Flash | Claude: Sonnet 4.6 / Opus 4.7_

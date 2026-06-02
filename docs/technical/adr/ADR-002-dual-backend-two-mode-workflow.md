@@ -50,3 +50,11 @@ forward; coding emits a handoff doc (`docs/handoff/`) back. No shared live proce
 **Neutral:**
 - Skills are pure `.md`, so planning mode can author them directly without a coding round-trip —
   the backend gate permits this (see ADR-004).
+
+---
+
+**Amendment (2026-06-02):** The PreToolUse enforcement described above was refined from a hard
+block to an **ask-gate**, with the APEX project itself and `~/.claude/` system files exempted,
+and the SessionStart hook hardened to force `apex-orchestrate` routing with a visible banner.
+The core decision here is unchanged. See
+[ADR-009](./ADR-009-harden-session-start-and-write-guard.md).
