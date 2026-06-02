@@ -84,7 +84,7 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   audit (single SKILL.md, no impl). RED→GREEN dogfooded (baseline over-counted impl.md flat + tried to
   delete co-installed gsd; skill closes both via the SP6 core-load model + scope discipline).
   Triple-written; registry domain `context-budget`; Opus-native. ✅ committed (`~/.claude` 855f9aa · repo b3f4144).
-  Remaining order: Phase 4 → 5 → 0b deep-dive → (gated) Phase 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
+  Remaining order: **▶ 0b deep-dive (next)** → (gated) Phase 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
 - **Phase 3 ⏳ (needs per-hook approval)** : deterministic-enforcement hooks — gateguard fact-forcing
   (apex-code pre-flight), safety-guard freeze/careful (apex-governance), design-quality-check (frontend anti-slop).
 - **Phase 4 ✅ DONE** (session 26): **ADR-010** — santa-method dual-pass wave review + council
@@ -96,7 +96,15 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   voices given only the question; no new agent files) + `apex-plan` v1.12.0 offers council at
   **judgment** forks (offer-only, never auto-runs; facts-uncertainty stays with research).
   ✅ committed (~/.claude 89a28ea · repo 3308c48).
-- **▶ RESUME HERE — Phase 5 ⏳** : rules-distill + skill-stocktake maintenance modes (→ apex-skill-author / apex-refresh).
+- **Phase 5 ✅ DONE** (session 26): skill-stocktake + rules-distill **folded into one mode** —
+  `apex-refresh` v1.2.0 `--stocktake` (quality audit of the skill set against the authoring
+  contract + rules-distill cross-read for 2+-skill principle promotions; Quick Scan via git diff +
+  `.stocktake-state` SHA marker, no results.json; dispatched chunked `general-purpose` subagents;
+  report-only routing to existing fix paths). Decided as one mode (not the report's two) after a
+  **live duplication probe** across 37 impl.md cores: only 2 genuine promotions surfaced
+  (no-PII-in-logs ×3, retry/backoff+idempotent ×5) — confirms rules-distill earns *inclusion* but
+  not its own command. Those 2 landed into `apex-coding-principles` v1.1.0 (NEVER/ALWAYS + Security).
+  No new skill/agent/script; no ADR (additive). ✅ committed below.
 - **Phase 6 ⏳ (gated by deep-dive)** : instinct / continuous-learning loop onto APEX memory — run `apex-deep-dive` first.
 
 ## Notes
