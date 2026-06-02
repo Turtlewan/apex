@@ -95,7 +95,7 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   Council four-voice → `apex-deep-dive` v1.3.0 (in-context Architect + 3 fresh `general-purpose`
   voices given only the question; no new agent files) + `apex-plan` v1.12.0 offers council at
   **judgment** forks (offer-only, never auto-runs; facts-uncertainty stays with research).
-  🟡 uncommitted (~/.claude skills + repo ADR-010/SKILL-HISTORY).
+  ✅ committed (~/.claude 89a28ea · repo 3308c48).
 - **▶ RESUME HERE — Phase 5 ⏳** : rules-distill + skill-stocktake maintenance modes (→ apex-skill-author / apex-refresh).
 - **Phase 6 ⏳ (gated by deep-dive)** : instinct / continuous-learning loop onto APEX memory — run `apex-deep-dive` first.
 
