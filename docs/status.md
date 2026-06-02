@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-02 (session 24)
+_Last updated by planning mode:_ 2026-06-02 (session 25)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -80,11 +80,14 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   competing-prompt strictness in the Iron Law); prompt-defense baseline added to global
   `~/.claude/CLAUDE.md` §6 (agent self-defense); strategic-compact guidance → `apex-orchestrate`
   v1.2.0 (§ Strategic compaction). ✅ committed (`~/.claude` 5efa3c2 · repo 5ee8446).
-- **▶ RESUME HERE — Phase 2 ⏳** : new `apex-context-budget` skill (planning-mode token audit).
-  Then Phase 4 → 5 → (gated) 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
+- **Phase 2 ✅ DONE** (session 25): new `apex-context-budget` v1.0.0 — planning-mode token/context-rot
+  audit (single SKILL.md, no impl). RED→GREEN dogfooded (baseline over-counted impl.md flat + tried to
+  delete co-installed gsd; skill closes both via the SP6 core-load model + scope discipline).
+  Triple-written; registry domain `context-budget`; Opus-native. ✅ uncommitted (`~/.claude` + repo index).
+  Remaining order: Phase 4 → 5 → 0b deep-dive → (gated) Phase 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
 - **Phase 3 ⏳ (needs per-hook approval)** : deterministic-enforcement hooks — gateguard fact-forcing
   (apex-code pre-flight), safety-guard freeze/careful (apex-governance), design-quality-check (frontend anti-slop).
-- **Phase 4 ⏳** : santa-method dual-reviewer (→ apex-reviewer/wave-reviewer, likely ADR) + council four-voice (→ apex-deep-dive).
+- **▶ RESUME HERE — Phase 4 ⏳** : santa-method dual-reviewer (→ apex-reviewer/wave-reviewer, likely ADR) + council four-voice (→ apex-deep-dive).
 - **Phase 5 ⏳** : rules-distill + skill-stocktake maintenance modes (→ apex-skill-author / apex-refresh).
 - **Phase 6 ⏳ (gated by deep-dive)** : instinct / continuous-learning loop onto APEX memory — run `apex-deep-dive` first.
 

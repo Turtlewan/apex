@@ -23,6 +23,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-debug** | Bug / root cause / broken / not working | auto via orchestrate |
 | **apex-research** | Research any topic before deciding | invoke explicitly |
 | **apex-skill-author** | Creating or editing any APEX skill | invoke explicitly |
+| **apex-context-budget** | Auditing/reducing context-token overhead — "how much context", headroom before adding skills/MCP, leanness review | invoke explicitly |
 | **apex-architecture** | Codebase architecture, DDD, ADRs | topic keyword |
 | **apex-system-design** | Distributed systems, CAP, queues, caching (scale-gated) | topic keyword |
 | **apex-security** | OWASP Top 10:2025, threat model, supply-chain, escalation gates (stack-neutral) | topic keyword |
@@ -103,6 +104,14 @@ signal → handoff, unfixed → GitHub Issue via apex-github).
 narrative only, since git + status.md own what-changed and live state); defines the
 triage-drain (inbox-zero) read rule and the status.md In-Flight State enum
 (`partial`/`blocked`/`parked`).
+
+**apex-context-budget** — Planning-mode token/context-rot audit (makes the orchestrator's
+context-rot doctrine measurable). Inventories what *actually* loads per session — the CLAUDE.md
+chain, matched specialist SKILL.md, `impl.md` **cores** (SP6 two-tier, not whole files), agent
+descriptions, MCP schemas (accounting for ToolSearch deferral) — classifies each Always/Sometimes
+/Rarely, and returns ranked savings with a forced top-3. Analysis only: never edits a component
+(trimming is apex-skill-author) and scopes out co-installed non-APEX systems as informational.
+Invoke before adding a batch of skills/agents/MCP servers, or for a leanness review.
 
 ---
 

@@ -3,6 +3,8 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-06-02 | apex-context-budget | SKILL.md (new) + registry/domains.md + SKILLS.md | 1.0.0 | created | New planning-mode token/context-rot audit skill (ECC absorption Phase 2). Inventories what *actually* loads (CLAUDE.md chain, matched skills, impl.md **cores** per SP6, agent descriptions, MCP schemas w/ ToolSearch deferral), classifies Always/Sometimes/Rarely, forced top-3 savings. RED→GREEN dogfooded: baseline over-counted impl.md flat + prescribed deleting co-installed gsd; skill closes both. Single SKILL.md (no impl — pure analysis). | ECC context-budget |
+
 ## Opus 4.8 first-pass tracker
 
 One-time-sweep marker — which skills have had their first review/edit by **Opus 4.8**.
@@ -12,6 +14,7 @@ touched it once," not a quality guarantee.
 
 **Done (Opus 4.8 first-pass complete):**
 - apex-code — 2026-05-30
+- apex-context-budget — 2026-06-02 (created Opus-native — ECC Phase 2)
 - apex-debug — 2026-05-30
 - apex-github — 2026-05-30
 - apex-handoff — 2026-05-30
