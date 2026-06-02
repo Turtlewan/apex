@@ -20,7 +20,9 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- PLANNING:START -->
 ## Pending Specs
-_None — `docs/changes/` is empty; all specs completed (see `docs/changes/done/`)._
+| Spec | Summary |
+|------|---------|
+| `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **Gated on a live Mac coding env** — unvalidatable on Windows planning; needs settings.json approval (ADR-012). |
 
 ## Finalisation initiative — gearing APEX for the Artemis platform
 Goal: ready APEX before building the user's largest app — **Artemis**, a personal assistant that
@@ -84,9 +86,21 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   audit (single SKILL.md, no impl). RED→GREEN dogfooded (baseline over-counted impl.md flat + tried to
   delete co-installed gsd; skill closes both via the SP6 core-load model + scope discipline).
   Triple-written; registry domain `context-budget`; Opus-native. ✅ committed (`~/.claude` 855f9aa · repo b3f4144).
-  Remaining order: **▶ 0b deep-dive (next)** → (gated) Phase 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
-- **Phase 3 ⏳ (needs per-hook approval)** : deterministic-enforcement hooks — gateguard fact-forcing
-  (apex-code pre-flight), safety-guard freeze/careful (apex-governance), design-quality-check (frontend anti-slop).
+  **ECC absorption initiative COMPLETE** (session 26) — all phases resolved; see closeout below.
+- **0b — instinct-loop deep-dive ✅ DONE** (session 26): Council mode (ADR-010) — three fresh voices
+  converged **no-go** on porting ECC's automatic instinct engine. Decision **ADR-011**: no engine
+  (no hook/confidence/`/evolve`); make learning an explicit convention on the existing rail —
+  `apex-plan` v1.13.0 handoff-drain folds lessons into `feedback` memories, cross-handoff recurrence
+  → human-gated promotion via `--stocktake`/`apex-skill-author` (Iron Law preserved). Analysis:
+  `docs/findings/instinct-loop-deep-dive.md`. 🟡 uncommitted (~/.claude apex-plan; repo ADR-011 + findings + history + status).
+- **Phase 3 ✅ RESOLVED — mostly rejected** (session 26, ADR-012): read ECC's actual
+  `gateguard-fact-force.js` and reconsidered. **gateguard fact-forcing dropped** (it's a voluntary
+  speed-bump not a gate, no-ops in subagents where APEX edits happen, and the investigation it forces is
+  already done upstream by the planning/coding split + downstream Verification Recipe / dual review).
+  **design-quality-check dropped** (judgment home is planning — shipped Phase 1). **Freeze deferred**
+  (spec-parsing fragility; needs live Mac). **Kept one piece:** a deterministic destructive-command
+  **hard-block** for coding mode (true `deny`, reuses gateguard's parser) — the only real gap-filler;
+  spec `coding-destructive-command-guard.md` queued, **gated on a live Mac**.
 - **Phase 4 ✅ DONE** (session 26): **ADR-010** — santa-method dual-pass wave review + council
   anti-anchoring. `apex-code` v1.8.0 dispatches **two** isolated `apex-wave-reviewer` passes per
   critical-subset domain (auth/security/data — already the only wave-reviewed set), worst-of-two
@@ -105,7 +119,19 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   (no-PII-in-logs ×3, retry/backoff+idempotent ×5) — confirms rules-distill earns *inclusion* but
   not its own command. Those 2 landed into `apex-coding-principles` v1.1.0 (NEVER/ALWAYS + Security).
   No new skill/agent/script; no ADR (additive). ✅ committed (~/.claude f55727f · repo f01efbd).
-- **Phase 6 ⏳ (gated by deep-dive)** : instinct / continuous-learning loop onto APEX memory — run `apex-deep-dive` first.
+- **Phase 6 ✅ CLOSED — no engine** (session 26, ADR-011): the 0b Council converged against porting
+  ECC's automatic instinct engine. Redefined to a one-line convention on `apex-plan`'s handoff-drain
+  (landed in v1.13.0) — no hook, no confidence scoring, no `/evolve`, no DeepSeek build. The "manual
+  learning gap" is a *feature* here: the human gate keeps the weak coding model from poisoning skills.
+
+**Closeout (session 26).** Of ECC's ~8 candidate mechanisms, APEX **adopted** those that filled real
+gaps as markdown/skill upgrades — context-budget (Phase 2), council + santa-method (Phase 4),
+stocktake + rules-distill (Phase 5), skill-comply→Iron Law + prompt-defense + strategic-compact +
+design details (Phase 1) — and **rejected both hook-heavy mechanisms after deep reads**: the instinct
+engine (ADR-011) and gateguard (ADR-012), because APEX's planning/coding split + Verification Recipe +
+dual review already serve what they were for. One small deferred item remains: the coding-side
+destructive-command hard-block (spec queued, gated on a live Mac). **Imported the judgment, rejected the
+bloat — initiative complete.**
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
@@ -132,6 +158,10 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
 - **Opus 4.8 content sweep** → now **SP5** of the finalisation plan (~36 skills pending;
   `description` backfill folds into each sweep). Tracker at the top of `SKILL-HISTORY.md`.
 - **Potential new skill domains** — `apex-payments`, `apex-email` — not prioritised.
+- **safety-guard Freeze (enforced scope-lock)** — deferred from ECC Phase 3 (ADR-012). A PreToolUse hook
+  that locks coding-mode writes to the active spec's `Files to Change`. Real value but fragile (must
+  parse spec/status at runtime); revisit once the Mac coding env is live and the destructive-command
+  guard has proven the hook pattern there.
 _(Large-scale app dev → now SP3; stack↔capability composition + agent wiring → now SP2; both moved
 out of "parked" into the active finalisation plan.)_
 <!-- PLANNING:END -->
