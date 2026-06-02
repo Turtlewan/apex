@@ -104,7 +104,7 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   **live duplication probe** across 37 impl.md cores: only 2 genuine promotions surfaced
   (no-PII-in-logs ×3, retry/backoff+idempotent ×5) — confirms rules-distill earns *inclusion* but
   not its own command. Those 2 landed into `apex-coding-principles` v1.1.0 (NEVER/ALWAYS + Security).
-  No new skill/agent/script; no ADR (additive). ✅ committed below.
+  No new skill/agent/script; no ADR (additive). ✅ committed (~/.claude f55727f · repo f01efbd).
 - **Phase 6 ⏳ (gated by deep-dive)** : instinct / continuous-learning loop onto APEX memory — run `apex-deep-dive` first.
 
 ## Notes
