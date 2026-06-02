@@ -83,7 +83,7 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
 - **Phase 2 ✅ DONE** (session 25): new `apex-context-budget` v1.0.0 — planning-mode token/context-rot
   audit (single SKILL.md, no impl). RED→GREEN dogfooded (baseline over-counted impl.md flat + tried to
   delete co-installed gsd; skill closes both via the SP6 core-load model + scope discipline).
-  Triple-written; registry domain `context-budget`; Opus-native. ✅ uncommitted (`~/.claude` + repo index).
+  Triple-written; registry domain `context-budget`; Opus-native. ✅ committed (`~/.claude` 855f9aa · repo b3f4144).
   Remaining order: Phase 4 → 5 → 0b deep-dive → (gated) Phase 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
 - **Phase 3 ⏳ (needs per-hook approval)** : deterministic-enforcement hooks — gateguard fact-forcing
   (apex-code pre-flight), safety-guard freeze/careful (apex-governance), design-quality-check (frontend anti-slop).
