@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-02 (session 23)
+_Last updated by planning mode:_ 2026-06-02 (session 24)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -65,6 +65,27 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   apex-refresh. Full per-skill detail in `SKILL-HISTORY.md`.
 
 _Prior buildability layer (clusters 1–5, ADR-005/006) is complete — see git history + `SKILL-HISTORY.md`._
+
+## ECC absorption initiative — selectively porting "Everything Claude Code"
+Source analysis: **`docs/research/ecc-analysis.md`** (exhaustive sweep of affaan-m/ECC — 249 skills,
+63 agents, hook surface). Goal: import the ~8 meta-mechanisms + design details that fix APEX's two
+real gaps (**prose-only enforcement**, **manual learning**) — reject the bloat. Full ranked plan +
+phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
+
+- **Phase 1 — design slice ✅ DONE** (session 24): `apex-ui-ux-design` v1.2.0 (AI-slop detection +
+  scored visual-audit rubric in SKILL; concentric-radius/optical-alignment/tabular-nums/text-wrap/
+  font-smoothing/image-outline micro-polish in impl) + `apex-animation` v1.2.0 (SSR-safe initial,
+  `layoutId`, stagger 0.05–0.10s, `mode="wait"` in impl). 🟡 uncommitted.
+- **Phase 1 — remaining ✅ DONE** (session 24): `apex-skill-author` v1.4.0 (prompt-independence /
+  competing-prompt strictness in the Iron Law); prompt-defense baseline added to global
+  `~/.claude/CLAUDE.md` §6 (agent self-defense); strategic-compact guidance → `apex-orchestrate`
+  v1.2.0 (§ Strategic compaction). 🟡 uncommitted (repo: SKILL-HISTORY.md, status.md).
+- **Phase 2 ⏳** : new `apex-context-budget` skill (planning-mode token audit).
+- **Phase 3 ⏳ (needs per-hook approval)** : deterministic-enforcement hooks — gateguard fact-forcing
+  (apex-code pre-flight), safety-guard freeze/careful (apex-governance), design-quality-check (frontend anti-slop).
+- **Phase 4 ⏳** : santa-method dual-reviewer (→ apex-reviewer/wave-reviewer, likely ADR) + council four-voice (→ apex-deep-dive).
+- **Phase 5 ⏳** : rules-distill + skill-stocktake maintenance modes (→ apex-skill-author / apex-refresh).
+- **Phase 6 ⏳ (gated by deep-dive)** : instinct / continuous-learning loop onto APEX memory — run `apex-deep-dive` first.
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
