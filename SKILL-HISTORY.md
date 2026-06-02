@@ -3,6 +3,9 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-06-02 | apex-code | SKILL.md | 1.8.0 | updated (SKILL) | Santa-method dual-pass wave review (ECC absorption Phase 4, ADR-010): each matched critical-subset domain (auth/security/data) reviewed by **two** isolated `apex-wave-reviewer` passes; verdicts unioned worst-of-two, findings deduped; one-retry cap re-dispatches both passes; `risk: low` spec flag downgrades to single-pass. Agent definition unchanged (stateless/isolated already). | ECC santa-method; ADR-010 |
+| 2026-06-02 | apex-deep-dive | SKILL.md | 1.3.0 | updated (SKILL) | Council mode (ECC absorption Phase 4, ADR-010): anti-anchoring four-voice for go/no-go calls — in-context Architect + 3 fresh `general-purpose` voices (Skeptic/Pragmatist/Critic) given only the question (no proposal, no history); council dissent supersedes the lone Opposing View. No new agent files (ADR-007 leanness). | ECC council; ADR-010 |
+| 2026-06-02 | apex-plan | SKILL.md | 1.12.0 | updated (SKILL) | Research gate now offers **Council** (`apex-deep-dive`) at *judgment* forks (options understood, no factual tiebreaker) vs web research for facts-uncertainty; offer-only, never auto-runs (ADR-010). Backfilled trigger-style `description` (was missing). | ADR-010 |
 | 2026-06-02 | apex-context-budget | SKILL.md (new) + registry/domains.md + SKILLS.md | 1.0.0 | created | New planning-mode token/context-rot audit skill (ECC absorption Phase 2). Inventories what *actually* loads (CLAUDE.md chain, matched skills, impl.md **cores** per SP6, agent descriptions, MCP schemas w/ ToolSearch deferral), classifies Always/Sometimes/Rarely, forced top-3 savings. RED→GREEN dogfooded: baseline over-counted impl.md flat + prescribed deleting co-installed gsd; skill closes both. Single SKILL.md (no impl — pure analysis). | ECC context-budget |
 
 ## Opus 4.8 first-pass tracker

@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-02 (session 25)
+_Last updated by planning mode:_ 2026-06-02 (session 26)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -87,8 +87,16 @@ phases in the report's §7/§10/§11. Execution started session 24 (2026-06-02).
   Remaining order: Phase 4 → 5 → 0b deep-dive → (gated) Phase 3 → 6. Per-phase detail in `docs/research/ecc-analysis.md` §11.
 - **Phase 3 ⏳ (needs per-hook approval)** : deterministic-enforcement hooks — gateguard fact-forcing
   (apex-code pre-flight), safety-guard freeze/careful (apex-governance), design-quality-check (frontend anti-slop).
-- **▶ RESUME HERE — Phase 4 ⏳** : santa-method dual-reviewer (→ apex-reviewer/wave-reviewer, likely ADR) + council four-voice (→ apex-deep-dive).
-- **Phase 5 ⏳** : rules-distill + skill-stocktake maintenance modes (→ apex-skill-author / apex-refresh).
+- **Phase 4 ✅ DONE** (session 26): **ADR-010** — santa-method dual-pass wave review + council
+  anti-anchoring. `apex-code` v1.8.0 dispatches **two** isolated `apex-wave-reviewer` passes per
+  critical-subset domain (auth/security/data — already the only wave-reviewed set), worst-of-two
+  union, one-retry re-dispatches both passes, `risk: low` spec flag downgrades to single-pass
+  (wave-review surface only; `apex-wave-reviewer.md` unchanged — stateless/isolated already).
+  Council four-voice → `apex-deep-dive` v1.3.0 (in-context Architect + 3 fresh `general-purpose`
+  voices given only the question; no new agent files) + `apex-plan` v1.12.0 offers council at
+  **judgment** forks (offer-only, never auto-runs; facts-uncertainty stays with research).
+  🟡 uncommitted (~/.claude skills + repo ADR-010/SKILL-HISTORY).
+- **▶ RESUME HERE — Phase 5 ⏳** : rules-distill + skill-stocktake maintenance modes (→ apex-skill-author / apex-refresh).
 - **Phase 6 ⏳ (gated by deep-dive)** : instinct / continuous-learning loop onto APEX memory — run `apex-deep-dive` first.
 
 ## Notes
