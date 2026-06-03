@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-02 (session 26)
+_Last updated by planning mode:_ 2026-06-03 (session 27)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -139,6 +139,16 @@ dual review already serve what they were for. One small deferred item remains: t
 destructive-command hard-block (spec queued, gated on a live Mac). **Imported the judgment, rejected the
 bloat — initiative complete.**
 
+## Odysseus comparison (one-shot, session 27) — COMPLETE
+Ran the ECC-style "compare + selectively absorb" play against PewDiePie's **Odysseus** (MIT
+self-hosted AI workspace). Finding: the viral council/64-model-swarm are **not in the repo** (a
+YouTube experiment); the shipped app is a thinner APEX-mechanism donor than ECC, and APEX already
+has safer equivalents (ADR-010 council; parallel dispatch). Full analysis: **`docs/research/odysseus-analysis.md`**.
+- **Landed (Lens A, A1):** `apex-governance` v1.3.0 + `apex-deep-dive` v1.4.0 — **evaluator-independence
+  (anti-collusion) invariant** distilled from the council collusion. Everything else Lens-A was a
+  note/reject (see analysis §2). 🟡 uncommitted.
+- **Lens B (Artemis prior-art):** user is capturing this separately — not tracked here.
+
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
 - **Pipeline artifact model is implemented** (clusters A–E, 2026-05-30): thin handoff +
@@ -173,6 +183,10 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
 - **Opus 4.8 content sweep** → now **SP5** of the finalisation plan (~36 skills pending;
   `description` backfill folds into each sweep). Tracker at the top of `SKILL-HISTORY.md`.
 - **Potential new skill domains** — `apex-payments`, `apex-email` — not prioritised.
+- **Cheap-model tiered dispatch** (Odysseus-analysis A6, Mac-gated) — a cheap local-model tier for
+  wide/low-stakes fan-out (breadth scans, first-pass triage), reserving strong agents for synthesis.
+  No-op today (APEX runs Claude/DeepSeek, no local small-model tier); revisit when the Mac-mini host
+  can serve a small local model. Detail in `docs/research/odysseus-analysis.md` §2.
 - **safety-guard Freeze (enforced scope-lock)** — deferred from ECC Phase 3 (ADR-012). A PreToolUse hook
   that locks coding-mode writes to the active spec's `Files to Change`. Real value but fragile (must
   parse spec/status at runtime); revisit once the Mac coding env is live and the destructive-command
