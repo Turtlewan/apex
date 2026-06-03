@@ -154,7 +154,7 @@ Superpowers, Aider, Cline/Roo, OpenSpec). 8 parallel dedup-aware + token-flagged
 **`docs/research/donor-analysis/`** (README synthesis + 8 per-system files).
 - **Two new ADRs:** **ADR-013** app-flow artifact (resolves SP0 Appflow) · **ADR-014** System Overview
   as living capability index (merge-on-archive; token-guardrailed terse index).
-- **Skills wired (🟡 uncommitted):** apex-docs-technical 1.2.0 · apex-init 1.4.0 · apex-ui-ux-design
+- **Skills wired (✅ ~/.claude 5f3f799 · repo 2a076f4):** apex-docs-technical 1.2.0 · apex-init 1.4.0 · apex-ui-ux-design
   1.3.0 · apex-plan 1.14.0 · apex-code 1.9.0 · apex-coding-principles 1.2.0 · apex-context-budget 1.1.0
   · apex-governance 1.4.0. Landed: app-flow doc, living-capability overview + merge-on-archive,
   readiness-gate hardening (coverage audit + clarify markers + self-review), 4-status worker contract,
