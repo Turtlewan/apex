@@ -37,12 +37,11 @@ detail: **`docs/research/apex-finalisation-plan.md`**.
   assistant that integrates with everything; the RAG second brain is one subsystem.** **Deferred:**
   proper requirements-gathering for the whole Artemis platform → decompose → re-confirm/revise the
   stack, **after** APEX hardening and **before** app `apex-init`. Candidate seed only, not locked.
-  - **Doc-coverage question for this pass:** APEX natively covers PRD (PROJECT/REQUIREMENTS),
-    TRD (ADRs + stack binding), Backend Schema (data-model.md + apex-data), and Implementation
-    plan (docs/changes specs); UI/UX is judgment (no persisted doc by default). The one gap vs the
-    common "6 docs before building" checklist is **Appflow** (screen-map / user journeys). **Decide
-    during this pass:** whether Artemis (UI-heavy assistant) warrants a first-class app-flow artifact
-    + a persisted UI/UX design doc (or borrow GSD's `UI-SPEC.md`), or folds them into REQUIREMENTS.
+  - **Doc-coverage question — ✅ RESOLVED (ADR-013, session 27).** The **Appflow** gap (screen-map /
+    user journeys) is now closed by a first-class scope-gated **`app-flow.md`** artifact (seeded by
+    apex-init, owned by apex-ui-ux-design, gated at the apex-plan readiness gate). Decision: persist
+    **flow only** (screens/journeys/states); **visual UI/UX design stays un-persisted judgment + Figma**
+    (no borrowed UI-SPEC visual doc). Artemis inherits it automatically as a UI-bearing project.
 - **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
   (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.
 - **SP2 ✅ / SP3 ✅ / SP4 ✅ decided** (plan §6): SP2 = Method C (no capability binding — capability
@@ -146,8 +145,25 @@ YouTube experiment); the shipped app is a thinner APEX-mechanism donor than ECC,
 has safer equivalents (ADR-010 council; parallel dispatch). Full analysis: **`docs/research/odysseus-analysis.md`**.
 - **Landed (Lens A, A1):** `apex-governance` v1.3.0 + `apex-deep-dive` v1.4.0 — **evaluator-independence
   (anti-collusion) invariant** distilled from the council collusion. Everything else Lens-A was a
-  note/reject (see analysis §2). 🟡 uncommitted.
+  note/reject (see analysis §2). ✅ ~/.claude e4c0773 · repo 2288156.
 - **Lens B (Artemis prior-art):** user is capturing this separately — not tracked here.
+
+## Donor-system absorption pass (session 27) — Batch A+B landed
+ECC-style compare-and-absorb over **8** dev systems (Tier 1: Kiro, BMAD, Spec-Kit, GSD · Tier 2:
+Superpowers, Aider, Cline/Roo, OpenSpec). 8 parallel dedup-aware + token-flagged agents. Full report:
+**`docs/research/donor-analysis/`** (README synthesis + 8 per-system files).
+- **Two new ADRs:** **ADR-013** app-flow artifact (resolves SP0 Appflow) · **ADR-014** System Overview
+  as living capability index (merge-on-archive; token-guardrailed terse index).
+- **Skills wired (🟡 uncommitted):** apex-docs-technical 1.2.0 · apex-init 1.4.0 · apex-ui-ux-design
+  1.3.0 · apex-plan 1.14.0 · apex-code 1.9.0 · apex-coding-principles 1.2.0 · apex-context-budget 1.1.0
+  · apex-governance 1.4.0. Landed: app-flow doc, living-capability overview + merge-on-archive,
+  readiness-gate hardening (coverage audit + clarify markers + self-review), 4-status worker contract,
+  edit-format reliability + git-stash checkpoint, conditional loading + ~70% tripwire, receiving-review
+  discipline, scale-adaptive mode, brownfield gate (reuse gsd-map-codebase).
+- **Rejected as token traps / dedup** (report §3/§4): BMAD 12-agent pipeline, GSD phase-spine + Node
+  toolchain + graphify + auto-learning, Aider repo-map-in-coder, Roo orchestrator, Spec-Kit
+  constitution-versioning, git worktrees.
+- **Parked (Bundle C extras, not in §1/§2):** Kiro agent-hooks, planning-side repo-map discovery.
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
