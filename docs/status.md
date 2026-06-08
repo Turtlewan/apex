@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-03 (session 27)
+_Last updated by planning mode:_ 2026-06-08 (session 28)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -23,6 +23,8 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | Spec | Summary |
 |------|---------|
 | `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **Gated on a live Mac coding env** — unvalidatable on Windows planning; needs settings.json approval (ADR-012). |
+
+_Applied this session (2026-06-05) → `done/`: `taste-rules-distill.md` (apex-animation 1.2.0/impl 1.3.0 + apex-ui-ux-design 1.4.0/impl 1.3.0) · `research-dispatch-recipe.md` (apex-research 1.2.0 + references template). 🟡 uncommitted._
 
 ## Finalisation initiative — gearing APEX for the Artemis platform
 Goal: ready APEX before building the user's largest app — **Artemis**, a personal assistant that
@@ -165,6 +167,20 @@ Superpowers, Aider, Cline/Roo, OpenSpec). 8 parallel dedup-aware + token-flagged
   constitution-versioning, git worktrees.
 - **Parked (Bundle C extras, not in §1/§2):** Kiro agent-hooks, planning-side repo-map discovery.
 
+## Dispatch-contracts pass (session 28) — ADR-015
+Scoped research on subagent dispatch vs **first-party** Anthropic orchestration guidance (first time
+measured against primary sources, not donor systems). Core validated; one invariant codified.
+Research: **`docs/research/subagent-dispatch-improvements.md`** (+ `dispatch-study/`).
+- **ADR-015:** dispatch **return-contract** invariant (children return small — deep/exploratory write
+  full output to disk + return ≤1–2k summary/pointer; verdict/status children return their fixed
+  shape) **+** evaluator-optimizer kept **capped at one rule-evaluated retry** (rejected multi-round:
+  98%→57% trivial-task degradation, ADR-011 drift-guard).
+- **Skills (🟡 uncommitted, ~/.claude):** apex-orchestrate 1.3.0 · apex-skill-author 1.5.0.
+- **Parked (ADR-015):** cross-model-family 2nd review pass (needs Mac co-locating Claude+DeepSeek);
+  honest tension that multi-agent is a weak fit for *coding* fan-out (payoff = throughput, not answer
+  quality) — don't over-invest coding-side parallelism.
+- ⚠️ Lightweight Iron Law (convention edit codifying existing practice) — flagged for retroactive rigor.
+
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
 - **Pipeline artifact model is implemented** (clusters A–E, 2026-05-30): thin handoff +
@@ -183,6 +199,12 @@ _status.md holds current state only — session history lives in git + handoff d
 _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
+
+### Deferred to next session (paused 2026-06-05 — repo-studies pass)
+- **Commit the apex-repo changes** — uncommitted: `status.md`, `SKILL-HISTORY.md`, `docs/research/repo-studies/` (8 + README), `docs/changes/done/{taste-rules-distill,research-dispatch-recipe}.md`. (Skill `.md` edits themselves live in `~/.claude/`, outside the repo.)
+- **Retroactive lightweight Iron-Law baseline** on the new taste/animation rules — applied without a bare-agent baseline (defensible per [[iron-law-application-depth]]; flagged for rigor).
+- **Security-ops expansion question** — whether APEX adds `apex-detection`/`apex-incident-response` or just an SBOM annex to apex-security (from the cybersecurity repo). Leaning: no SOC, SBOM annex only.
+- **Clone Lens-B source repos into `artemis/.research/`** (odysseus pattern) — optional; brief + verified URLs already captured.
 
 ## Future Discussions (parked)
 - **Vercel `agent-browser` for agentic UI verification** (gated on a live Mac coding env) — trial
