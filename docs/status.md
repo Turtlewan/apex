@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-08 (session 28)
+_Last updated by planning mode:_ 2026-06-08 (session 29 — apex-realtime 1.2.0 voice/WebRTC tier landed; AgentMD + realtime currency research)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -181,6 +181,15 @@ Research: **`docs/research/subagent-dispatch-improvements.md`** (+ `dispatch-stu
   quality) — don't over-invest coding-side parallelism.
 - ⚠️ Lightweight Iron Law (convention edit codifying existing practice) — flagged for retroactive rigor.
 
+## DOX comparison (one-shot, session 30) — COMPLETE, rejected
+Compare-and-absorb over **agent0ai/DOX** (pure-Markdown hierarchical `AGENTS.md` framework). Finding:
+near-total **dup** of APEX's existing disciplines (CLAUDE.md chain, System Overview index ADR-014,
+read-before-edit loop, status.md "current-state-only" / delete-stale), and its one novel mechanism —
+auto-generating a per-directory context-file tree — is the **evidence-backed failure mode** from
+`agentmd-context-files-study.md` (arXiv:2602.11988: auto-gen files −success, ~20% cost tax). **Rejected
+as a system; nothing absorbed** (R1 "child can't weaken parent" declined — APEX hard-block floor already
+covers it). Value = validating signal that APEX's style contract is right. Report: **`docs/research/dox-analysis.md`** (🟡 uncommitted). Reaffirms the two parked AgentMD watch-items.
+
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
 - **Pipeline artifact model is implemented** (clusters A–E, 2026-05-30): thin handoff +
@@ -199,6 +208,13 @@ _status.md holds current state only — session history lives in git + handoff d
 _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
+
+### Deferred to next session (paused 2026-06-08 — social-media RAG/voice filter)
+- **apex-realtime 1.2.0 landed** — added live-voice / WebRTC transport tier (triple-write done in `~/.claude`; repo-side 🟡 uncommitted: `SKILLS.md`, `SKILL-HISTORY.md`, `docs/research/realtime-currency-check.md`).
+- **AgentMD context-files study verified** (arXiv:2602.11988) — real but OVERSTATED; reinforces lean-context discipline (auto-generated files hurt, human-written +4%; ~20% cost tax on both). Report 🟡 `docs/research/agentmd-context-files-study.md`.
+- **Follow-up — `references/voice-pipeline.md`** (apex-realtime per-stack LiveKit/Pipecat wiring): deferred, not written.
+- **Parked (AgentMD watch-items):** (a) add an "is this inferable from the repo?" deletion criterion to `apex-context-budget`/`apex-refresh`; (b) never add an auto-generate-CLAUDE.md feature. (Declined this session — option #2.)
+- **Artemis BACKLOG** — 5 RAG/security candidates dumped into `artemis/BACKLOG.md` (2026-06-08) from the social-media filter; await SP0-drain.
 
 ### Deferred to next session (paused 2026-06-05 — repo-studies pass)
 - **Commit the apex-repo changes** — uncommitted: `status.md`, `SKILL-HISTORY.md`, `docs/research/repo-studies/` (8 + README), `docs/changes/done/{taste-rules-distill,research-dispatch-recipe}.md`. (Skill `.md` edits themselves live in `~/.claude/`, outside the repo.)
