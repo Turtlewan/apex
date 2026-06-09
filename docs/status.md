@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-08 (session 29 — apex-realtime 1.2.0 voice/WebRTC tier landed; AgentMD + realtime currency research)
+_Last updated by planning mode:_ 2026-06-09 (session 31 — resolved DeepSeek V4 Flash published context window = 1M/384K; proxy pass-through still Mac-gated)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -208,6 +208,29 @@ _status.md holds current state only — session history lives in git + handoff d
 _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
+
+### Deferred to next session (paused 2026-06-09 — coding-mode context window)
+- **Verify coding-mode (DeepSeek) actual context window — Mac-gated.** Open question: is coding mode
+  getting the context window we assume? `/context` in *planning* shows Opus 4.8 at 1M (29% used) — but
+  that says nothing about DeepSeek. The 1M window is a Claude-model property, not an Anthropic-wide
+  switch; DeepSeek V4 Flash has its own ceiling, and Claude Code's `/context` denominator is **not
+  authoritative** against a custom `ANTHROPIC_BASE_URL` (it shows CC's *assumed* window, not the
+  endpoint's true one). **How to check (on the Mac):** (1) read `$env:ANTHROPIC_BASE_URL` /
+  `ANTHROPIC_MODEL` + the settings.json `env` block; (2) `curl $BASE/v1/models` (OpenAI-compatible) —
+  but if it's a DeepSeek→Anthropic proxy, query the proxy and note the proxy's pass-through cap may be
+  lower than native; (3) DeepSeek's published spec = ground truth for the native window; (4) empirical
+  probe — **discriminating, not confirmatory.** Send ONE request sized *in the gap* between the
+  competing windows (~700–900K tokens — above the small-window candidates ≤384K, below the claimed
+  1M): a **success (200)** proves the usable window is ≥ that size and separates 1M-class from a
+  proxy-capped small window; a context-exceeded **400** proves it is below. (An oversized ~2M probe
+  is **non-discriminating** — every hypothesis fails it, so it proves nothing beyond "cap < 2M.") To
+  pin the exact cap, binary-search the boundary upward to the first failure.
+  - **✅ Published native window resolved (session 31, 2026-06-09):** DeepSeek V4 Flash =
+    **1M-token context / 384K max output** — official DeepSeek docs state "1M context is now the
+    default across all official DeepSeek services." This is the expected number to check the Mac
+    against. **Still Mac-gated:** whether APEX's `deepseek` base-URL *proxy* passes the full 1M
+    through to coding mode (proxy cap may be < native) — needs the empirical `curl`/oversized-input
+    probe. Source: api-docs.deepseek.com.
 
 ### Deferred to next session (paused 2026-06-08 — social-media RAG/voice filter)
 - **apex-realtime 1.2.0 landed** — added live-voice / WebRTC transport tier (triple-write done in `~/.claude`; repo-side 🟡 uncommitted: `SKILLS.md`, `SKILL-HISTORY.md`, `docs/research/realtime-currency-check.md`).
