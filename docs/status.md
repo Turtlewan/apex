@@ -198,7 +198,11 @@ Research: **`docs/research/subagent-dispatch-improvements.md`** (+ `dispatch-stu
   shape) **+** evaluator-optimizer kept **capped at one rule-evaluated retry** (rejected multi-round:
   98%→57% trivial-task degradation, ADR-011 drift-guard).
 - **Skills:** apex-orchestrate 1.3.0 · apex-skill-author 1.5.0. ✅ committed (~/.claude 95093f0 sweep).
-- **Parked (ADR-015):** cross-model-family 2nd review pass (needs Mac co-locating Claude+DeepSeek);
+- **Cross-model review — WIRED as opt-in (session 32, 2026-06-10):** spec flag `cross_model_review: true`
+  → apex-code post-build dispatches an independent 2nd review on the other model family (apex-governance
+  1.6.0 contract + apex-code 1.11.0 + apex-plan 1.16.0 + spec-template flag). **Executable path still
+  Mac-gated** (needs Claude+DeepSeek co-located); single-backend hosts record a flag, never silent-skip.
+  First real Mac run = its Iron-Law baseline. (Was ADR-015 parked.)
   honest tension that multi-agent is a weak fit for *coding* fan-out (payoff = throughput, not answer
   quality) — don't over-invest coding-side parallelism.
 - ⚠️ Lightweight Iron Law (convention edit codifying existing practice) — flagged for retroactive rigor.

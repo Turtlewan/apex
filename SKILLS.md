@@ -24,7 +24,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-research** | Research any topic before deciding | invoke explicitly |
 | **apex-skill-author** | Creating or editing any APEX skill | invoke explicitly |
 | **apex-context-budget** | Auditing/reducing context-token overhead — "how much context", headroom before adding skills/MCP, leanness review | invoke explicitly |
-| **apex-governance** | Autonomy levels L0–L5, approval gates, hard blocks (canonical home), critical-file confirmation | referenced by orchestrate/code |
+| **apex-governance** | Autonomy levels L0–L5, approval gates, hard blocks (canonical home), critical-file confirmation, cross-model review | referenced by orchestrate/code |
 | **apex-refresh** | Skill-set maintenance — currency refresh, staleness audit (--audit), quality stocktake (--stocktake) | invoke explicitly |
 | **apex-deep-dive** | Researched 2-3-option analysis before an uncertain decision; Council mode at judgment forks | invoke explicitly |
 | **apex-handoff** | Handoff contract (canonical home) — thin coding→planning inbox, one-home-per-fact routing | auto via plan/code |
@@ -112,7 +112,8 @@ triage-drain (inbox-zero) read rule and the status.md In-Flight State enum
 **apex-governance** — The APEX autonomy model: Build/AFK vs Edit operating modes, autonomy
 levels L0–L5 (canonical definitions in `levels/`), approval-gate format, the permanently-
 forbidden hard-block list (canonical home — orchestrate/code carry summaries), critical-file
-confirmation, evaluator-independence invariant, and the L4+ audit log.
+confirmation, evaluator-independence invariant, opt-in **cross-model review** (independent 2nd
+review on the other model family for high-stakes builds), and the L4+ audit log.
 
 **apex-refresh** — Skill-set maintenance: research-driven currency refresh of one/all skills
 (diff + approval, never silent overwrite), date-based staleness audit (`--audit`), and the
