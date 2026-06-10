@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-09 (session 31 — resolved DeepSeek V4 Flash published context window = 1M/384K; proxy pass-through still Mac-gated)
+_Last updated by planning mode:_ 2026-06-10 (session 32 — full Fable-5 stocktake + batch update: 51 skills audited, 30 updated; see SKILL-HISTORY.md)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -24,7 +24,29 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 |------|---------|
 | `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **Gated on a live Mac coding env** — unvalidatable on Windows planning; needs settings.json approval (ADR-012). |
 
-_Applied this session (2026-06-05) → `done/`: `taste-rules-distill.md` (apex-animation 1.2.0/impl 1.3.0 + apex-ui-ux-design 1.4.0/impl 1.3.0) · `research-dispatch-recipe.md` (apex-research 1.2.0 + references template). 🟡 uncommitted._
+_Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
+
+## Fable-5 stocktake + batch update (session 32, 2026-06-10) — APPLIED
+Full `--stocktake` under the new planning model (Fable 5) with the DeepSeek-executor lens +
+end-to-end pipeline trace. 4 audit agents → report → user approved "update all" → 3 fix agents +
+inline spine edits. **30 skills updated** (all 🟡 uncommitted in `~/.claude`; repo-side SKILLS.md /
+SKILL-HISTORY.md / status.md 🟡 uncommitted). Highlights:
+- **Pipeline defects fixed:** phantom `apex-review` route; apex-init JS-stack reflex → routes to
+  apex-stack (greenfield now always binds `stack_skills`); Light-mode decomposition no longer
+  delegated to DeepSeek; orchestrate/apex-code impl-loading contradiction; governance L2/L3 vs
+  CLAUDE.md commit-discipline reconciled; `docs/progress/` capture-at-halt now drained by apex-plan.
+- **Model-asymmetry hardening:** apex-code simplicity sweep → flag-don't-act; wave inference
+  removed (apex-plan emits `## Wave plan`); testing DAMP contradiction; non-runnable verification
+  commands fixed (accessibility axe, mobile, iac broken CI example, search EXPLAIN, github/devops greps).
+- **apex-coding-principles 1.3.0:** user-requested §Surgical scope + §Scalability sections + 7
+  promoted cross-skill rules (identity-from-token, no-silent-catch, timeouts, async-UI states,
+  version pinning, one-hypothesis debug, TS strict).
+- **Fable-5 trims** (~500+ lines): system-design, iac, auth, mobile, plan, frontend, backend, aws, orchestrate.
+- **Housekeeping:** SKILLS.md +5 missing entries; registry spine-scope note; SKILL-HISTORY single-source
+  rule in apex-refresh; descriptions backfilled (handoff, ai-systems impl, stack impl, aws).
+- **Retired apex-azure + apex-gcp** (user-confirmed; recoverable from ~/.claude git history).
+- **Deferred (flagged by fix agents):** apex-system-design deeper cut (consistency/idempotency/locking
+  sections); apex-docs-product eslint flat-config variant; apex-stack research-findings refresh due.
 
 ## Finalisation initiative — gearing APEX for the Artemis platform
 Goal: ready APEX before building the user's largest app — **Artemis**, a personal assistant that
@@ -175,7 +197,7 @@ Research: **`docs/research/subagent-dispatch-improvements.md`** (+ `dispatch-stu
   full output to disk + return ≤1–2k summary/pointer; verdict/status children return their fixed
   shape) **+** evaluator-optimizer kept **capped at one rule-evaluated retry** (rejected multi-round:
   98%→57% trivial-task degradation, ADR-011 drift-guard).
-- **Skills (🟡 uncommitted, ~/.claude):** apex-orchestrate 1.3.0 · apex-skill-author 1.5.0.
+- **Skills:** apex-orchestrate 1.3.0 · apex-skill-author 1.5.0. ✅ committed (~/.claude 95093f0 sweep).
 - **Parked (ADR-015):** cross-model-family 2nd review pass (needs Mac co-locating Claude+DeepSeek);
   honest tension that multi-agent is a weak fit for *coding* fan-out (payoff = throughput, not answer
   quality) — don't over-invest coding-side parallelism.
@@ -188,7 +210,7 @@ read-before-edit loop, status.md "current-state-only" / delete-stale), and its o
 auto-generating a per-directory context-file tree — is the **evidence-backed failure mode** from
 `agentmd-context-files-study.md` (arXiv:2602.11988: auto-gen files −success, ~20% cost tax). **Rejected
 as a system; nothing absorbed** (R1 "child can't weaken parent" declined — APEX hard-block floor already
-covers it). Value = validating signal that APEX's style contract is right. Report: **`docs/research/dox-analysis.md`** (🟡 uncommitted). Reaffirms the two parked AgentMD watch-items.
+covers it). Value = validating signal that APEX's style contract is right. Report: **`docs/research/dox-analysis.md`** (✅ committed f688c51). Reaffirms the two parked AgentMD watch-items.
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
@@ -233,14 +255,13 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
     probe. Source: api-docs.deepseek.com.
 
 ### Deferred to next session (paused 2026-06-08 — social-media RAG/voice filter)
-- **apex-realtime 1.2.0 landed** — added live-voice / WebRTC transport tier (triple-write done in `~/.claude`; repo-side 🟡 uncommitted: `SKILLS.md`, `SKILL-HISTORY.md`, `docs/research/realtime-currency-check.md`).
-- **AgentMD context-files study verified** (arXiv:2602.11988) — real but OVERSTATED; reinforces lean-context discipline (auto-generated files hurt, human-written +4%; ~20% cost tax on both). Report 🟡 `docs/research/agentmd-context-files-study.md`.
+- **apex-realtime 1.2.0 landed** — live-voice / WebRTC transport tier (triple-write ✅ committed).
+- **AgentMD context-files study verified** (arXiv:2602.11988) — real but OVERSTATED; reinforces lean-context discipline (auto-generated files hurt, human-written +4%; ~20% cost tax on both). Report ✅ `docs/research/agentmd-context-files-study.md`.
 - **Follow-up — `references/voice-pipeline.md`** (apex-realtime per-stack LiveKit/Pipecat wiring): deferred, not written.
 - **Parked (AgentMD watch-items):** (a) add an "is this inferable from the repo?" deletion criterion to `apex-context-budget`/`apex-refresh`; (b) never add an auto-generate-CLAUDE.md feature. (Declined this session — option #2.)
 - **Artemis BACKLOG** — 5 RAG/security candidates dumped into `artemis/BACKLOG.md` (2026-06-08) from the social-media filter; await SP0-drain.
 
 ### Deferred to next session (paused 2026-06-05 — repo-studies pass)
-- **Commit the apex-repo changes** — uncommitted: `status.md`, `SKILL-HISTORY.md`, `docs/research/repo-studies/` (8 + README), `docs/changes/done/{taste-rules-distill,research-dispatch-recipe}.md`. (Skill `.md` edits themselves live in `~/.claude/`, outside the repo.)
 - **Retroactive lightweight Iron-Law baseline** on the new taste/animation rules — applied without a bare-agent baseline (defensible per [[iron-law-application-depth]]; flagged for rigor).
 - **Security-ops expansion question** — whether APEX adds `apex-detection`/`apex-incident-response` or just an SBOM annex to apex-security (from the cybersecurity repo). Leaning: no SOC, SBOM annex only.
 - **Clone Lens-B source repos into `artemis/.research/`** (odysseus pattern) — optional; brief + verified URLs already captured.

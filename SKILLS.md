@@ -24,6 +24,12 @@ you need. This prevents burning context on skills you won't use.
 | **apex-research** | Research any topic before deciding | invoke explicitly |
 | **apex-skill-author** | Creating or editing any APEX skill | invoke explicitly |
 | **apex-context-budget** | Auditing/reducing context-token overhead — "how much context", headroom before adding skills/MCP, leanness review | invoke explicitly |
+| **apex-governance** | Autonomy levels L0–L5, approval gates, hard blocks (canonical home), critical-file confirmation | referenced by orchestrate/code |
+| **apex-refresh** | Skill-set maintenance — currency refresh, staleness audit (--audit), quality stocktake (--stocktake) | invoke explicitly |
+| **apex-deep-dive** | Researched 2-3-option analysis before an uncertain decision; Council mode at judgment forks | invoke explicitly |
+| **apex-handoff** | Handoff contract (canonical home) — thin coding→planning inbox, one-home-per-fact routing | auto via plan/code |
+| **apex-docs-product** | User-facing docs — README, changelog, API reference, Divio four-type model | topic keyword |
+| **apex-docs-technical** | ADRs, System Overview (living capability index), runbooks, setup docs | topic keyword |
 | **apex-architecture** | Codebase architecture, DDD, ADRs | topic keyword |
 | **apex-system-design** | Distributed systems, CAP, queues, caching (scale-gated) | topic keyword |
 | **apex-security** | OWASP Top 10:2025, threat model, supply-chain, escalation gates (stack-neutral) | topic keyword |
@@ -31,9 +37,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-iac** | OpenTofu/Terraform, Pulumi, Ansible, IaC | topic keyword |
 | **apex-k8s** | Kubernetes, Helm, Argo CD, GitOps, Gateway API (scale-gated) | topic keyword |
 | **apex-devcontainer** | Dev container, isolated Claude env | topic keyword |
-| **apex-aws** | AWS architecture, CDK, IAM, ECS | topic keyword |
-| **apex-azure** | Azure architecture, Bicep, Entra, AKS | topic keyword |
-| **apex-gcp** | GCP architecture, Cloud Run, GKE, WIF | topic keyword |
+| **apex-aws** | AWS gotcha sheet — IAM/OIDC, Lambda/ECS/RDS traps, cost layering | topic keyword |
 | **apex-backend** | REST APIs & services (stack-neutral: Fastify/Prisma or FastAPI/pydantic) | topic keyword |
 | **apex-frontend** | React 19 + Compiler, web-stack (Next → apex-nextjs) | topic keyword |
 | **apex-mobile** | Native-vs-cross choice: RN/Expo, Flutter, KMP, native | topic keyword |
@@ -105,6 +109,20 @@ narrative only, since git + status.md own what-changed and live state); defines 
 triage-drain (inbox-zero) read rule and the status.md In-Flight State enum
 (`partial`/`blocked`/`parked`).
 
+**apex-governance** — The APEX autonomy model: Build/AFK vs Edit operating modes, autonomy
+levels L0–L5 (canonical definitions in `levels/`), approval-gate format, the permanently-
+forbidden hard-block list (canonical home — orchestrate/code carry summaries), critical-file
+confirmation, evaluator-independence invariant, and the L4+ audit log.
+
+**apex-refresh** — Skill-set maintenance: research-driven currency refresh of one/all skills
+(diff + approval, never silent overwrite), date-based staleness audit (`--audit`), and the
+quality stocktake of the whole set + rule-promotion cross-read (`--stocktake`). Records every
+change as a SKILL-HISTORY.md row (no per-skill changelogs).
+
+**apex-deep-dive** — Researched analysis when the approach is genuinely uncertain: 2-3 options
+compared with trade-offs, risks, and a project-specific recommendation (analysis only — no code,
+no spec). Includes Council mode (ADR-010): three fresh-context advisory voices at judgment forks.
+
 **apex-context-budget** — Planning-mode token/context-rot audit (makes the orchestrator's
 context-rot doctrine measurable). Inventories what *actually* loads per session — the CLAUDE.md
 chain, matched specialist SKILL.md, `impl.md` **cores** (SP6 two-tier, not whole files), agent
@@ -140,17 +158,12 @@ note; language Feature + dep-volume + install command per-stack (Node ↔ Python
 
 ## Cloud providers
 
-**apex-aws** — AWS Well-Architected (6 pillars), compute selection (Lambda/ECS/EKS/EC2),
-CDK v2 patterns, IAM execution roles, S3/DynamoDB/RDS, OIDC federation for CI,
-Control Tower multi-account structure.
+**apex-aws** — Lean AWS gotcha sheet (not a service catalogue): RDS Proxy for Lambda↔RDS,
+OIDC trust-policy `sub` condition, S3 public-access block, VPC-endpoint NAT savings,
+root-key/MFA, DLQ+alarm, cost layering, + review checklist.
 
-**apex-azure** — Azure WAF (5 pillars), compute selection (Container Apps/AKS/App Service),
-Bicep + Terraform patterns, Managed Identity, Key Vault references, Entra ID/PIM,
-Workload Identity Federation for CI.
-
-**apex-gcp** — GCP Architecture Framework (6 pillars), Cloud Run, GKE Autopilot,
-Workload Identity Federation, Secret Manager, Cloud SQL, Artifact Registry,
-org policies, BigQuery best practices.
+_(apex-azure and apex-gcp retired 2026-06-10 — frontier-known content, no consumer in the
+deployment plan. Recoverable from `~/.claude` git history.)_
 
 ---
 
@@ -295,6 +308,15 @@ commands come from the bound stack's Verification Recipe (apex-code runs them), 
 ---
 
 ## Specialised
+
+**apex-docs-product** — User-facing documentation planning: the Divio four-type model
+(tutorial / how-to / reference / explanation), README structure, Keep-a-Changelog entries,
+API reference scope, choosing the right doc type per feature. Coding-side impl enforces
+doc-comment conventions per language.
+
+**apex-docs-technical** — Internal/technical documentation: ADR format + numbering, the
+System Overview as a living capability index (merge-on-archive, ADR-014), runbooks, setup
+docs. Fires when an architectural decision was just made or an operational procedure is new.
 
 **apex-github** — Repository setup, branch protection, issue taxonomy (type/priority/status/area
 labels), Conventional Commits, GitHub Projects v2, release management (semver +
