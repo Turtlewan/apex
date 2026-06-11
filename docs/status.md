@@ -235,6 +235,17 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
 
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
 
+### Queued to run next session (2026-06-12 — APEX-fully-local research)
+- **Run the local-inference research brief** — `docs/research/local-inference-migration-brief.md`.
+  Deep-research plan to run the **entire APEX pipeline — planning AND coding — on local self-hosted
+  DeepSeek**, completely off the cloud (Pro V4 = reasoning/planning, Flash = coding), integrated with
+  Artemis hardware roadmap, with a model-currency strategy (not frozen at download). **Gating risk:
+  can local Pro V4 do Claude-grade planning?** Cascade (research process only, NOT the target):
+  **Fable** orchestrate → **Sonnet/Haiku** parallel gather (6 WS: lineup/footprint+capability ·
+  hardware · serving+harness · staying-current · Artemis hw · go/no-go+economics) → **Fable**
+  synthesise → **ADR-016** + `docs/research/local-inference-migration.md`. Claude is the research
+  tool only — not in the target architecture.
+
 ### Deferred to next session (paused 2026-06-09 — coding-mode context window)
 - **Verify coding-mode (DeepSeek) actual context window — Mac-gated.** Open question: is coding mode
   getting the context window we assume? `/context` in *planning* shows Opus 4.8 at 1M (29% used) — but
