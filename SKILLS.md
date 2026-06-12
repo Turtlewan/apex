@@ -274,7 +274,7 @@ rate limiting (token bucket), circuit breakers, distributed locking.
 design quality, responsiveness, loading/error/empty states. Surface-neutral — web
 (Tailwind/CSS) default, native (SwiftUI / Liquid Glass) via § Stack assumptions. Carries
 current 2026 practice: calm UI, AI-native/conversational UX, motion-as-structure. Owns the
-design-brief artifact, on-demand style selection, the post-build screenshot gate (web Playwright /
+design-brief artifact, research-first aesthetic direction (+ on-demand style library), the post-build screenshot gate (web Playwright /
 native Xcode Preview capture), and **opt-in prompt-to-design lanes** (user-invoked: Stitch for web,
 **Bitrig** for native SwiftUI — planning authors the prompt, user generates/iterates, output folds
 into the brief).

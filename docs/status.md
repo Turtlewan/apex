@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-12 (session 34 — coding-capability conflict pass: 3-agent audit → ADR-018 APEX-sole-coding-workflow; superpowers plugin disabled, gsd archived)
+_Last updated by planning mode:_ 2026-06-12 (session 36 — SwiftUI design tooling: prompt-to-design lanes incl. Bitrig native lane, Apple Xcode 27 agent-skill binding, native Preview gate, research-first aesthetic direction; SP0 removed, superpowers verify closed)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -15,7 +15,7 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
 | SP2 agent-wiring — coding-side | wave domain review | Done | `apex-wave-reviewer.md`, `apex-code/SKILL.md` | — | ✅ 427da16 |
-| Coding-capability conflict pass (ADR-018) | planning · skill edits + env | ✅ Done — committed (apex `bcc7f04` · ~/.claude `477eea2`, settings `2b67519`) | `docs/research/coding-capability/README.md` | superpowers plugin **uninstalled**; 65 gsd + 3 standalone → `skills-archived/`; apex-code 1.13.0 primacy line; apex-governance 1.7.0 exposure-defer absorb. **Restart-verify PASSED (session 36):** absent from `enabledPlugins`, no SessionStart injection, no `superpowers:*` skills; inert cache dir deleted. | — |
+| Step-4 prompt-to-design walkthrough | planning · discussion | parked | `apex-ui-ux-design` § Prompt-to-design lanes | **next session:** live Bitrig-prompt walkthrough on a real SwiftUI screen (Mac-gated to actually run Bitrig) | — |
 | Design-capability build (6 bundles) | planning · skill edits | ✅ committed (apex `252ebeb` · ~/.claude `fc61075`) | `docs/research/design-capability/README.md` | All 6 bundles landed + committed (session 35 corrected a stale "uncommitted" mark). Remaining = USER actions only, non-blocking: disconnect Canva connector (Claude app → Connectors), set up free Google Stitch account. | — |
 
 <!-- CODING:END -->
