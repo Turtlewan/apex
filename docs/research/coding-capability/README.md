@@ -86,6 +86,15 @@ git-hard-block violation, executing-plans/SDD competing loops, TDD, writing-plan
 the 4 SP duplicates **in one line**. Nothing to harvest first (receiving-code-review already absorbed).
 **~5,400 tokens/session freed + removes the only forbidden-git-op vector.** Reversible (flip back to `true`).
 
+> **⚠️ Correction (session 35, 2026-06-12).** The `enabledPlugins → false` mechanism was **insufficient**:
+> a plugin ships its own bundled `SessionStart` hook (`cache/.../superpowers/5.1.0/hooks/hooks.json` →
+> `run-hook.cmd session-start`, which injects `using-superpowers/SKILL.md`) **and** its skills, and the
+> flag gates neither. Verified live — the injection + all `superpowers:*` skills survived the flag (today's
+> `.in_use` PID markers confirm the hook kept firing). **Real fix = full uninstall:**
+> `claude plugin uninstall superpowers@claude-plugins-official -y` (removes it from `installed_plugins.json`
+> and strips the `enabledPlugins` entry; reversible via reinstall). Validates [[removal-over-prohibition]]:
+> a flag-disable is prohibition-by-config; only removing the source works. **USER restart-verify pending.**
+
 ### Bundle 2 — Retire the gsd cluster (after harvesting `gsd-map-codebase`)
 (a) Decide the fate of `gsd-map-codebase` — keep the single folder, or port its repo-map step into
 apex-plan's brownfield gate; update the apex-plan/apex-code reference accordingly. (b) Then delete/move
@@ -112,5 +121,5 @@ Optionally update global CLAUDE.md §5 to note competing dev-systems are intenti
 ## Gaps / unverified
 - No DeepSeek-specific controlled study — its vulnerability is inferred from the general small-model pattern (WS-3 `[ASSUMED]`). Direct measurement of APEX's live rule-count vs IFScale thresholds would close it.
 - Token figures are line-count estimates, not measured loads.
-- Whether disabling the superpowers plugin also removes its SessionStart hook injection cleanly (vs leaving an orphaned hook entry) is **unverified on Windows** — confirm on the live env.
+- ~~Whether disabling the superpowers plugin also removes its SessionStart hook injection cleanly (vs leaving an orphaned hook entry) is **unverified on Windows** — confirm on the live env.~~ **RESOLVED (session 35): it does NOT.** The flag leaves the plugin's bundled SessionStart hook + skills live; only `claude plugin uninstall` removes them (see Bundle 1 correction). USER restart-verify pending.
 - gsd-map-codebase reuse depth not fully traced — confirm exactly where apex-plan/apex-code reference it before removing the cluster.
