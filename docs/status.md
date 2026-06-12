@@ -15,7 +15,7 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
 | SP2 agent-wiring — coding-side | wave domain review | Done | `apex-wave-reviewer.md`, `apex-code/SKILL.md` | — | ✅ 427da16 |
-| Coding-capability conflict pass (ADR-018) | planning · skill edits + env | ✅ committed (apex `bcc7f04` · ~/.claude `477eea2`, settings `2b67519`) | `docs/research/coding-capability/README.md` | superpowers plugin **uninstalled** (session 35: `→ false` proved insufficient — bundled SessionStart hook + skills survive the flag; verified live; fixed via `claude plugin uninstall`); 65 gsd + 3 standalone → `skills-archived/`; apex-code 1.13.0 primacy line; apex-governance 1.7.0 exposure-defer absorb. **USER restart-verify:** after next CC restart, confirm no `You have superpowers` SessionStart block + no `superpowers:*` skills; if it persists, `rm -rf ~/.claude/plugins/cache/claude-plugins-official/superpowers`. | — |
+| Coding-capability conflict pass (ADR-018) | planning · skill edits + env | ✅ Done — committed (apex `bcc7f04` · ~/.claude `477eea2`, settings `2b67519`) | `docs/research/coding-capability/README.md` | superpowers plugin **uninstalled**; 65 gsd + 3 standalone → `skills-archived/`; apex-code 1.13.0 primacy line; apex-governance 1.7.0 exposure-defer absorb. **Restart-verify PASSED (session 36):** absent from `enabledPlugins`, no SessionStart injection, no `superpowers:*` skills; inert cache dir deleted. | — |
 | Design-capability build (6 bundles) | planning · skill edits | ✅ committed (apex `252ebeb` · ~/.claude `fc61075`) | `docs/research/design-capability/README.md` | All 6 bundles landed + committed (session 35 corrected a stale "uncommitted" mark). Remaining = USER actions only, non-blocking: disconnect Canva connector (Claude app → Connectors), set up free Google Stitch account. | — |
 
 <!-- CODING:END -->
@@ -76,19 +76,12 @@ Goal: ready APEX before building the user's largest app — **Artemis**, a perso
 integrates with everything (a "Jarvis-like" assistant in spirit), with a RAG-heavy **second brain**
 as its knowledge subsystem. A
 multi-subsystem platform (assistant/orchestration + integrations + knowledge core + interface(s)).
-Stack/surfaces are **provisional** pending the deferred requirements pass (see SP0). Roadmap + full
-detail: **`docs/research/apex-finalisation-plan.md`**.
+Roadmap + full detail: **`docs/research/apex-finalisation-plan.md`**.
 
-- **SP0 ⚠️ Stack — PROVISIONAL** — SwiftUI + Python pre-selected from high-level answers, not real
-  requirements, and against an under-scoped target. **Real target = Artemis, a personal
-  assistant that integrates with everything; the RAG second brain is one subsystem.** **Deferred:**
-  proper requirements-gathering for the whole Artemis platform → decompose → re-confirm/revise the
-  stack, **after** APEX hardening and **before** app `apex-init`. Candidate seed only, not locked.
-  - **Doc-coverage question — ✅ RESOLVED (ADR-013, session 27).** The **Appflow** gap (screen-map /
-    user journeys) is now closed by a first-class scope-gated **`app-flow.md`** artifact (seeded by
-    apex-init, owned by apex-ui-ux-design, gated at the apex-plan readiness gate). Decision: persist
-    **flow only** (screens/journeys/states); **visual UI/UX design stays un-persisted judgment + Figma**
-    (no borrowed UI-SPEC visual doc). Artemis inherits it automatically as a UI-bearing project.
+> **Artemis itself now lives in its own APEX project at `~/artemis`** (own git repo, PROJECT/
+> REQUIREMENTS/ROADMAP/BACKLOG + docs/status.md). Requirements-gathering, decomposition, and the
+> stack-confirm that SP0 used to hold are tracked there — not here. APEX's job is only to be ready for it.
+
 - **SP1 ✅ Stack skills** — `apex-python` (RED/GREEN validated, recipe **run**) + `apex-swift`
   (v0.1.0, recipe **PENDING Mac validation**). Both triple-written + committed.
 - **SP2 ✅ / SP3 ✅ / SP4 ✅ decided** (plan §6): SP2 = Method C (no capability binding — capability
@@ -199,7 +192,7 @@ has safer equivalents (ADR-010 council; parallel dispatch). Full analysis: **`do
 ECC-style compare-and-absorb over **8** dev systems (Tier 1: Kiro, BMAD, Spec-Kit, GSD · Tier 2:
 Superpowers, Aider, Cline/Roo, OpenSpec). 8 parallel dedup-aware + token-flagged agents. Full report:
 **`docs/research/donor-analysis/`** (README synthesis + 8 per-system files).
-- **Two new ADRs:** **ADR-013** app-flow artifact (resolves SP0 Appflow) · **ADR-014** System Overview
+- **Two new ADRs:** **ADR-013** app-flow artifact (resolves the Appflow gap) · **ADR-014** System Overview
   as living capability index (merge-on-archive; token-guardrailed terse index).
 - **Skills wired (✅ ~/.claude 5f3f799 · repo 2a076f4):** apex-docs-technical 1.2.0 · apex-init 1.4.0 · apex-ui-ux-design
   1.3.0 · apex-plan 1.14.0 · apex-code 1.9.0 · apex-coding-principles 1.2.0 · apex-context-budget 1.1.0
@@ -304,7 +297,6 @@ saves $5–20/mo. Hybrid (Claude planning + DeepSeek coding) = sanctioned interi
 - **AgentMD context-files study verified** (arXiv:2602.11988) — real but OVERSTATED; reinforces lean-context discipline (auto-generated files hurt, human-written +4%; ~20% cost tax on both). Report ✅ `docs/research/agentmd-context-files-study.md`.
 - **Follow-up — `references/voice-pipeline.md`** (apex-realtime per-stack LiveKit/Pipecat wiring): deferred, not written.
 - **Parked (AgentMD watch-items):** (a) add an "is this inferable from the repo?" deletion criterion to `apex-context-budget`/`apex-refresh`; (b) never add an auto-generate-CLAUDE.md feature. (Declined this session — option #2.)
-- **Artemis BACKLOG** — 5 RAG/security candidates dumped into `artemis/BACKLOG.md` (2026-06-08) from the social-media filter; await SP0-drain.
 
 ### Deferred to next session (paused 2026-06-05 — repo-studies pass)
 - **Retroactive lightweight Iron-Law baseline** on the new taste/animation rules — applied without a bare-agent baseline (defensible per [[iron-law-application-depth]]; flagged for rigor).

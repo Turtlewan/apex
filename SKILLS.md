@@ -273,7 +273,11 @@ rate limiting (token bucket), circuit breakers, distributed locking.
 **apex-ui-ux-design** — Pre-coding UI spec review: interactive states, accessibility gaps,
 design quality, responsiveness, loading/error/empty states. Surface-neutral — web
 (Tailwind/CSS) default, native (SwiftUI / Liquid Glass) via § Stack assumptions. Carries
-current 2026 practice: calm UI, AI-native/conversational UX, motion-as-structure.
+current 2026 practice: calm UI, AI-native/conversational UX, motion-as-structure. Owns the
+design-brief artifact, on-demand style selection, the post-build screenshot gate (web Playwright /
+native Xcode Preview capture), and **opt-in prompt-to-design lanes** (user-invoked: Stitch for web,
+**Bitrig** for native SwiftUI — planning authors the prompt, user generates/iterates, output folds
+into the brief).
 
 **apex-design-system** — shadcn/ui (CLI v4 + MCP + registries) on Radix (unified package) or
 Base UI, Tailwind v4 design tokens (`@theme`, container queries), Storybook, component API
