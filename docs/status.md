@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-12 (session 33 — APEX-fully-local research run: 6-agent pass → ADR-016 prepare-and-gate; full-local migration deferred behind eval gate)
+_Last updated by planning mode:_ 2026-06-12 (session 34 — coding-capability conflict pass: 3-agent audit → ADR-018 APEX-sole-coding-workflow; superpowers plugin disabled, gsd archived)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -15,6 +15,7 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
 | SP2 agent-wiring — coding-side | wave domain review | Done | `apex-wave-reviewer.md`, `apex-code/SKILL.md` | — | ✅ 427da16 |
+| Coding-capability conflict pass (ADR-018) | planning · skill edits + env | 🟡 done, uncommitted | `docs/research/coding-capability/README.md` | All execution landed inline: superpowers plugin → `false`; 65 gsd folders + controlled-yolo/full-output-enforcement/write-feature-spec → `skills-archived/`; apex-code 1.13.0 primacy line; apex-governance 1.7.0 exposure-defer absorb. **USER verify next session:** the `using-superpowers` injection is gone after restart. | 🟡 ADR-018 + README + ws-1/2/3 + apex-code/apex-governance SKILL + SKILL-HISTORY + status + memory `apex-sole-coding-workflow` (~/.claude settings.json + 68 archived folders are gitignored) |
 | Design-capability build (6 bundles) | planning · skill edits | 🟡 done, uncommitted | `docs/research/design-capability/README.md` | All 6 bundles landed (Waves 1–4). Remaining = USER actions only: disconnect Canva connector (Claude app → Connectors), set up free Google Stitch account. Then commit. | 🟡 ADR-017 + apex-ui-ux-design 1.6.0 / apex-init 1.6.0 / apex-plan 1.18.0 / apex-code 1.12.0 / apex-ui-testing 1.3.0 / apex-design-system 1.2.0 / apex-animation 1.4.0 + style-library/ + skills-archived/ + 2 new reference files + memory + SKILL-HISTORY |
 
 <!-- CODING:END -->
@@ -26,6 +27,27 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **Gated on a live Mac coding env** — unvalidatable on Windows planning; needs settings.json approval (ADR-012). |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
+
+## Coding-capability conflict pass (session 34, 2026-06-12) — APPLIED, ADR-018
+Ran the design-capability play on the CODING surface: do installed coding skills overlap/conflict,
+since **DeepSeek** consumes them. 3 parallel agents → `docs/research/coding-capability/` (README +
+ws-1 conflict-matrix · ws-2 load-vectors · ws-3 weak-coder-evidence). **Decision: APEX is the sole
+coding workflow** — absorb good ideas, remove rivals (memory `apex-sole-coding-workflow`, ADR-018).
+- **Findings:** the `superpowers` *plugin* injects `using-superpowers` on every session, both backends
+  ("1% → MUST invoke") with no apex-code counter — a **live hijack** of the apex-code loop (WS-2). Two
+  rivals run **forbidden git ops** (`finishing-a-development-branch` → `git merge`). WS-3 (5 primary
+  2025–26 sources) confirms large, coding-specific degradation on weak models (joint compliance ~35%,
+  weakest 10.8%; ~30pt constraint-stacking drop; prohibition rules decay fastest → **remove, don't
+  add "don't" rules**). APEX cluster itself audited clean.
+- **Applied (all reversible):** superpowers plugin `→ false` in settings.json (kills injection + ~12 SP
+  skills, ~5.4k tok/session); 65 `gsd-*` → `skills-archived/` (kept `gsd-map-codebase` — apex-plan's
+  optional brownfield reuse); `controlled-yolo`/`full-output-enforcement`/`write-feature-spec` →
+  `skills-archived/`; apex-code 1.13.0 positive primacy line; apex-governance 1.7.0 absorbed
+  controlled-yolo's internet-exposure-defer. Deliberately **skipped** a CLAUDE.md §5 note (always-on
+  bloat; memory + ADR + apex-code line already cover it).
+- **⚠️ Verify next session (Mac/restart):** that disabling the plugin actually drops the
+  `using-superpowers` SessionStart injection (WS-2 unverified on Windows). Watch-item: a leftover
+  `gsd-statusline.js` statusline hook in settings.json (harmless, not a skill-trigger).
 
 ## Fable-5 stocktake + batch update (session 32, 2026-06-10) — APPLIED
 Full `--stocktake` under the new planning model (Fable 5) with the DeepSeek-executor lens +
