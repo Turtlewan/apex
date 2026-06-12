@@ -1,6 +1,6 @@
 # Research Brief: Move APEX fully local — planning + coding on self-hosted DeepSeek
 
-**Status:** READY TO RUN (launch next session)
+**Status:** ✅ EXECUTED 2026-06-12 (session 33) — output: `local-inference-migration.md` + `local-inference/ws-a…f.md` + ADR-016
 **Created:** 2026-06-12
 **Type:** Research plan / dispatch brief (not research output — the agents below produce that)
 **Decision at stake:** A phased hardware + software + ops plan to run the **entire APEX pipeline —

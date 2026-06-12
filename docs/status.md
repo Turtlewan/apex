@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-10 (session 32 — full Fable-5 stocktake + batch update: 51 skills audited, 30 updated; see SKILL-HISTORY.md)
+_Last updated by planning mode:_ 2026-06-12 (session 33 — APEX-fully-local research run: 6-agent pass → ADR-016 prepare-and-gate; full-local migration deferred behind eval gate)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -15,6 +15,7 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
 | SP2 agent-wiring — coding-side | wave domain review | Done | `apex-wave-reviewer.md`, `apex-code/SKILL.md` | — | ✅ 427da16 |
+| Design-capability build (6 bundles) | planning · skill edits | 🟡 done, uncommitted | `docs/research/design-capability/README.md` | All 6 bundles landed (Waves 1–4). Remaining = USER actions only: disconnect Canva connector (Claude app → Connectors), set up free Google Stitch account. Then commit. | 🟡 ADR-017 + apex-ui-ux-design 1.6.0 / apex-init 1.6.0 / apex-plan 1.18.0 / apex-code 1.12.0 / apex-ui-testing 1.3.0 / apex-design-system 1.2.0 / apex-animation 1.4.0 + style-library/ + skills-archived/ + 2 new reference files + memory + SKILL-HISTORY |
 
 <!-- CODING:END -->
 
@@ -235,16 +236,23 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
 
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
 
-### Queued to run next session (2026-06-12 — APEX-fully-local research)
-- **Run the local-inference research brief** — `docs/research/local-inference-migration-brief.md`.
-  Deep-research plan to run the **entire APEX pipeline — planning AND coding — on local self-hosted
-  DeepSeek**, completely off the cloud (Pro V4 = reasoning/planning, Flash = coding), integrated with
-  Artemis hardware roadmap, with a model-currency strategy (not frozen at download). **Gating risk:
-  can local Pro V4 do Claude-grade planning?** Cascade (research process only, NOT the target):
-  **Fable** orchestrate → **Sonnet/Haiku** parallel gather (6 WS: lineup/footprint+capability ·
-  hardware · serving+harness · staying-current · Artemis hw · go/no-go+economics) → **Fable**
-  synthesise → **ADR-016** + `docs/research/local-inference-migration.md`. Claude is the research
-  tool only — not in the target architecture.
+## APEX-fully-local research (session 33, 2026-06-12) — COMPLETE, ADR-016
+Ran the local-inference brief: 6 parallel gather agents (WS-A…F) → `docs/research/local-inference/`
++ synthesis `docs/research/local-inference-migration.md` + **ADR-016** (re-research 2026-06-26).
+**Verdict: full-local migration DEFERRED behind an eval gate — prepare-and-gate plan adopted.**
+The gating risk materialised: V4-Pro can't run at home (1.6T; datacenter-only); home-viable
+V4-Flash is **11 pp behind Pro on agentic planning** (Terminal-Bench) before the Q3/Q4 quant tax;
+Mac serving of Flash is single-stream experimental (MLX unsupported); coding-only localisation
+saves $5–20/mo. Hybrid (Claude planning + DeepSeek coding) = sanctioned interim state.
+- **Phases:** P1 eval harness (promptfoo + lm-eval + 20-task corpus; doubles as model-swap gate) ·
+  P2 RAG-currency index (reuses Artemis second brain) · P3 hardware on Artemis' justification
+  (M3 Ultra 256 GB $5,999 — **user timing call vs M5 Ultra rumour H2 2026**) · P4 shadow-run local
+  Flash · P5 migrate only on 4-condition gate-pass (then backend-routing rewire: LiteLLM +
+  `APEX_MODE`/URL-prefix mode detection).
+- **Downstream specs flagged (not written):** eval-harness · RAG-currency index · backend-routing
+  rewire (post-gate only).
+- **Fact corrections landed:** V4-Flash max output = **131K** (384K is V4-Pro's); Flash Q4_K_M ≈
+  160–180 GB (not 96 GB); WS-A's contrary figure overruled in synthesis.
 
 ### Deferred to next session (paused 2026-06-09 — coding-mode context window)
 - **Verify coding-mode (DeepSeek) actual context window — Mac-gated.** Open question: is coding mode
@@ -262,12 +270,12 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
   proxy-capped small window; a context-exceeded **400** proves it is below. (An oversized ~2M probe
   is **non-discriminating** — every hypothesis fails it, so it proves nothing beyond "cap < 2M.") To
   pin the exact cap, binary-search the boundary upward to the first failure.
-  - **✅ Published native window resolved (session 31, 2026-06-09):** DeepSeek V4 Flash =
-    **1M-token context / 384K max output** — official DeepSeek docs state "1M context is now the
-    default across all official DeepSeek services." This is the expected number to check the Mac
+  - **✅ Published native window resolved (session 31, corrected session 33):** DeepSeek V4 Flash =
+    **1M-token context / 131K max output** (the 384K figure is V4-Pro's — corrected by WS-A,
+    `docs/research/local-inference/ws-a-lineup.md`). 1M ctx is the expected number to check the Mac
     against. **Still Mac-gated:** whether APEX's `deepseek` base-URL *proxy* passes the full 1M
     through to coding mode (proxy cap may be < native) — needs the empirical `curl`/oversized-input
-    probe. Source: api-docs.deepseek.com.
+    probe. Source: api-docs.deepseek.com + llm-stats.com.
 
 ### Deferred to next session (paused 2026-06-08 — social-media RAG/voice filter)
 - **apex-realtime 1.2.0 landed** — live-voice / WebRTC transport tier (triple-write ✅ committed).
