@@ -343,8 +343,10 @@ invariants (use `sub` not email, verify ID token server-side, encrypt refresh to
 with a `## Stack assumptions` swap-table; client per-stack — `googleapis` (Node) / `google-api-python-client`
 (Python). Node+TS worked code in `references/nodejs-typescript.md`. Distinct from `apex-gcp` (infra).
 
-**apex-research** — Deep research workflow: pre-flight scoping questions, tiered sources
-(Context7 official docs → WebSearch → WebFetch) with confidence derived from tier
+**apex-research** — Deep research workflow built on a **hard three-phase model contract**
+(Plan in Opus/Fable → Retrieve via dispatched Sonnet/Haiku agents → Synthesise back in
+Opus/Fable; the expensive model never does mechanical retrieval): pre-flight scoping questions,
+tiered sources (Context7 official docs → WebSearch → WebFetch) with confidence derived from tier
 ([VERIFIED]/[ASSUMED]/[COMMUNITY]), parallel research agents, output hand-off
 (inline / `docs/research/` / ADR), and staleness tracking. Single-file, planning-only.
 
