@@ -4,6 +4,22 @@
 **Confidence:** HIGH (Anthropic + DeepSeek primary docs) / MEDIUM (model-comparison blogs)
 **Re-research after:** 2026-06-12 (AI/LLM tooling — 14-day clock)
 
+> **Update 2026-06-13 (session 39) — primary source read, re-research discharged.** The DeepSeek-V4
+> technical report (the 58-page paper, previously uncited) + DeepSeek's live API docs were read in
+> full. Corrections to this doc:
+> 1. **APEX runs Flash at MAX reasoning effort, not a weak default.** DeepSeek V4 has thinking
+>    *enabled by default* (no "non-think" via the effort param; only `high`/`max`), and DeepSeek
+>    **auto-sets effort to `max` for Claude Code requests**. So coding mode = **Flash-Max** (Pro
+>    toggle = **Pro-Max**) — set by DeepSeek, uncontrolled by APEX config (`budget_tokens` is
+>    ignored over the Anthropic endpoint). Treat Flash as *Flash-Max* throughout, not a fixed weak
+>    capability.
+> 2. The "[COMMUNITY] struggles in 5+ tool chains" claim below is **contradicted by first-party
+>    data**: DeepSeek's own code-agent eval runs **500 interaction steps** (§5.3.1), and V4 retains
+>    interleaved-thinking state across tool rounds (§5.1).
+> 3. The author-to-weakest-reader rule and SKILL/impl split are **unchanged** — paper gives no
+>    reason to revise them.
+> Full analysis: `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
+
 ## Summary
 
 Instructions **should** differ by model, and APEX already encodes the right
@@ -34,7 +50,8 @@ per model — author each file to the *weakest model that reads it* (Flash for
 - DeepSeek V4 Flash (284B total / 13B active, latency-optimized) needs "more
   explicit scaffolding," "struggles with nuance" on judgment calls, and "starts
   to struggle in complex tool chains" (multi-step, state across calls, recovery
-  from unexpected output). [COMMUNITY — MindStudio agent comparison, on-point]
+  from unexpected output). [COMMUNITY — MindStudio; **the "complex tool chains" part is superseded
+  by first-party data — see Update note at top**: 500-step code-agent eval + interleaved thinking.]
 - DeepSeek V4 Pro (1.6T total / 49B active) targets complex reasoning + agentic
   coding — much closer to Claude's autonomy than Flash. [VERIFIED — DeepSeek V4
   Preview, released 2026-04-24]

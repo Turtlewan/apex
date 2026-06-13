@@ -98,8 +98,16 @@ same way regardless of which backend is active.
 | Citations | ❌ Not supported | ✅ |
 | MCP tool calls (harness-level) | ✅ Works via harness | ✅ |
 | Tool use (function calling) | ✅ Full support | ✅ |
-| Thinking mode | ✅ Supported | ✅ |
+| Thinking mode | ✅ Enabled by default — auto-`max` for Claude Code¹ | ✅ |
 | Context window | 1M tokens | 200k tokens |
+
+¹ DeepSeek V4 runs coding mode at **maximum reasoning effort** automatically: thinking is enabled by
+default, there is no "non-think" exposed via the effort param (only `high`/`max`), and DeepSeek
+force-sets effort to `max` for Claude Code / OpenCode requests. APEX sets only `ANTHROPIC_MODEL` —
+it does **not** (and currently cannot) request a lower tier; `budget_tokens` is ignored over the
+Anthropic endpoint. So coding mode = **Flash-Max** (Pro toggle = **Pro-Max**), set by DeepSeek, not
+by APEX config. [api-docs.deepseek.com — thinking_mode + anthropic_api; confirm on Mac via wire.]
+See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
 
 **Practical impact on skills:**
 - `apex-figma`: visual comparison step skipped by DeepSeek — flagged for planning-mode review

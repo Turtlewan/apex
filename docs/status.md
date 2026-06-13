@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-13 (session 39 — Pro-mode initiative: confirmed deepseek-v4-pro model string + Phase 0 mechanics spec + Phase 1 compensation audit via parallel fan-out)
+_Last updated by planning mode:_ 2026-06-13 (session 40 — read the DeepSeek-V4 technical report; resolved coding-mode reasoning-effort = Flash-Max/Pro-Max; 4 research-doc corrections, 0 skill edits)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -77,6 +77,26 @@ on Windows, empirical eval deferred to Mac (not a gate). Full audit: **`docs/res
   ✅ committed (~/.claude 82523b3 · apex 9a8489f · artemis split-enable 5d16a1c).
   **Deferred:** orchestrate "switch-now" routing nudge (bundle with Phase-0 orchestrate edit); Subset A/B coder
   relaxations + eval-harness Flash-vs-Pro head-to-head (ADR-016 P1) — Mac-gated validation, not a build gate.
+
+## DeepSeek-V4 paper read — coding reasoning-effort resolved (session 40, 2026-06-13) — APPLIED (doc corrections)
+Read the previously-uncited **58-page DeepSeek-V4 technical report** (HuggingFace) + DeepSeek live
+API docs against APEX's Flash/Pro coding assumptions. Full analysis:
+**`docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`**.
+- **Key resolution:** APEX coding runs at **Flash-Max** (Pro toggle = **Pro-Max**) — DeepSeek enables
+  thinking by default and **auto-sets effort to `max` for Claude Code**; APEX sets only the model
+  string and cannot currently request a lower tier (`budget_tokens` ignored over the Anthropic
+  endpoint). So the weak-coder compensations are calibrated against Flash's *ceiling*, not a weak
+  default → **keep them; 0 skill edits.** The first-draft "enable Think-High" idea is withdrawn.
+- **Corrections landed** (.md, 🟡 uncommitted): `model-specific-skill-authoring` (re-research
+  discharged), `pro-mode-audit` ws-a + README (the "no Flash↔Pro comparand" caveat is **FALSE** —
+  report Table 7 is the head-to-head; re-score ceilings vs Flash-Max→Pro-Max), `model-comparison`
+  README (think-max = default state, not hypothetical; comparand is Opus 4.5/4.6 not 4.8),
+  `BACKEND-ROUTING` (thinking-mode line).
+- **Mac-gated follow-ups:** (a) confirm on the wire that coding responses carry `<think>` at max
+  effort; (b) **effort-down cost lever** — expose `output_config.effort: high`/non-think for
+  simple/low-risk specs (Pro-Max is the 3.1×++ corner + feeds the survey-named "over-thinking");
+  APEX cannot express it today. Would touch pro-mode-mechanics toggle + spec-template (likely reuse
+  `risk: low`) + apex-plan + governance.
 
 ## Coding-capability conflict pass (session 34, 2026-06-12) — APPLIED, ADR-018
 Ran the design-capability play on the CODING surface: do installed coding skills overlap/conflict,

@@ -15,6 +15,16 @@ PRO-UNLOCK**. Per-workstream detail: `ws-a-evidence-map.md`, `ws-b-apex-code.md`
 
 ## The finding that reshapes everything (WS-A)
 
+> **⚠️ CORRECTION 2026-06-13 (session 39):** this section's premise is now **false**. The audit was
+> run without the DeepSeek-V4 technical report; its **Table 7** is a full direct Flash-vs-Pro head-
+> to-head (Non-think/High/Max) on every coding + agentic benchmark, and **Table 8** is a Pro-Max R&D-
+> coding comparison. The "almost no Flash↔Pro evidence" claim no longer holds — the
+> RELAX-UNDER-PRO confidence ceilings should be **re-scored against Table 7**. Also: APEX runs coding
+> at **Max effort automatically** (DeepSeek force-maxes Claude Code), so the live comparison is
+> **Flash-Max → Pro-Max**, and the thinking-tier tension below resolves to *we are always at max*
+> (the expensive corner — making the cost caveat real, not hypothetical). Full analysis:
+> `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
+
 **We have almost no Flash↔Pro evidence.** Nearly every benchmark in the corpus is **Pro vs Opus**,
 not the comparison we actually need. The only near-direct Flash↔Pro datapoint is ADR-016's
 **~11 pp agentic-planning gap** (Terminal-Bench). There is **no DeepSeek-specific weak-coder study**

@@ -51,9 +51,17 @@ The relevant cost question for APEX coding is **Flash vs Pro**, not Pro vs Opus.
 
 Anchored to APEX's own prior figure — ADR-016 put current Flash coding spend at **~$5–20/mo** — V4 Pro coding lands at **~$15–60/mo**, an added **~$10–40/mo**. For reference, the same coding workload on Opus 4.8 (output $25 vs Pro $0.87) would be **~29× Pro's cost**, i.e. roughly $450–1,700/mo — which is why the frontier model is never the coding candidate.
 
-**Caveat — think/think-max inflates the real cost.** V4 Pro's strong benchmark numbers are the `think-max` tier, which emits far more (output-priced) reasoning tokens. Run Pro in a thinking mode and effective coding cost rises *above* the 3.1× sticker; the $/quality trade only pays off if the agentic-coding lift over Flash is worth both the ~3× base and the extra reasoning tokens.
+**Caveat — think/think-max inflates the real cost, and it's not optional.** V4 Pro's strong
+benchmark numbers are the `think-max` tier, which emits far more (output-priced) reasoning tokens.
+**Update 2026-06-13:** this is APEX's *default operating state*, not a hypothetical — DeepSeek's API
+has thinking enabled by default and **auto-sets effort to `max` for Claude Code requests** (no
+non-think exposed; `budget_tokens` ignored over the Anthropic endpoint). So a Pro toggle = **Pro-Max**,
+landing squarely above the 3.1× sticker, and APEX currently has **no way to request a cheaper `high`
+tier**. The $/quality trade must clear both the ~3× base and the always-on max reasoning tokens.
+See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
 
 ## Caveats / gaps
+- **Version comparand (added 2026-06-13):** the DeepSeek-V4 technical report benchmarks Pro against **Claude Opus 4.5 / 4.6 and Sonnet 4.5** internally — *not* Opus 4.8. Its "approaches Opus 4.5" framing therefore **understates** the gap to APEX's actual planning baseline (Opus 4.8); the head-to-head table above (which uses 4.8) is the right comparand. The report also contains a **direct Flash-vs-Pro-vs-mode table (Table 7)** — the comparand the Pro-mode audit lacked.
 - Several coding/reasoning numbers for one side are vendor-reported (LiveCodeBench, MMLU-Pro, GPQA) — tagged LOW; treat independent leaderboards (BenchLM, Artificial Analysis) as the trustworthy spine.
 - **V4 Pro "Max" vs standard is ~7 pp on SWE-bench** — quoted figures here are Max (`think-max`); standard mode is lower and cheaper-by-latency.
 - Opus 4.8 TTFT figure is inflated by adaptive thinking; don't read it as a raw network-latency loss.

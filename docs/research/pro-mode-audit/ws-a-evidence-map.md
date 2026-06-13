@@ -13,11 +13,23 @@
 
 ---
 
+> **⚠️ CORRECTION 2026-06-13 (session 39) — the central caveat below is now FALSE.** This workstream's
+> defining premise ("no direct Flash↔Pro comparand exists; only ADR-016's ~11pp") was wrong: it was
+> written without the DeepSeek-V4 technical report. The report's **Table 7 is a full direct
+> Flash-vs-Pro head-to-head across Non-think/High/Max** on every coding + agentic benchmark, and
+> Table 8 adds a Pro-Max R&D-coding comparison. **Two consequences for this map:** (1) the
+> confidence ceilings forced by "wrong comparand" should be **re-scored against Table 7's real
+> deltas** — likely lifting the capability-bounded rows (#1/#3/#5) toward High; (2) APEX runs coding
+> at **Max effort automatically** (DeepSeek force-maxes Claude Code), so the relevant comparison is
+> specifically **Flash-Max → Pro-Max** (Table 7 Max columns), and the "which thinking tier does this
+> assume?" caveat resolves to *always max*. The architectural keep-rows (#2/#6/#7) are unaffected.
+> See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
+
 ## The honesty problem stated up front
 
 We are inferring Pro's behaviour on *failure modes* from benchmarks that mostly measure something else, against *the wrong baseline*:
 
-1. **Wrong comparand.** Almost every benchmark number we have is Pro-vs-Opus. The decision is **Flash → Pro**. Pro being 8 pp behind Opus on SWE-bench tells us little about how far Pro is *ahead of Flash* on constraint-stacking resilience.
+1. **Wrong comparand.** Almost every benchmark number we have is Pro-vs-Opus. The decision is **Flash → Pro**. Pro being 8 pp behind Opus on SWE-bench tells us little about how far Pro is *ahead of Flash* on constraint-stacking resilience. _[See correction banner above — a direct Flash↔Pro table (report Table 7) was located after this was written; the rows below should be re-scored against it.]_
 2. **No DeepSeek-specific conflict study.** WS-3 §3 is explicit: no controlled study tested any DeepSeek model under conflicting-directive conditions. The "weak model decays exponentially" finding is inferred from Qwen-7B / Llama-Scout / Mistral, then mapped onto Flash. Mapping it *off* Flash onto Pro is a second inference layer.
 3. **Benchmark ≠ failure-mode proxy.** SWE-bench Verified and Terminal-Bench measure end-to-end task success on *clean* prompts. They are weak proxies for "does compliance survive 30 stacked omission constraints over a 25-turn session." WS-3's own evidence shows IFEval-style clean benchmarks overstate real agentic instruction-following by ~60 pp (AgentIF). So a high SWE-bench score does **not** license relaxing a constraint-stacking compensation.
 4. **The thinking-mode confound.** Pro's strong numbers are `think-max`. WS-3 §1c/§3a found that *thinking* capacity is what buys conflict-resolution robustness — but `model-comparison/README.md` warns think-max inflates cost above the 3.1× sticker. So the capability that would most plausibly close these gaps is exactly the one that erodes Pro's cost advantage. Relaxing a compensation "because Pro is smart" silently assumes think-max is on.
