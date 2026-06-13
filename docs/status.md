@@ -74,7 +74,7 @@ on Windows, empirical eval deferred to Mac (not a gate). Full audit: **`docs/res
 - **Phase status:** P0 mechanics spec drafted (`docs/changes/pro-mode-mechanics.md`, **Mac-gated**); P1 audit done;
   **P4 splitting discipline LANDED** — ADR-019 + apex-plan 1.21.0 (§Coder-tier build planning) + apex-governance
   1.8.0 (tier=capability-not-authority) + spec-template `coder_tier` flag + status-template `coder_tier_policy`.
-  🟡 uncommitted (~/.claude apex-plan/apex-governance/templates; repo ADR-019/SKILL-HISTORY/status/pro-mode-audit).
+  ✅ committed (~/.claude 82523b3 · apex 9a8489f · artemis split-enable 5d16a1c).
   **Deferred:** orchestrate "switch-now" routing nudge (bundle with Phase-0 orchestrate edit); Subset A/B coder
   relaxations + eval-harness Flash-vs-Pro head-to-head (ADR-016 P1) — Mac-gated validation, not a build gate.
 
