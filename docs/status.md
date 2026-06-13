@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-13 (session 38 — agent-skills absorption + apex-research three-phase model contract; full Iron-Law dogfood with 3 baseline-driven cuts)
+_Last updated by planning mode:_ 2026-06-13 (session 39 — Pro-mode initiative: confirmed deepseek-v4-pro model string + Phase 0 mechanics spec + Phase 1 compensation audit via parallel fan-out)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -25,6 +25,7 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | Spec | Summary |
 |------|---------|
 | `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **Gated on a live Mac coding env** — unvalidatable on Windows planning; needs settings.json approval (ADR-012). |
+| `pro-mode-mechanics.md` | Phase 0 of Pro-mode: one-command Flash↔Pro toggle (`apex-code` shell fn, zsh+PowerShell), tier detection in SessionStart hook + orchestrate Step-6 line, BACKEND-ROUTING update. 5 files (coupled — flagged not split). Toggle checks Mac-gated; hook/doc checks run on Windows. |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 
@@ -45,6 +46,37 @@ already-have). A full **Iron-Law dogfood** ran on every absorbed addition (`docs
 - **⚠️ Verify on Mac:** the apex-performance **impl** block (CWV tree / INP APIs / font-CLS / image) —
   haiku knew it cold, but DeepSeek Flash is the real executor (untestable on Windows). RED-probe Flash;
   cut ~90 lines/perf-build if Flash also produces it cold.
+
+## Pro-mode initiative — Flash↔Pro coder tier (session 39, 2026-06-13) — Phase 0+1 done, gated on approval
+Building a "Pro mode" so coding can run **DeepSeek V4 Pro** (stronger coder, ~3.1× cost —
+`deepseek-v4-pro` $0.435/$0.87 per Mtok vs Flash `deepseek-v4-flash` $0.14/$0.28; same base URL;
+confirmed live from api-docs.deepseek.com). Mirrors how Flash was built: reasoned + benchmark-grounded
+on Windows, empirical eval deferred to Mac (not a gate). Full audit: **`docs/research/pro-mode-audit/`**
+(README synthesis + ws-a evidence · ws-b apex-code · ws-c principles/impl · ws-d plan/governance).
+- **Reshaping finding (WS-A):** almost all benchmarks are **Pro-vs-Opus, not Flash-vs-Pro** — only
+  direct datapoint is ADR-016's ~11pp agentic gap. **No relaxation exceeds Medium confidence.** Some
+  context-hygiene compensations get *worse* under Pro (3.1× cost, 384K output). Thinking-tier tension:
+  "relax because capable" assumes a thinking mode whose `think-max` cost exceeds the 3.1× sticker.
+  SlopCodeBench: scope/quality discipline erodes *more* in capable long-horizon agents → surgical
+  scope matters as-much/more for Pro. Pro = linear-decay **middle tier** (above Flash floor, below Opus).
+- **Audit result:** KEEP ~57 · RELAX-UNDER-PRO 8 · PRO-UNLOCK 3 (~80% KEEP = intended). Relaxes confined
+  to spec-literalness + review-redundancy, each gated behind an existing escape hatch (`risk`, task
+  independence, file-ambiguity). All correctness/security/safety/authority rules KEEP. WS-B+WS-D both
+  note **autonomy level (L0–L5) is the cleaner lever for "more Pro autonomy" than rewriting safety rules.**
+- **Design + reframe:** single `coder_tier` (flash|pro), no `if-pro` bloat. **RED probe (2 bare Opus
+  agents) reproduced the full feature-splitting judgment cold** (seam, frozen contracts, conformance-
+  tests-travel, tier-grouped order) → the discipline is **model-native**, so the skill encodes only the
+  *plumbing* (policy/flag/build-plan convention), NOT R1–R5. v1 = **tier-aware splitting discipline with
+  ZERO guardrail relaxation**; the Medium-confidence coder relaxations (audit Subset A/B) are deferred +
+  optional, Mac-gated. Worked example + R1–R5 rationale: `docs/research/pro-mode-audit/spec-splitting-design.md`.
+- **Per-project switch (user-requested):** `coder_tier_policy: flash | pro | split` in status.md —
+  `flash`/`pro` = pure single-tier (no splitting/toggle); `split` = tier-aware. Default `flash` (backward-compatible).
+- **Phase status:** P0 mechanics spec drafted (`docs/changes/pro-mode-mechanics.md`, **Mac-gated**); P1 audit done;
+  **P4 splitting discipline LANDED** — ADR-019 + apex-plan 1.21.0 (§Coder-tier build planning) + apex-governance
+  1.8.0 (tier=capability-not-authority) + spec-template `coder_tier` flag + status-template `coder_tier_policy`.
+  🟡 uncommitted (~/.claude apex-plan/apex-governance/templates; repo ADR-019/SKILL-HISTORY/status/pro-mode-audit).
+  **Deferred:** orchestrate "switch-now" routing nudge (bundle with Phase-0 orchestrate edit); Subset A/B coder
+  relaxations + eval-harness Flash-vs-Pro head-to-head (ADR-016 P1) — Mac-gated validation, not a build gate.
 
 ## Coding-capability conflict pass (session 34, 2026-06-12) — APPLIED, ADR-018
 Ran the design-capability play on the CODING surface: do installed coding skills overlap/conflict,

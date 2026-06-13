@@ -1,0 +1,60 @@
+# WS-C — Cross-Cutting Coding Rules Audit (Pro Mode)
+
+**Workstream:** WS-C — audit `apex-coding-principles` + the impl.md "core" convention pattern for Flash-specific compensations, tag each for DeepSeek V4 Pro.
+**Date:** 2026-06-13
+**Files audited:**
+- `~/.claude/skills/apex-coding-principles/SKILL.md` (planning-side entry, v1.1.0)
+- `~/.claude/skills/apex-coding-principles/impl.md` (coding-side enforcement, v1.4.0)
+- Sampled capability impl.md files for the two-tier pattern: `apex-testing/impl.md` (v1.3.0), `apex-backend/impl.md` (v1.1.0)
+- Evidence: `docs/research/coding-capability/ws-3-weak-coder-evidence.md`
+
+**Pro-mode model assumption:** DeepSeek V4 Pro is a stronger coder (~3.1× cost). Capability inferred from benchmark patterns (frontier models show *threshold* decay vs small-model *exponential* decay; thinking/reasoning models resolve instruction conflicts far better). We have NO direct observation of V4 Pro. **Principle: relax conservatively. Default KEEP.**
+
+---
+
+## Framing: what is and isn't a Flash compensation
+
+`apex-coding-principles/impl.md` is overwhelmingly **universal correctness/quality rules** — naming, error handling, input validation, security, transactions, scalability. These are good engineering regardless of which model writes the code. They are NOT Flash compensations; a stronger model that *can* skip them still *shouldn't*. The downside of relaxing a correctness rule (silent catch, unvalidated input, leaked PII, plaintext password) is high and irreversible; the "capability gap" is irrelevant because the rule isn't gated on capability. **These are all KEEP.**
+
+The genuine Flash compensations are the **context-minimisation** and **phrasing-rigidity** mechanisms — the two-tier core/references split, the redundancy between the global CLAUDE.md and the skill, the per-task verify-loop cadence, and the sheer rule *count/density* (the evidence shows small models decay exponentially with rule density; Pro's threshold curve tolerates more). Those are where a defensible RELAX or PRO-UNLOCK lives.
+
+---
+
+## Audit Table
+
+| # | Compensation | Location (file:section) | Flash failure mode it targets | Tag | Evidence pairing | Conservative Pro behaviour | Confidence |
+|---|---|---|---|---|---|---|---|
+| 1 | **NEVER/ALWAYS hard-rule format** (imperative bullet lists, ~40 rules across both blocks) | `apex-coding-principles/impl.md` §NEVER do, §ALWAYS do | Weak models lose multi-clause/conditional rules; imperative bullets are the most reliably-followed form for low-capability models | **KEEP** | IFScale (2507.11538): omission-dominant failures under load; positive imperative phrasing is the robust form for all tiers | Unchanged. Format is cheap and helps every model; no downside to retaining | H |
+| 2 | **no-silent-catch** ("NEVER swallow an error silently…") | impl.md §NEVER do; §Error handling; `apex-backend/impl.md` §NEVER | Flash drops error handling on the unhappy path to "finish" | **KEEP** | SlopCodeBench (2603.24755): quality decays in 80% of trajectories regardless of prompt — a stronger model still omits error handling under long-horizon load | Unchanged. Correctness rule, high downside, capability-independent | H |
+| 3 | **Input validation at backend boundary** ("NEVER trust frontend validation alone"; "ALWAYS validate inputs on the backend") | impl.md §NEVER, §ALWAYS; `apex-backend/impl.md` §ALWAYS | n/a — not a capability compensation | **KEEP** | — (security invariant) | Unchanged. Universal security; relaxing on capability grounds is a category error | H |
+| 4 | **Security hard rules** (bcrypt, no plaintext, no PII in logs, session-derived tenant keys, no hardcoded secrets, pinned versions) | impl.md §NEVER, §Security — hard rules | n/a | **KEEP** | — | Unchanged. Highest-downside rules; never relax on model strength | H |
+| 5 | **Surgical scope lock** (only files in `Files to Change`; no drive-by refactors; every line traces to task) | impl.md §Surgical scope; global CLAUDE.md §3 | Flash "improves" adjacent code, sprawls scope, introduces unrequested change under instruction drift | **KEEP** | SlopCodeBench: agent code 2.2× more verbose, structural erosion in 80% of trajectories — *worse* in stronger long-horizon agents, not better. Scope discipline is the brake on exactly that. | Unchanged. A more capable model is *more* able to wander productively-but-off-spec; the lock matters as much or more. | H |
+| 6 | **YAGNI / Simplicity-first** ("NEVER build features/abstractions not asked for") | impl.md §NEVER; global CLAUDE.md §2 | Flash pattern-matches to bloated boilerplate | **KEEP** | SlopCodeBench verbosity finding (2.2×) applies across capability | Unchanged. Stronger model = stronger temptation to over-engineer. KEEP. | H |
+| 7 | **Two-tier impl.md core/references split** (lean always-on core; defer detail to references — context minimisation) | Convention across impl.md files (e.g. `apex-testing/impl.md` defers commands to the bound stack's Verification Recipe rather than inlining them; `apex-backend/impl.md` §Stack assumptions keeps the core stack-neutral and pushes stack detail to one § block) | Flash degrades with input-token volume; "Lost in the Middle" recall decay; exponential decay with rule density | **RELAX-UNDER-PRO** | SWE-Pruner (2601.16746): 23–54% token reduction with <1% quality loss (Flash); Infralovers: compressed 8KB index = 100% vs 79% for dynamically-loaded. Vantage: input = ~85% of cost. **Pro's threshold-decay curve tolerates higher density before collapse, and at 3.1× cost the input-token line item dominates the economic case.** | Keep the two-tier split as the *default authoring discipline* (it's good hygiene + the cost saving is real at 3.1×), but Pro MAY pull a referenced detail into context on demand without it being a fault, and reviewers should not flag a Pro session for loading a `references` block. Do NOT collapse the tiers or inline everything — that re-bloats the always-on core and raises cost. Relaxation is "Pro may reach for more context," not "give Pro more context by default." | M |
+| 8 | **Per-task Verification Recipe loop** (run recipe after every task; task done only when recipe passes — Karpathy step d) | impl.md §Post-coding checklist; `apex-testing/impl.md` §Verification checklist; `apex-code/SKILL.md` recipe-driven verify loop | Flash marks tasks done without running; needs tight per-task verify cadence to catch drift early | **KEEP** | SlopCodeBench: no agent solved any of 20 problems end-to-end, highest checkpoint solve 17.2% — verification cadence is the safety net for *all* tiers; AGENTS.md study shows quality erodes without checks | Unchanged as a *gate*. (Pro could plausibly batch verification across several tasks to save runs — see #11 — but the recipe-pass gate itself stays. A faster coder that skips verification is the classic regression source.) | H |
+| 9 | **Positive (commission) phrasing over prohibition** ("ALWAYS prefer early returns" vs "NEVER nest"; the skill is authored to favour ALWAYS-form where possible) | impl.md §ALWAYS (and the global removal-over-prohibition memory it reflects) | Omission/prohibition constraints decay fastest for weak models | **KEEP** | Omission-decay paper (2604.20911): prohibition compliance falls 60–73% → 10–20% over 25 turns, commission holds at 100% — **crosses model scale** (both small AND large models show it; Gemma-only resilience is the exception). | Unchanged. The asymmetry is architectural (self-attention has no priority mechanism — Control Illusion 2502.15851), not a small-model-only artefact. Positive phrasing is free and helps Pro too. KEEP. | H |
+| 10 | **Source-grounding protocol** (detect version → context7 → implement from docs → cite) | impl.md §Source-grounding protocol | Flash writes framework code from stale training memory | **KEEP** | General staleness; not capability-gated — a stronger model has the *same* training cutoff and hallucinates APIs just as confidently | Unchanged. Pro's larger knowledge doesn't fix a version mismatch. KEEP. | H |
+| 11 | **Rule count / total instruction density** of the always-on core (~40 NEVER/ALWAYS + checklists + sections, all loaded every session before task context) | impl.md as a whole (entire file is always-on) | Small models decay *exponentially* with rule density even at low counts (2–5 conflicting rules can derail); frontier models decay only past a high threshold | **PRO-UNLOCK** | IFScale (2507.11538): small models exponential-decay floor at 7–15%; frontier models near-perfect to ~150 instructions then threshold collapse. 2605.06445: small models near-zero at high constraint, frontier hold 46–58%. **Pro's threshold curve is the capability Flash lacks** — it can carry the full principles core *plus* heavier task context without entering the decay zone. | This is not a rule to relax — it's headroom Pro *unlocks*. Under Pro, the per-session instruction budget can safely absorb more (e.g. a richer task spec, more capability impl.md cores loaded simultaneously, or a less aggressively pruned context) without the exponential-decay penalty Flash pays. Conservative form: do NOT add rules just because Pro can take them; rather, stop *fearing* density-driven degradation when composing a Pro session, and prefer spending the unlocked headroom on richer task context over more standing rules. | M |
+| 12 | **CLAUDE.md ↔ skill redundancy** (global CLAUDE.md §1–§3 restate simplicity/surgical-scope/think-first that impl.md §Surgical/§NEVER also enforce) | global `~/.claude/CLAUDE.md` §1–4 vs impl.md §Surgical scope, §NEVER | Reinforcement repetition helps weak models retain rules across the session | **RELAX-UNDER-PRO** | AGENTS.md study (2601.20404): overlapping instruction files do "more harm than good," +20% cost, −3% success; the study *excluded* multi-instruction-file repos to avoid this confounder. For Flash, repetition is a deliberate retention aid; for Pro the duplication is more cost than benefit. | Lean toward *single-home* phrasing for Pro: where a rule is enforced in impl.md, the global CLAUDE.md echo can be a one-line pointer rather than a full restatement, trimming duplicated always-on tokens. Conservative guard: only de-duplicate exact restatements, keep the global file's *routing/role* content intact, and never remove a rule from its enforcement home (impl.md). This is a low-risk token trim, not a correctness change. | M |
+
+---
+
+## Tag counts
+
+- **KEEP:** 9 (rows 1, 2, 3, 4, 5, 6, 8, 9, 10)
+- **RELAX-UNDER-PRO:** 2 (rows 7, 12)
+- **PRO-UNLOCK:** 1 (row 11)
+
+---
+
+## Why almost everything is KEEP (explicit)
+
+Per the WS-C principle: most coding *principles* are universal good practice. The audit confirms this. Every correctness, security, validation, error-handling, naming, and scope rule in `apex-coding-principles/impl.md` is capability-independent — a stronger model that *can* cut the corner still *shouldn't*, and the downside of error (leaked secret, silent failure, scope sprawl) is high and often irreversible. SlopCodeBench is the load-bearing counter-evidence against relaxing discipline for stronger agents: code quality and scope discipline *erode more* in capable long-horizon agents, so the brakes (surgical scope, per-task verify, YAGNI) matter as much or more for Pro, not less.
+
+The only defensible relaxations are the **context-economy / phrasing-redundancy** mechanisms (rows 7, 12) and the **density headroom** Pro unlocks (row 11) — exactly the WS-C-predicted profile. None of them touch a correctness rule.
+
+## Caveats / confidence notes
+
+- Rows 7, 11, 12 are **Medium** confidence: all rest on inferring Pro's threshold-decay behaviour from the frontier-model benchmark cohort, with no DeepSeek-V4-Pro-specific study (the same gap WS-3 flags). If Pro turns out to sit closer to the small-model exponential curve than assumed, rows 7/11/12 should revert to KEEP.
+- The relaxations are framed as "Pro *may*" / "stop fearing density," never "remove the rule" — consistent with conservative inference.
+- No change is recommended to any §Security, §Error handling, §Surgical scope, or validation rule under any model.
