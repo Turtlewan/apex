@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-12 (session 36 — SwiftUI design tooling: prompt-to-design lanes incl. Bitrig native lane, Apple Xcode 27 agent-skill binding, native Preview gate, research-first aesthetic direction; SP0 removed, superpowers verify closed)
+_Last updated by planning mode:_ 2026-06-13 (session 38 — agent-skills absorption + apex-research three-phase model contract; full Iron-Law dogfood with 3 baseline-driven cuts)
 _Last updated by coding mode:_ 2026-06-01 (session 16)
 
 <!-- CODING:START -->
@@ -27,6 +27,24 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **Gated on a live Mac coding env** — unvalidatable on Windows planning; needs settings.json approval (ADR-012). |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
+
+## agent-skills absorption + apex-research model contract (session 38, 2026-06-13) — APPLIED
+Two pieces. (1) **apex-research 1.3.0** — hard **three-phase model contract**: Plan + Synthesise on
+Opus/Fable (in-context), Retrieve on dispatched **Sonnet/Haiku**; the expensive model never does
+mechanical retrieval (ADR-015 token rationale — bulky raw content stays in the cheap context).
+(2) Compare-and-absorb over **addyosmani/agent-skills** (MIT, `d187883`; mostly peer-quality
+already-have). A full **Iron-Law dogfood** ran on every absorbed addition (`docs/research/agent-skills-baseline/`)
+— the rigor prior passes had been deferring as "flagged for rigor."
+- **Kept (baseline-confirmed — model failed cold):** metric-honesty (apex-performance), source-grounding
+  (apex-coding-principles), AI-slop patterns (apex-ui-ux-design). **Cheap keeps:** untrusted-data NEVER
+  rules (apex-debug + apex-ui-testing), CONFUSION block (apex-code).
+- **Cut as model-redundant** (bare agent produced cold): elicitation (apex-plan — also freed the
+  500-line cap), deprecation section (apex-architecture), AI-perf anti-patterns (apex-performance SKILL).
+- Reports: `docs/research/agent-skills-analysis.md` · `agent-skills-rejected-salvage.md` ·
+  `agent-skills-baseline/SUMMARY.md`. Memory: [[absorption-red-probe-before-content]].
+- **⚠️ Verify on Mac:** the apex-performance **impl** block (CWV tree / INP APIs / font-CLS / image) —
+  haiku knew it cold, but DeepSeek Flash is the real executor (untestable on Windows). RED-probe Flash;
+  cut ~90 lines/perf-build if Flash also produces it cold.
 
 ## Coding-capability conflict pass (session 34, 2026-06-12) — APPLIED, ADR-018
 Ran the design-capability play on the CODING surface: do installed coding skills overlap/conflict,
@@ -268,6 +286,14 @@ saves $5–20/mo. Hybrid (Claude planning + DeepSeek coding) = sanctioned interi
   rewire (post-gate only).
 - **Fact corrections landed:** V4-Flash max output = **131K** (384K is V4-Pro's); Flash Q4_K_M ≈
   160–180 GB (not 96 GB); WS-A's contrary figure overruled in synthesis.
+- **Hosted-model comparison (session 37, 2026-06-13) → `docs/research/model-comparison/`.** Exploratory
+  landscape (no ADR). Opus 4.8 leads every independently-verified APEX benchmark (SWE-bench 88.6 vs 80.6,
+  Terminal-Bench 74.6 vs 67.9, AA Intelligence Index 61 vs 52); V4 Pro ~near-tied on *pure* coding at
+  ~29× cheaper output. Coding cost **Flash → Pro ≈ 3× sticker** ($0.14/$0.28 → $0.435/$0.87 per Mtok;
+  ~$10–40/mo added over Flash's ~$5–20/mo), more if think/think-max. Verdict: keep Claude for planning;
+  the live (un-opened) question is **Flash→Pro for coding** — a re-tune + eval gate (reuse ADR-016 P1
+  harness), NOT a model-string swap, because apex-code is optimised around Flash's weak-coder failure modes.
+  Re-research after 2026-06-27.
 
 ### Deferred to next session (paused 2026-06-09 — coding-mode context window)
 - **Verify coding-mode (DeepSeek) actual context window — Mac-gated.** Open question: is coding mode
