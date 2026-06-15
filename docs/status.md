@@ -8,7 +8,7 @@ specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
 _Last updated by planning mode:_ 2026-06-13 (session 40 — read the DeepSeek-V4 technical report; resolved coding-mode reasoning-effort = Flash-Max/Pro-Max; 4 research-doc corrections, 0 skill edits)
-_Last updated by coding mode:_ 2026-06-01 (session 16)
+_Last updated by coding mode:_ 2026-06-15 (session 41 — built destructive-command-guard hook + spec)
 
 <!-- CODING:START -->
 ## In-Flight
@@ -25,10 +25,10 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **`coding-session`-gated — runnable on Windows** (DeepSeek cloud backend is wired here; switch env vars + restart). Needs settings.json approval (ADR-012). _(Was mislabeled "live Mac" — corrected 2026-06-15.)_ |
 | `pro-mode-mechanics.md` | Phase 0 of Pro-mode: one-command Flash↔Pro toggle (`apex-code` shell fn, zsh+PowerShell), tier detection in SessionStart hook + orchestrate Step-6 line, BACKEND-ROUTING update. 5 files (coupled — flagged not split). **`coding-session`-gated — runnable on Windows** (PowerShell toggle is the Windows path; Pro = same cloud API, model `deepseek-v4-pro`). _(Was "toggle Mac-gated" — corrected 2026-06-15.)_ |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
+_Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. 🟡 uncommitted._
 
 ## agent-skills absorption + apex-research model contract (session 38, 2026-06-13) — APPLIED
 Two pieces. (1) **apex-research 1.3.0** — hard **three-phase model contract**: Plan + Synthesise on
