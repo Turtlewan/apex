@@ -1,7 +1,7 @@
 ---
 status: ready
 mode: light
-gated_on: Mac coding environment exists (cannot be validated on Windows planning)
+gated_on: a DeepSeek coding session (coding-session-gated — runnable on Windows; the cloud DeepSeek backend is wired here). Requires user approval to edit settings.json.
 ---
 
 # Coding-mode destructive-command hard-block (PreToolUse hook)
@@ -38,8 +38,11 @@ hard-blocks are least reliable. Decision + rejected alternatives: `docs/technica
   `{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"..."}}`
   on stdout, exit 0. **Confirm the exact field names against the live Claude Code hook API at build
   time** — they may have moved since this spec was written; do not transcribe blindly.
-- Mirror the existing APEX write-guard hook's structure/encoding for consistency (it's the sibling hook
-  in the same `~/.claude/scripts/hooks/` dir).
+- **Hooks live in `~/.claude/hooks/`** (NOT `~/.claude/scripts/hooks/` — that dir does not exist). The
+  sibling write-guard is `~/.claude/hooks/backend-pretool-write.ps1` (**PowerShell**), and existing
+  `.js` hooks (`gsd-*.js`) run there via the installed `node` (`C:/Program Files/nodejs/node.exe`). A
+  `.js` hook is viable; do NOT try to mirror the PowerShell sibling's structure line-for-line — mirror
+  the `.js` hooks' stdin/stdout/exit-0 contract instead.
 - `--force-with-lease` and `--force-if-includes` handling: copy gateguard's exact logic (a bare
   `--force` combined with `--force-if-includes` is still destructive).
 - Read-only git introspection (`git status`, `git diff --name-only`, etc.) must pass — reuse
@@ -48,9 +51,35 @@ hard-blocks are least reliable. Decision + rejected alternatives: `docs/technica
   `stripQuotedStrings` already handles this; keep it.
 
 ## Files to touch
-- `~/.claude/scripts/hooks/destructive-command-guard.js` — new hook (detection lifted from gateguard,
-  hard-`deny` logic, coding-mode env gate, recovery hatch).
-- `~/.claude/settings.json` — wire as a PreToolUse hook with a `Bash` matcher. **Requires the user's
-  explicit approval to edit settings.json** (per the Phase 3 per-hook approval gate).
-- (validation) a probe: confirm a never-list command is denied and a routine command passes, run in a
-  coding-mode (deepseek) session on the Mac.
+- `~/.claude/hooks/destructive-command-guard.js` — new hook (detection lifted from gateguard,
+  hard-`deny` logic, coding-mode env gate, recovery hatch). _(Dir is `~/.claude/hooks/`, confirmed live.)_
+- `~/.claude/settings.json` — wire as a PreToolUse hook with a `Bash` matcher, alongside the existing
+  `Bash`-matcher entry. **Requires the user's explicit approval to edit settings.json** (per the Phase 3
+  per-hook approval gate).
+
+## Acceptance criteria (step → verify)
+
+Validate in a **coding-mode (deepseek) session** (`ANTHROPIC_BASE_URL` contains `deepseek`). Drive the
+hook directly by piping a tool-call JSON to it and reading the decision — do NOT actually run the
+destructive commands. Helper: `echo '<json>' | node ~/.claude/hooks/destructive-command-guard.js`
+where `<json>` is a PreToolUse payload with `tool_name: "Bash"` and the command under test.
+
+1. **Denies push to main** → payload command `git push origin main` → output `permissionDecision: deny`.
+2. **Denies push to master via refspec** → `git push origin HEAD:master` → `deny`.
+3. **Denies force-push** → `git push --force origin feature` → `deny`; but `git push --force-with-lease origin feature` → **allow** (not denied).
+4. **Denies `rm -rf`** → `rm -rf build/` → `deny`.
+5. **Denies bare SQL destructors** → each of `DROP TABLE users`, `TRUNCATE users`, `DELETE FROM users` → `deny`.
+6. **Denies `git reset --hard` / `git clean -f` / `git commit --no-verify`** → each → `deny`.
+7. **Allows read-only git introspection** → `git status`, `git diff --name-only` → **allow** (not denied).
+8. **Quote-stripping false-positive guard** → `git commit -m "drop table fix"` → **allow** (the quoted "drop table" must NOT trigger).
+9. **Coding-mode gate** → with `ANTHROPIC_BASE_URL` unset (planning), `git push origin main` → hook is a **no-op / allow** (must not fire in planning mode).
+10. **Recovery hatch** → with `APEX_DESTRUCT_GUARD=off` set, `rm -rf build/` → **allow** (guard disabled for the deliberate one-off).
+
+## Commands to run
+
+```sh
+# In a deepseek coding session. Construct the JSON per the live PreToolUse contract (confirm field
+# names against the Claude Code hook API first — see Gotchas). Example skeleton:
+echo '{"tool_name":"Bash","tool_input":{"command":"git push origin main"}}' | node ~/.claude/hooks/destructive-command-guard.js
+echo '{"tool_name":"Bash","tool_input":{"command":"git status"}}' | node ~/.claude/hooks/destructive-command-guard.js
+```
