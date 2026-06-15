@@ -25,8 +25,8 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **Gated on a live Mac coding env** — unvalidatable on Windows planning; needs settings.json approval (ADR-012). |
-| `pro-mode-mechanics.md` | Phase 0 of Pro-mode: one-command Flash↔Pro toggle (`apex-code` shell fn, zsh+PowerShell), tier detection in SessionStart hook + orchestrate Step-6 line, BACKEND-ROUTING update. 5 files (coupled — flagged not split). Toggle checks Mac-gated; hook/doc checks run on Windows. |
+| `coding-destructive-command-guard.md` | PreToolUse hook: deterministic hard-block of never-list destructive commands in coding mode (reuses gateguard's parser). **`coding-session`-gated — runnable on Windows** (DeepSeek cloud backend is wired here; switch env vars + restart). Needs settings.json approval (ADR-012). _(Was mislabeled "live Mac" — corrected 2026-06-15.)_ |
+| `pro-mode-mechanics.md` | Phase 0 of Pro-mode: one-command Flash↔Pro toggle (`apex-code` shell fn, zsh+PowerShell), tier detection in SessionStart hook + orchestrate Step-6 line, BACKEND-ROUTING update. 5 files (coupled — flagged not split). **`coding-session`-gated — runnable on Windows** (PowerShell toggle is the Windows path; Pro = same cloud API, model `deepseek-v4-pro`). _(Was "toggle Mac-gated" — corrected 2026-06-15.)_ |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 
@@ -305,6 +305,12 @@ covers it). Value = validating signal that APEX's style contract is right. Repor
 
 ## Notes
 _status.md holds current state only — session history lives in git + handoff docs._
+- **Two gates, never conflate (corrected 2026-06-15):** `coding-session` = needs a DeepSeek coding
+  session, **runnable on Windows** (DeepSeek cloud API is wired here — `DEEPSEEK_API_KEY` set; switch
+  `ANTHROPIC_BASE_URL` to `…/deepseek/anthropic` + restart). `mac-gated` = needs macOS tooling
+  (Xcode/Swift/Bitrig), truly not Windows-runnable. The old blanket "Mac-gated" tag wrongly merged
+  these. Genuinely `mac-gated`: apex-swift recipe, Step-4 Bitrig walkthrough. Everything else
+  previously tagged Mac-gated is `coding-session`.
 - **Pipeline artifact model is implemented** (clusters A–E, 2026-05-30): thin handoff +
   triage-drain (`apex-handoff`, global CLAUDE.md, orchestrate template); apex-plan session-start
   drain + upfront elicitation; spec = execution-script (one-line identity, no-why, files-per-task);
