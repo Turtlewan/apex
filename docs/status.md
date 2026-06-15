@@ -17,6 +17,7 @@ _Last updated by coding mode:_ 2026-06-01 (session 16)
 | SP2 agent-wiring — coding-side | wave domain review | Done | `apex-wave-reviewer.md`, `apex-code/SKILL.md` | — | ✅ 427da16 |
 | Step-4 prompt-to-design walkthrough | planning · discussion | parked | `apex-ui-ux-design` § Prompt-to-design lanes | **next session:** live Bitrig-prompt walkthrough on a real SwiftUI screen (Mac-gated to actually run Bitrig) | — |
 | Design-capability build (6 bundles) | planning · skill edits | ✅ committed (apex `252ebeb` · ~/.claude `fc61075`) | `docs/research/design-capability/README.md` | All 6 bundles landed + committed (session 35 corrected a stale "uncommitted" mark). Remaining = USER actions only, non-blocking: disconnect Canva connector (Claude app → Connectors), set up free Google Stitch account. | — |
+| headroom+ponytail absorb pass | planning · research | ✅ closed · 0 skill edits | `docs/research/headroom-ponytail/` | Flash probe judged (2026-06-15): Task 3 structural trap 0/3 over-built → ladder model-redundant on the real coder, NOT absorbed. headroom dropped; ponytail comment-convention declined; ladder declined. Pass closed permanently. | — |
 
 <!-- CODING:END -->
 
