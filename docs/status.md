@@ -28,7 +28,7 @@ _Last updated by coding mode:_ 2026-06-15 (session 41 — built destructive-comm
 | `pro-mode-mechanics.md` | Phase 0 of Pro-mode: one-command Flash↔Pro toggle (`apex-code` shell fn, zsh+PowerShell), tier detection in SessionStart hook + orchestrate Step-6 line, BACKEND-ROUTING update. 5 files (coupled — flagged not split). **`coding-session`-gated — runnable on Windows** (PowerShell toggle is the Windows path; Pro = same cloud API, model `deepseek-v4-pro`). _(Was "toggle Mac-gated" — corrected 2026-06-15.)_ |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
-_Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. 🟡 uncommitted._
+_Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. ✅ 4ffd85a._
 
 ## agent-skills absorption + apex-research model contract (session 38, 2026-06-13) — APPLIED
 Two pieces. (1) **apex-research 1.3.0** — hard **three-phase model contract**: Plan + Synthesise on
