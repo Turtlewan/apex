@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-16 (session 44 — landed AI-slop-watch + cross-platform design-lanes batch into apex-ui-ux-design 1.11.0; established weekly AI-slop staleness mechanism; corrected the inline-image claim — CC TUI overwrites inline images, mockups are files the user opens)
+_Last updated by planning mode:_ 2026-06-16 (session 45 — ADR-020 capability-routed UI escalation: apex-ui-ux-design 1.13.0 [live-preview loop + cheap-mode-by-target] + apex-governance 1.9.0 + BACKEND-ROUTING + SessionStart banner wording; fixed write-guard cwd→file-path exemption bug surfaced by the escalation dogfood; cheap-mode-native research pass (3 agents))
 _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechanics: PowerShell toggle, hook tier detection, SKILL.md status line, BACKEND-ROUTING docs)
 
 <!-- CODING:START -->

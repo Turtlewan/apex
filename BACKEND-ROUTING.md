@@ -39,6 +39,7 @@ Use Claude for activities that require judgment, design, and decision-making:
 | Architecture decisions / ADRs | apex-architecture, apex-system-design |
 | Research before deciding | apex-research |
 | UI/UX design review | apex-ui-ux-design |
+| Bounded UI visual fix (ADR-020) | apex-ui-ux-design + apex-governance |
 | Security threat modelling | apex-security (SKILL.md) |
 | Code review (reading + flagging) | apex-reviewer |
 | Documentation planning | apex-docs-product (SKILL.md), apex-docs-technical |
@@ -119,9 +120,13 @@ See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
 ### Claude planning mode limitations
 
 - Write/Edit on non-`.md` source files (`.ts`, `.js`, `.py`, etc.) is gated behind an approval
-  prompt — default guidance is to do code work in a DeepSeek coding session
+  prompt (`permissionDecision: 'ask'` — **not** a hard block) — default guidance is to do code work
+  in a DeepSeek coding session
   - Exception: the APEX project itself and `~/.claude/` system files pass without prompting,
     since APEX is self-hosting (planning mode maintains its own skills and hooks)
+  - **Capability-routed UI escalation (ADR-020):** Claude may approve the prompt and make a
+    *bounded* UI code edit — view-layer only, to fix an inherently-visual divergence the image-blind
+    coder can't resolve from prose. Authority rule: apex-governance § Capability-routed UI escalation.
 - Writes `.md`, `.markdown`, `.txt` files freely
 - Cannot run build commands
 
@@ -167,4 +172,4 @@ Planning session (Claude)
 
 ---
 
-_Last updated: 2026-06-13 | DeepSeek: V4 Flash / V4 Pro | Claude: Sonnet 4.6 / Opus 4.7_
+_Last updated: 2026-06-16 | DeepSeek: V4 Flash / V4 Pro | Claude: Sonnet 4.6 / Opus 4.8_
