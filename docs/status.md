@@ -7,17 +7,18 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-13 (session 40 — read the DeepSeek-V4 technical report; resolved coding-mode reasoning-effort = Flash-Max/Pro-Max; 4 research-doc corrections, 0 skill edits)
-_Last updated by coding mode:_ 2026-06-15 (session 41 — built destructive-command-guard hook + spec)
+_Last updated by planning mode:_ 2026-06-15 (session 42 — UI cluster audit: confirmed healthy, nothing lost; refined the parked prompt-to-design walkthrough — its planning half is Windows-runnable, only the Bitrig run + Xcode-Preview gate are Mac-gated)
+_Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechanics: PowerShell toggle, hook tier detection, SKILL.md status line, BACKEND-ROUTING docs)
 
 <!-- CODING:START -->
 ## In-Flight
 | What | Mode | State | File | Stopped at | Uncommitted |
 |------|------|-------|------|------------|-------------|
 | SP2 agent-wiring — coding-side | wave domain review | Done | `apex-wave-reviewer.md`, `apex-code/SKILL.md` | — | ✅ 427da16 |
-| Step-4 prompt-to-design walkthrough | planning · discussion | parked | `apex-ui-ux-design` § Prompt-to-design lanes | **next session:** live Bitrig-prompt walkthrough on a real SwiftUI screen (Mac-gated to actually run Bitrig) | — |
+| Step-4 prompt-to-design walkthrough | planning · discussion | parked | `apex-ui-ux-design` § Prompt-to-design lanes | **Clarified session 42 (verified never-started, no progress lost):** the 6-step lane splits — steps 1,2,4 (screen brief → author Bitrig generation prompt → fold into design-brief) are **Windows-runnable now**; only step 3 (run Bitrig) + step 6 (Xcode-Preview visual gate) are Mac-gated. **Next:** do the planning half as a dry-run — author a real Bitrig generation prompt for a chosen SwiftUI screen. **Open Q:** target a real Artemis screen or a throwaway sample? | — |
 | Design-capability build (6 bundles) | planning · skill edits | ✅ committed (apex `252ebeb` · ~/.claude `fc61075`) | `docs/research/design-capability/README.md` | All 6 bundles landed + committed (session 35 corrected a stale "uncommitted" mark). Remaining = USER actions only, non-blocking: disconnect Canva connector (Claude app → Connectors), set up free Google Stitch account. | — |
 | headroom+ponytail absorb pass | planning · research | ✅ closed · 0 skill edits | `docs/research/headroom-ponytail/` | Flash probe judged (2026-06-15): Task 3 structural trap 0/3 over-built → ladder model-redundant on the real coder, NOT absorbed. headroom dropped; ponytail comment-convention declined; ladder declined. Pass closed permanently. | — |
+| pro-mode-mechanics (Phase 0) | coding · implement | ✅ complete | `docs/changes/done/pro-mode-mechanics.md` | All 8 changes implemented — 4 files touched | 🟡 uncommitted |
 
 <!-- CODING:END -->
 
@@ -25,10 +26,10 @@ _Last updated by coding mode:_ 2026-06-15 (session 41 — built destructive-comm
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `pro-mode-mechanics.md` | Phase 0 of Pro-mode: one-command Flash↔Pro toggle (`apex-code` shell fn, zsh+PowerShell), tier detection in SessionStart hook + orchestrate Step-6 line, BACKEND-ROUTING update. 5 files (coupled — flagged not split). **`coding-session`-gated — runnable on Windows** (PowerShell toggle is the Windows path; Pro = same cloud API, model `deepseek-v4-pro`). _(Was "toggle Mac-gated" — corrected 2026-06-15.)_ |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 _Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. ✅ 4ffd85a._
+_Applied 2026-06-16 → `done/`: `pro-mode-mechanics.md`. 🟡 uncommitted._
 
 ## agent-skills absorption + apex-research model contract (session 38, 2026-06-13) — APPLIED
 Two pieces. (1) **apex-research 1.3.0** — hard **three-phase model contract**: Plan + Synthesise on

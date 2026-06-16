@@ -7,10 +7,13 @@ This project runs under two AI backends. The active backend is detected from
 
 ## Detection rule
 
-| `ANTHROPIC_BASE_URL` | Active backend | Mode |
-|----------------------|---------------|------|
-| unset or `api.anthropic.com` | **Claude (Anthropic)** | Planning |
-| contains `deepseek` | **DeepSeek V4 Flash** | Coding |
+| `ANTHROPIC_BASE_URL` | `ANTHROPIC_MODEL` | Active backend | Mode |
+|----------------------|-------------------|----------------|------|
+| unset or `api.anthropic.com` | — | **Claude (Anthropic)** | Planning |
+| contains `deepseek` | `deepseek-v4-flash` (or unset) | **DeepSeek V4 Flash** | Coding |
+| contains `deepseek` | `deepseek-v4-pro` | **DeepSeek V4 Pro** | Coding |
+
+The coding tier (Flash vs Pro) is selected by the `apex-code` shell toggle (see [Switching backends](#switching-backends)) and persisted in `~/.apex-coding-model`. Pro is ~3.1× the cost of Flash. The SessionStart hook reads `ANTHROPIC_MODEL` and injects a `coder_tier` value (`flash`|`pro`); apex-orchestrate surfaces it in the Step-6 status line as `Tier: {flash|pro}`.
 
 The harness enforces this automatically via a PreToolUse hook:
 - Planning mode gates Write/Edit on non-`.md` files behind an approval prompt (default
@@ -126,12 +129,15 @@ See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
 
 ## Switching backends
 
-**To switch to coding mode (DeepSeek):**
-```powershell
-$env:ANTHROPIC_BASE_URL = "https://api.deepseek.com/anthropic"
-$env:ANTHROPIC_AUTH_TOKEN = "<your DeepSeek API key>"
-$env:ANTHROPIC_MODEL = "deepseek-v4-flash"
+**To switch to coding mode (DeepSeek) — use the `apex-code` toggle:**
+
+```sh
+apex-code          # flip between Flash and Pro (alternates from last choice)
+apex-code flash    # force Flash tier (deepseek-v4-flash)
+apex-code pro      # force Pro tier (deepseek-v4-pro, ~3.1× Flash cost)
 ```
+
+The function sets `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN` (from `$DEEPSEEK_API_KEY` / `$env:DEEPSEEK_API_KEY`), and `ANTHROPIC_MODEL`, persists the tier to `~/.apex-coding-model`, then launches `claude`. Defined in `~/.zshrc` (Mac, primary) and `$PROFILE` (Windows).
 
 **To switch to planning mode (Claude):**
 ```powershell
@@ -161,4 +167,4 @@ Planning session (Claude)
 
 ---
 
-_Last updated: 2026-06-02 | DeepSeek: V4 Flash | Claude: Sonnet 4.6 / Opus 4.7_
+_Last updated: 2026-06-13 | DeepSeek: V4 Flash / V4 Pro | Claude: Sonnet 4.6 / Opus 4.7_
