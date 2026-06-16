@@ -18,7 +18,7 @@ _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechani
 | Step-4 prompt-to-design walkthrough | planning · discussion | parked | `apex-ui-ux-design` § Prompt-to-design lanes | **Clarified session 42 (verified never-started, no progress lost):** the 6-step lane splits — steps 1,2,4 (screen brief → author Bitrig generation prompt → fold into design-brief) are **Windows-runnable now**; only step 3 (run Bitrig) + step 6 (Xcode-Preview visual gate) are Mac-gated. **Next:** do the planning half as a dry-run — author a real Bitrig generation prompt for a chosen SwiftUI screen. **Open Q:** target a real Artemis screen or a throwaway sample? | — |
 | Design-capability build (6 bundles) | planning · skill edits | ✅ committed (apex `252ebeb` · ~/.claude `fc61075`) | `docs/research/design-capability/README.md` | All 6 bundles landed + committed (session 35 corrected a stale "uncommitted" mark). Remaining = USER actions only, non-blocking: disconnect Canva connector (Claude app → Connectors), set up free Google Stitch account. | — |
 | headroom+ponytail absorb pass | planning · research | ✅ closed · 0 skill edits | `docs/research/headroom-ponytail/` | Flash probe judged (2026-06-15): Task 3 structural trap 0/3 over-built → ladder model-redundant on the real coder, NOT absorbed. headroom dropped; ponytail comment-convention declined; ladder declined. Pass closed permanently. | — |
-| pro-mode-mechanics (Phase 0) | coding · implement | ✅ complete | `docs/changes/done/pro-mode-mechanics.md` | All 8 changes implemented — 4 files touched | 🟡 uncommitted |
+| pro-mode-mechanics (Phase 0) | coding · implement | ✅ complete | `docs/changes/done/pro-mode-mechanics.md` | All 8 changes implemented — 4 files touched | ✅ 0c415a7 |
 
 <!-- CODING:END -->
 
@@ -29,7 +29,7 @@ _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechani
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 _Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. ✅ 4ffd85a._
-_Applied 2026-06-16 → `done/`: `pro-mode-mechanics.md`. 🟡 uncommitted._
+_Applied 2026-06-16 → `done/`: `pro-mode-mechanics.md`. ✅ 0c415a7._
 
 ## agent-skills absorption + apex-research model contract (session 38, 2026-06-13) — APPLIED
 Two pieces. (1) **apex-research 1.3.0** — hard **three-phase model contract**: Plan + Synthesise on
