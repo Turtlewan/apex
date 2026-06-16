@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-16 (session 45 — ADR-020 capability-routed UI escalation: apex-ui-ux-design 1.13.0 [live-preview loop + cheap-mode-by-target] + apex-governance 1.9.0 + BACKEND-ROUTING + SessionStart banner wording; fixed write-guard cwd→file-path exemption bug surfaced by the escalation dogfood; cheap-mode-native research pass (3 agents))
+_Last updated by planning mode:_ 2026-06-16 (session 46 — agentic-OS video audit [6 LEAD · 2 GAP · 1 DEFERRED]; memory-recall gap researched [3 agents] + Council deep-dive → ADR-021 keep flat memory, no semantic/vector layer, trigger-gated)
 _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechanics: PowerShell toggle, hook tier detection, SKILL.md status line, BACKEND-ROUTING docs)
 
 <!-- CODING:START -->
@@ -30,6 +30,33 @@ _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechani
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 _Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. ✅ 4ffd85a._
 _Applied 2026-06-16 → `done/`: `pro-mode-mechanics.md`. ✅ 0c415a7._
+
+## Agentic-OS video audit + memory-recall decision (session 46, 2026-06-16) — COMPLETE, ADR-021
+Audited APEX against a YouTube "agentic OS" 9-pillar model → `docs/research/agentic-os-video-audit.md`:
+**6 LEAD · 2 GAP · 1 DEFERRED.** APEX already leads/rejects-by-design on 7 (skills, tiered planning,
+multi-client, output consolidation, portability, static context, self-learning=ADR-011). Only two
+coding-relevant gaps: **#2 memory/semantic-recall** and **#4 scheduled/headless autonomous builds**.
+- **#2 resolved → ADR-021 (keep flat, no semantic layer, trigger-gated).** Research (`docs/research/memory-recall/`,
+  3 Sonnet agents, 6 primary sources) + Council deep-dive (`docs/findings/memory-recall-deep-dive.md`,
+  3 blind voices, unanimous no-go). APEX's memory surface (~2–5K tok) is ~10× under the ~50K semantic-payoff
+  onset; benchmarks show semantic memory loses to simple RAG at this scale; infra can hurt (+>20% cost,
+  −3% success, ETH arXiv:2602.11988). Council corrected the framing: false binary — escalation = cheap
+  markdown-native **Option C** (tag/alias frontmatter + tiered load + hybrid keyword over handoffs/ADRs),
+  NOT claude-mem. Trigger: ~80–100 MEMORY.md entries / ~25K-tok load / a *named* recurring grep-vocab miss.
+- **#4 + #8 researched → `docs/research/remote-autonomous/` (3 agents, 24 primary sources).** Verdict:
+  both resolve via **native features, host-gated not infra-gated** — no VPS/dashboard build.
+  - **#8 access-anywhere = largely SOLVED natively.** Channels (Telegram/Discord/iMessage) + Remote
+    Control (full two-way + push notifs) + Dispatch + Web + Slack all real (VERIFIED, some research-preview).
+    Downgrades #8 from the old "build a VPS layer" assumption. **Quick win available NOW on Windows**
+    (v2.1.80+): phone access to interactive sessions, no host needed.
+  - **#4 autonomous coding = path exists, Mac-Mini-gated.** Cloud Routines CANNOT run APEX coding
+    (Claude-only, fresh-clone, won't honour the DeepSeek base-URL swap). Real path = **headless-local**
+    (`claude -p`/`--bg` + DeepSeek base URL + ready spec + `dontAsk`+allow-list + `--max-budget`) on the
+    always-on Mac Mini, with HITL/alerts over Channels. **Cost non-issue** — billed to DeepSeek's pool,
+    NOT the Anthropic credit pool (billing-split applies to headless *Claude*, not *coding*). Defer build
+    until host live; then one small spec wires the recipe + safety envelope.
+  - **Video #2 (Chase AI) digested** → audit addendum: corroborates ADR-021 (flat markdown memory);
+    dashboard/button idea solo-discounted; usable kernel = usage observability (low priority, bundle w/ host).
 
 ## agent-skills absorption + apex-research model contract (session 38, 2026-06-13) — APPLIED
 Two pieces. (1) **apex-research 1.3.0** — hard **three-phase model contract**: Plan + Synthesise on
