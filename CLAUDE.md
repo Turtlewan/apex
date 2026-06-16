@@ -24,7 +24,8 @@ Two backends, one harness. Detection is automatic from `ANTHROPIC_BASE_URL`.
 | **DeepSeek V4 Flash** | `deepseek` | Coding | Yes — all files |
 
 \* In planning mode the non-`.md` write-guard is an approval prompt (default: defer to coding
-mode), **except** within the APEX project itself and `~/.claude/` system files, which pass
+mode), **except** within the APEX project itself, `~/.claude/` system files, and any project's
+`docs/research/mockups/` (logic-free cheap-mockup design artifacts — ADR-020), which pass
 silently — APEX is self-hosting. See [ADR-009](./docs/technical/adr/ADR-009-harden-session-start-and-write-guard.md).
 
 Full routing table: see [BACKEND-ROUTING.md](./BACKEND-ROUTING.md).
