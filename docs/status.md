@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-15 (session 42 — UI cluster audit: confirmed healthy, nothing lost; refined the parked prompt-to-design walkthrough — its planning half is Windows-runnable, only the Bitrig run + Xcode-Preview gate are Mac-gated)
+_Last updated by planning mode:_ 2026-06-16 (session 44 — landed AI-slop-watch + cross-platform design-lanes batch into apex-ui-ux-design 1.11.0; established weekly AI-slop staleness mechanism; corrected the inline-image claim — CC TUI overwrites inline images, mockups are files the user opens)
 _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechanics: PowerShell toggle, hook tier detection, SKILL.md status line, BACKEND-ROUTING docs)
 
 <!-- CODING:START -->
