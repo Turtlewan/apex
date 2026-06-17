@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-17 (session 48 — Impeccable absorption pass CLOSED: prose four RED-probe-rejected as model-redundant; the 44-rule deterministic LLM-free detector ADOPTED as an opt-in web-UI-scoped advisory external reference → ADR-022 + apex-ui-testing impl 1.5.0 + apex-ui-ux-design pointer 1.22.1)
+_Last updated by planning mode:_ 2026-06-17 (session 49 — Pro coder tier EMPIRICALLY VALIDATED: a real DeepSeek V4 Pro build ran end-to-end on Windows; status corrected — Pro tier proven live + eval head-to-head re-tagged `coding-session`-gated not Mac-gated. Session 48 — Impeccable absorption pass CLOSED: prose four RED-probe-rejected; 44-rule deterministic detector ADOPTED as opt-in web-UI advisory reference → ADR-022)
 _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechanics: PowerShell toggle, hook tier detection, SKILL.md status line, BACKEND-ROUTING docs)
 
 <!-- CODING:START -->
@@ -104,12 +104,17 @@ on Windows, empirical eval deferred to Mac (not a gate). Full audit: **`docs/res
   optional, Mac-gated. Worked example + R1–R5 rationale: `docs/research/pro-mode-audit/spec-splitting-design.md`.
 - **Per-project switch (user-requested):** `coder_tier_policy: flash | pro | split` in status.md —
   `flash`/`pro` = pure single-tier (no splitting/toggle); `split` = tier-aware. Default `flash` (backward-compatible).
-- **Phase status:** P0 mechanics spec drafted (`docs/changes/pro-mode-mechanics.md`, **Mac-gated**); P1 audit done;
+- **✅ EMPIRICALLY VALIDATED (session 49, 2026-06-17):** a real Pro build ran **end-to-end on DeepSeek
+  V4 Pro on Windows and produced working code** — the tier is now proven live, not just benchmark-reasoned.
+  Supersedes the prior "empirical eval deferred to Mac" framing for the *tier itself*. Confirms the Pro
+  toggle mechanics (PowerShell switch + hook tier-detection + SKILL.md status line, built session 43, `0c415a7`) work.
+- **Phase status:** P0 mechanics **BUILT + committed** (`docs/changes/done/pro-mode-mechanics.md`, `0c415a7`); P1 audit done;
   **P4 splitting discipline LANDED** — ADR-019 + apex-plan 1.21.0 (§Coder-tier build planning) + apex-governance
   1.8.0 (tier=capability-not-authority) + spec-template `coder_tier` flag + status-template `coder_tier_policy`.
   ✅ committed (~/.claude 82523b3 · apex 9a8489f · artemis split-enable 5d16a1c).
   **Deferred:** orchestrate "switch-now" routing nudge (bundle with Phase-0 orchestrate edit); Subset A/B coder
-  relaxations + eval-harness Flash-vs-Pro head-to-head (ADR-016 P1) — Mac-gated validation, not a build gate.
+  relaxations + eval-harness Flash-vs-Pro head-to-head (ADR-016 P1) — **`coding-session`-gated, not Mac-gated**
+  (a DeepSeek Pro coding session runs on Windows, now proven); not a build gate.
 
 ## DeepSeek-V4 paper read — coding reasoning-effort resolved (session 40, 2026-06-13) — APPLIED (doc corrections)
 Read the previously-uncited **58-page DeepSeek-V4 technical report** (HuggingFace) + DeepSeek live
