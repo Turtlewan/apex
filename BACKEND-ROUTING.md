@@ -13,7 +13,7 @@ This project runs under two AI backends. The active backend is detected from
 | contains `deepseek` | `deepseek-v4-flash` (or unset) | **DeepSeek V4 Flash** | Coding |
 | contains `deepseek` | `deepseek-v4-pro` | **DeepSeek V4 Pro** | Coding |
 
-The coding tier (Flash vs Pro) is selected by the `apex-code` shell toggle (see [Switching backends](#switching-backends)) and persisted in `~/.apex-coding-model`. Pro is ~3.1× the cost of Flash. The SessionStart hook reads `ANTHROPIC_MODEL` and injects a `coder_tier` value (`flash`|`pro`); apex-orchestrate surfaces it in the Step-6 status line as `Tier: {flash|pro}`.
+The coding tier is selected by **which launcher you use** (see [Switching backends](#switching-backends)): `coding-mode` = Flash, `apex-code` = Pro. Each is a dedicated launcher that sets the full DeepSeek env block to its tier; there is no toggle and no persisted state. Pro is ~3.1× the cost of Flash. The SessionStart hook reads `ANTHROPIC_MODEL` and injects a `coder_tier` value (`flash`|`pro`); apex-orchestrate surfaces it in the Step-6 status line as `Tier: {flash|pro}`.
 
 The harness enforces this automatically via a PreToolUse hook:
 - Planning mode gates Write/Edit on non-`.md` files behind an approval prompt (default
@@ -134,15 +134,20 @@ See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
 
 ## Switching backends
 
-**To switch to coding mode (DeepSeek) — use the `apex-code` toggle:**
+**To switch to coding mode (DeepSeek) — pick the launcher for the tier you want:**
 
 ```sh
-apex-code          # flip between Flash and Pro (alternates from last choice)
-apex-code flash    # force Flash tier (deepseek-v4-flash)
-apex-code pro      # force Pro tier (deepseek-v4-pro, ~3.1× Flash cost)
+coding-mode    # Flash tier (deepseek-v4-flash) — the default coding tier
+apex-code      # Pro tier (deepseek-v4-pro, ~3.1× Flash cost)
 ```
 
-The function sets `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN` (from `$DEEPSEEK_API_KEY` / `$env:DEEPSEEK_API_KEY`), and `ANTHROPIC_MODEL`, persists the tier to `~/.apex-coding-model`, then launches `claude`. Defined in `~/.zshrc` (Mac, primary) and `$PROFILE` (Windows).
+Both are dedicated launchers: each sets the **full** DeepSeek env block — `ANTHROPIC_BASE_URL`,
+`ANTHROPIC_AUTH_TOKEN` (from `$DEEPSEEK_API_KEY` / `$env:DEEPSEEK_API_KEY`), `ANTHROPIC_MODEL`, the
+`ANTHROPIC_DEFAULT_OPUS/SONNET/HAIKU_MODEL` alias mappings, `CLAUDE_CODE_SUBAGENT_MODEL`, and
+`CLAUDE_CODE_EFFORT_LEVEL=max` — to its tier, then launches `claude`. Setting the full block (not
+just `ANTHROPIC_MODEL`) is what keeps subagents and the alias-resolved model on the same tier as the
+main session. Defined in `$PROFILE` (Windows). _Mac `~/.zshrc` still carries the older `apex-code`
+flip-flop — port these two symmetric launchers there on the next Mac session._
 
 **To switch to planning mode (Claude):**
 ```powershell
@@ -172,4 +177,4 @@ Planning session (Claude)
 
 ---
 
-_Last updated: 2026-06-16 | DeepSeek: V4 Flash / V4 Pro | Claude: Sonnet 4.6 / Opus 4.8_
+_Last updated: 2026-06-17 | DeepSeek: V4 Flash (`coding-mode`) / V4 Pro (`apex-code`) | Claude: Sonnet 4.6 / Opus 4.8_
