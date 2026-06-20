@@ -176,6 +176,39 @@ slash-commands, MCP/Context7, GIGO + plan-mode-Q&A + fresh-session-review-before
   portability candidate** (cleaner than the `~/.claude` blanket-gitignore + `git add -f` distribution;
   ties to `project-deployment` + portability memories). Not now.
 
+## Addendum — sixth video ("perfect memory" 4-pillar build) digested 2026-06-20
+Verdict: **REJECTED for APEX (already decided — ADR-021 + ADR-011); ~95% dedup for Artemis.** No
+research dispatch — the memory deep-dive was already done (ADR-021 research + Council). This is the
+most memory-specific video in the series; it cherry-picks four pillars from named OSS projects:
+1. **Cite sources** (GBrain) — answer with exact file/line/date/decider + admit gaps. *APEX:* coding
+   memory is hand-curated + fully loaded; provenance is git/handoff/ADR. N/A as a memory feature.
+   *Artemis:* already in BACKLOG — "anti-hallucination brain invariants (gap-tagging, multi-index
+   citation verify, claim-audit)" + the 12x.ai-addendum validation/provenance lens. Already core.
+2. **Frozen-snapshot injection** (Hermes) — capped curated context loaded by a SessionStart hook.
+   *APEX:* this is exactly our **L2** (hook injects status.md + MEMORY.md + handoff) — already **LEAD**.
+   *Artemis:* M4 auto-inject. Covered.
+3. **Semantic + keyword hybrid recall** (Memsearch / PGLite+PGVector) — meaning-based search.
+   *APEX:* **explicitly REJECTED — ADR-021** (memory ~2–5K tok, ~10× under the semantic-payoff onset;
+   simple-RAG-beats-semantic at this scale; vector daemon breaks git-as-changelog). *Artemis:* IS the
+   core RAG engine (M3 hybrid vector+keyword) — corroboration, not addition.
+4. **Scoped team access** (GBrain, Postgres row-level security) — multi-user memory isolation.
+   *APEX:* out of scope (single-user coding). *Artemis:* **out of scope too** — Artemis is single-owner,
+   local-first, privacy-walled (ADR-001/002). Team/agency scoping fits neither; recorded so it isn't
+   re-litigated.
+- **Two "new" mechanisms are both already-rejected patterns:** (a) the **stop-hook auto-promote**
+  ("after every turn, judge if a durable fact → write memory.md, dedup") is the **auto-learning loop
+  APEX rejected in ADR-011** (weak-coder poisoning; APEX uses human-gated promotion via
+  `apex-refresh --stocktake`); (b) **back-catalog import** (turn old session history into memories on
+  day 1) would bloat the flat memory and trips the AgentMD cost-tax caution (arXiv:2602.11988). Both
+  REJECT for APEX. For Artemis, "auto-capture durable facts" = the M4 write path + ingest, already scoped.
+- **One marginal sharpening for Artemis (logged to BACKLOG, not built):** the video's recall UX returns
+  a past decision **plus a temporal-freshness check** ("…and no newer discussion has superseded this
+  since {date}"). Artemis's citation items are source-grounding, not supersession-on-recall — a small,
+  concrete refinement to the M3/M4 answer layer. Added as a backlog line.
+- **Net:** nothing to absorb into APEX; the video is the **6th straight corroboration** of ADR-021's
+  flat-memory bet and APEX's hook-injection design. Artemis's existing second-brain backlog already
+  spans pillars 1–3; only the temporal-freshness recall nuance is new, and even that is a refinement.
+
 ## Decisions captured
 - Pillars 1, 3, 5, 6, 7, 9: APEX already leads — **no action**, recorded so we don't re-litigate.
 - Self-learning loop (pillar 3): **stays rejected** per ADR-011 (weak-coder poisoning risk).
