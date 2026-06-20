@@ -18,28 +18,24 @@ launch like this; you cannot switch into it mid-session. (Pro tier: `apex-code -
 
 Then, in that session, tell the agent: **"run docs/changes/validate-dontask-spof.md"**.
 
-## Pre-requisite — add the probe rules BEFORE launching
+## Pre-requisite — ✅ ALREADY APPLIED (planning, session 54)
 
-The probes need a scratch allowlist + one deny rule. **You must add these by hand before launch** —
-`.claude/settings.local.json` is a protected path, so the `dontAsk` session itself cannot write it.
-Add to `C:\users\user\apex\.claude\settings.local.json` (merge into existing `permissions`):
+The probes need a scratch allowlist + one deny rule. These are **already merged** into
+`C:\users\user\apex\.claude\settings.local.json` (gitignored, local-only), and `docs/probes/scratch/`
+is created. Added:
 
 ```json
-{
-  "permissions": {
-    "allow": [
-      "Write(C:\\users\\user\\apex\\docs\\probes\\**)",
-      "Edit(C:\\users\\user\\apex\\docs\\probes\\**)",
-      "Bash(echo:*)"
-    ],
-    "deny": [
-      "Bash(rm:*)"
-    ]
-  }
-}
+"allow": [ "…existing…",
+  "Write(C:/Users/User/apex/docs/probes/**)",
+  "Edit(C:/Users/User/apex/docs/probes/**)",
+  "Bash(echo *)"
+],
+"deny": [ "Bash(rm *)" ]
 ```
 
-Remove the `"Bash(rm:*)"` deny + scratch allows after the run if you don't want them permanent.
+(Forward-slash paths + space-style patterns to match the file's working conventions.) Nothing to do
+before launch except confirm they're present. **Remove the `"deny": ["Bash(rm *)"]` block + the scratch
+allows after the run** — the `rm` deny applies to *every* session (incl. planning) until removed.
 
 ---
 
