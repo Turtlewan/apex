@@ -32,12 +32,13 @@ _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechani
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `classifier-spof-dontask-mode.md` | Run the DeepSeek build path (AFK + headless + `wave_dispatch: workflow`) in `dontAsk` permission mode, not `auto` — the auto-mode safety classifier routes through `ANTHROPIC_BASE_URL` → DeepSeek (SPOF). `dontAsk` skips the classifier; `permissions.allow` mirrors the spec's `## Permissions`, `permissions.deny` keeps the destructive floor. Resolves the session-53 Open Question. |
+| _(none — queue clear)_ | — |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 _Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. ✅ 4ffd85a._
 _Applied 2026-06-16 → `done/`: `pro-mode-mechanics.md`. ✅ 0c415a7._
 _Session 52 (2026-06-20) → `done/`: `verify-workflow-tool-deepseek.md` (PASSED). Retired (`git rm`): `coding-return-contract-enforcement.md` (Option C supersedes A)._
+_Session 54 (2026-06-20) → `done/`: `classifier-spof-dontask-mode.md` — applied directly in planning (apex-code 1.17.0: `dontAsk` build-mode policy)._
 _Session 53 (2026-06-20) → `done/`: `apex-code-fanout-cap.md` (B) · `express-waves-as-workflow.md` (C) · `retire-dead-coding-pipeline.md`. Built & committed (~/.claude `42c86ae` · apex `c380767`); the `changes/ → done/` move is uncommitted in the working tree. C's first `wave_dispatch: workflow` build is still the unproven end-to-end proving run._
 
 ## Agentic-OS video audit + memory-recall decision (session 46, 2026-06-16) — COMPLETE, ADR-021
