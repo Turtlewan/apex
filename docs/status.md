@@ -32,7 +32,7 @@ _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechani
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| _(none — queue clear)_ | — |
+| `validate-dontask-spof.md` | Coding-mode probes to validate the `dontAsk` classifier-SPOF mitigation. Phase 1 (Probes A–D) runs in the APEX repo now (protected-path denial + no-classifier, allow-listed write, deny floor, off-list silent-deny); Phase 2 (E–F) needs a stacked project (allowlist-completeness vs the stack recipe + the `wave_dispatch: workflow` proving run + subagent `dontAsk` inheritance). Launch: `coding-mode --permission-mode dontAsk`. |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 _Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. ✅ 4ffd85a._
