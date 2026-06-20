@@ -7,7 +7,7 @@ autonomy_level: L2
 specialists_default: []
 backends: planning=claude | coding=deepseek-v4-flash
 
-_Last updated by planning mode:_ 2026-06-20 (session 54 — cleared Pending table after session-53 build; UI-workflow absorption pass (6 agents → `docs/research/ui-workflow-absorption/`): GSAP/Stitch/taste/impeccable already-have, hyperframes+remotion=video out-of-scope → only a Stitch factual correction landed (apex-ui-ux-design 1.23.1), useGSAP rejected by RED probe; classifier-SPOF Open Question RESOLVED → spec `classifier-spof-dontask-mode.md`; 6th agentic-OS memory video → REJECT for APEX (ADR-021/011), 1 Artemis backlog line). 2026-06-20 (session 53 — logged Open Question: permission-classifier ↔ coding-backend SPOF; both ride `deepseek-v4-flash`, so a DeepSeek blip gates workflow/subagent writes. Surfaced building express-waves-as-workflow; live-probe confirmed transient blip not outage). 2026-06-20 (session 52 — Workflow tool DECISIVE TEST PASSED on DeepSeek; Option C confirmed native; user decision C-supersedes-A: retired spec A, kept B + retire-dead-pipeline, moved verify probe → done/. Next: author the Option-C workflow-script spec). 2026-06-19 (session 50 — homed the P6-maths context-exhaustion backlog into In-Flight: ADR-015 return-contract violation in `apex-coder.md` Step 5 + launch overhead; scope A/A+B/A+B+C parked. Was mis-logged to the stale `~/.claude/docs/status.md` fossil). 2026-06-17 (session 49 — Pro coder tier EMPIRICALLY VALIDATED: a real DeepSeek V4 Pro build ran end-to-end on Windows; status corrected — Pro tier proven live + eval head-to-head re-tagged `coding-session`-gated not Mac-gated. Session 48 — Impeccable absorption pass CLOSED: prose four RED-probe-rejected; 44-rule deterministic detector ADOPTED as opt-in web-UI advisory reference → ADR-022)
+_Last updated by planning mode:_ 2026-06-20 (session 55 — drained the coding handoff: dontAsk SPOF Phase-1 empirically validated (4/4 probes PASS, classifier never invoked); cleaned probe artifacts from `settings.local.json` (`rm`-deny + `docs/probes/**` allows); moved `validate-dontask-spof.md` → `done/`; Phase 2 E/F folded into the first-workflow-build open question; +memory `dontask-probe-cleanup-paradox`). 2026-06-20 (session 54 — cleared Pending table after session-53 build; UI-workflow absorption pass (6 agents → `docs/research/ui-workflow-absorption/`): GSAP/Stitch/taste/impeccable already-have, hyperframes+remotion=video out-of-scope → only a Stitch factual correction landed (apex-ui-ux-design 1.23.1), useGSAP rejected by RED probe; classifier-SPOF Open Question RESOLVED → spec `classifier-spof-dontask-mode.md`; 6th agentic-OS memory video → REJECT for APEX (ADR-021/011), 1 Artemis backlog line). 2026-06-20 (session 53 — logged Open Question: permission-classifier ↔ coding-backend SPOF; both ride `deepseek-v4-flash`, so a DeepSeek blip gates workflow/subagent writes. Surfaced building express-waves-as-workflow; live-probe confirmed transient blip not outage). 2026-06-20 (session 52 — Workflow tool DECISIVE TEST PASSED on DeepSeek; Option C confirmed native; user decision C-supersedes-A: retired spec A, kept B + retire-dead-pipeline, moved verify probe → done/. Next: author the Option-C workflow-script spec). 2026-06-19 (session 50 — homed the P6-maths context-exhaustion backlog into In-Flight: ADR-015 return-contract violation in `apex-coder.md` Step 5 + launch overhead; scope A/A+B/A+B+C parked. Was mis-logged to the stale `~/.claude/docs/status.md` fossil). 2026-06-17 (session 49 — Pro coder tier EMPIRICALLY VALIDATED: a real DeepSeek V4 Pro build ran end-to-end on Windows; status corrected — Pro tier proven live + eval head-to-head re-tagged `coding-session`-gated not Mac-gated. Session 48 — Impeccable absorption pass CLOSED: prose four RED-probe-rejected; 44-rule deterministic detector ADOPTED as opt-in web-UI advisory reference → ADR-022)
 _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechanics: PowerShell toggle, hook tier detection, SKILL.md status line, BACKEND-ROUTING docs)
 
 <!-- CODING:START -->
@@ -32,13 +32,14 @@ _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechani
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `validate-dontask-spof.md` | Coding-mode probes to validate the `dontAsk` classifier-SPOF mitigation. Phase 1 (Probes A–D) runs in the APEX repo now (protected-path denial + no-classifier, allow-listed write, deny floor, off-list silent-deny); Phase 2 (E–F) needs a stacked project (allowlist-completeness vs the stack recipe + the `wave_dispatch: workflow` proving run + subagent `dontAsk` inheritance). Launch: `coding-mode --permission-mode dontAsk`. |
+| _(none)_ | — |
 
 _Applied 2026-06-05 → `done/`: `taste-rules-distill.md` · `research-dispatch-recipe.md`. ✅ committed._
 _Applied 2026-06-15 → `done/`: `coding-destructive-command-guard.md`. ✅ 4ffd85a._
 _Applied 2026-06-16 → `done/`: `pro-mode-mechanics.md`. ✅ 0c415a7._
 _Session 52 (2026-06-20) → `done/`: `verify-workflow-tool-deepseek.md` (PASSED). Retired (`git rm`): `coding-return-contract-enforcement.md` (Option C supersedes A)._
 _Session 54 (2026-06-20) → `done/`: `classifier-spof-dontask-mode.md` — applied directly in planning (apex-code 1.17.0: `dontAsk` build-mode policy)._
+_Session 55 (2026-06-20) → `done/`: `validate-dontask-spof.md` — Phase 1 (Probes A–D) all PASS on DeepSeek/`dontAsk`; classifier never invoked (SPOF structurally eliminated, safety floor intact). Evidence: `docs/probes/dontask-results.md`. Phase 2 (E/F: allowlist-completeness + subagent `dontAsk` inheritance) folds into the first `wave_dispatch: workflow` build — see Open Questions._
 _Session 53 (2026-06-20) → `done/`: `apex-code-fanout-cap.md` (B) · `express-waves-as-workflow.md` (C) · `retire-dead-coding-pipeline.md`. Built & committed (~/.claude `42c86ae` · apex `c380767`); the `changes/ → done/` move is uncommitted in the working tree. C's first `wave_dispatch: workflow` build is still the unproven end-to-end proving run._
 
 ## Agentic-OS video audit + memory-recall decision (session 46, 2026-06-16) — COMPLETE, ADR-021
@@ -370,7 +371,7 @@ _status.md holds current state only — session history lives in git + handoff d
 _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
 - **apex-swift recipe** — unproven until the first Mac/Xcode build runs it (v0.1.0 → 1.0.0).
-- **Permission-classifier ↔ coding-backend SPOF — ✅ RESOLVED (session 54, 2026-06-20) → spec `classifier-spof-dontask-mode.md`.**
+- **Permission-classifier ↔ coding-backend SPOF — ✅ RESOLVED (session 54) + Phase-1 EMPIRICALLY VALIDATED (session 55, 2026-06-20).**
   Researched against primary CC docs (`/permission-modes`, `/auto-mode-config`, GitHub issue #69002).
   **Confirmed:** the auto-mode safety classifier routes through `ANTHROPIC_BASE_URL`, so on a coding
   session it runs on DeepSeek — a blip blocks **protected-path writes** (`.claude/`, `.git/`, … route
@@ -382,6 +383,15 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
   Bash, and `permissions.deny` keeps the destructive floor (deny applies in every mode). Trade-off:
   the allowlist must be complete (off-list = silent deny, not prompt). First validation = a real
   `wave_dispatch: workflow` build launched with `--permission-mode dontAsk`.
+  **Phase 1 VALIDATED (session 55):** probes A–D all PASS on DeepSeek under `dontAsk` — protected-path
+  write denied *locally* (Probe A, the key discriminator: no "cannot determine the safety" text → classifier
+  never invoked), allow-listed write succeeded with no round-trip, the `rm` deny floor held, off-list `node -e`
+  denied cleanly (no hang). The SPOF is structurally eliminated on this path; evidence `docs/probes/dontask-results.md`.
+  **Phase 2 STILL OPEN (rides the first `wave_dispatch: workflow` build):** Probe E (allowlist completeness
+  vs the stack Verification Recipe — exact-string vs `Bash(cmd:*)` pattern rules) + Probe F (whether workers
+  spawned via `wave_dispatch: workflow` under a `dontAsk` parent actually *inherit* `dontAsk`, since docs say
+  auto-mode ignores subagent frontmatter `permissionMode`). Steps live in `docs/changes/done/validate-dontask-spof.md` § Phase 2.
+  **Probe-design lesson:** a `dontAsk` session can't clean up its own scaffolding ([[dontask-probe-cleanup-paradox]]).
 
 ## APEX-fully-local research (session 33, 2026-06-12) — COMPLETE, ADR-016
 Ran the local-inference brief: 6 parallel gather agents (WS-A…F) → `docs/research/local-inference/`
