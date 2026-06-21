@@ -1,6 +1,6 @@
 # Claude Code workflows → APEX absorption map (map-and-report)
 
-_Started: planning session, 2026-06-18. Status: **report delivered, awaiting user decision** on which absorbs to land._
+_Started: planning session, 2026-06-18. Status: **CLOSED — decisions made + both absorbs landed (session 57, 2026-06-21).** See § Open decision (resolved) at the foot._
 
 Scope chosen by user (3 of 4 offered areas): **parallel/isolated builds**, **native plan mode + memory**,
 **cloud multi-agent review**. Depth: **map-and-report first** — no skill edits until approved
@@ -102,10 +102,21 @@ workflows.
 
 ---
 
-## Open decision (resume here)
+## Open decision (resolved — session 57, 2026-06-21)
 
-User asked to **save for next time to answer.** Next session, pick from:
-1. Land the two absorbs as `.md` edits directly in planning (small), OR draft them as specs
-   (`worktree-isolation.md`, `ultrareview-gate.md`) in `docs/changes/` for a coding session.
-2. Decide the optional "plan mode in Edit Mode" consider-item (likely decline).
-3. Whether to pull **autonomous/scheduled (gap #4)** into scope — worktree is its first building block.
+1. **Land as direct `.md` edits in planning** (not specs) — both are ~0-token prose rules, not source
+   code; skill edits are authored directly in planning. **DONE:**
+   - Worktree isolation → `apex-code` 1.18.0 (dispatch-rule bullet + `isolate` arg threaded through
+     `apex-build-wave.js`) + `apex-governance` 1.10.0 (AFK-isolation default).
+   - `/code-review ultra` gate → `apex-code` 1.18.0 post-build report line + `apex-governance` 1.10.0
+     § Ultra review gate (recommend-only; reject `--fix`).
+   - Both flag **one `coding-session` validation** (build-artifact collision is real-world) — not a build gate.
+2. **Plan mode in Edit Mode → DECLINED.** Low value; APEX's spec-split + readiness gate already cover
+   "present plan before acting", and it adds an `EnterPlanMode` name-collision. Reversible if ever wanted.
+3. **Autonomous/scheduled (gap #4) → KEEP DEFERRED.** Already researched (agentic-OS audit): the real
+   path is headless-local on the always-on Mac Mini, not yet live. Worktree isolation (landed above) is
+   its down-payment — enough forward motion without opening the build.
+
+**Also discharged this session:** §4 (dynamic workflows / `ultracode` = Issue-1 Option C) was already
+confirmed native on DeepSeek (session 52 probe) and proven end-to-end by the Phase-2 `wave_dispatch:
+workflow` build (2026-06-21) — no remaining decision.
