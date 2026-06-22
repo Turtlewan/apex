@@ -35,6 +35,15 @@ apex-code session can call it directly for review or for a build task. (Cost/par
    Karpathy/scope/wave enforcement) move into the `codex exec` prompt + the repo's `AGENTS.md`. Scope
    this to the ceiling/escalation case (typically a single sequential hard task) — parallel Codex
    coding requires the Workflow rebuild and is **out of scope** here.
+6. **Seamless-coder autonomy lives in a named Codex profile** (`~/.codex/apex-coder.config.toml`,
+   selected via `codex exec -p apex-coder`). In non-interactive `exec`, any approval policy but
+   `never` turns the first sandbox/command failure into a halt-to-escalate that nobody can answer →
+   the run dead-stops ("Codex stops on any issue"). The profile sets `approval_policy=never` +
+   `workspace-write` with `network_access=true` so failures return to the model and it fixes/retries
+   like a DeepSeek worker. Blast radius is deliberately repo-confined (`workspace-write`, **never**
+   `danger-full-access`) because the Codex subprocess does not ride Claude Code's `permissions.deny`
+   floor — its sandbox is its only guardrail. Coder prompts append an autonomy clause; the read-only
+   reviewer just adds `-c approval_policy="never"`. Validated on Windows 2026-06-22.
 
 ## Consequences
 - **Simplification:** router shrinks 4→3 coders; image-gate special-case retired; soft-pool guard
