@@ -1,0 +1,26 @@
+# ============================================================================
+# CANONICAL SOURCE for the APEX "Codex coder mode" profile (ADR-026).
+# Install location (host-local, not version-controlled there):
+#     ~/.codex/apex-coder.config.toml        (Windows: %USERPROFILE%\.codex\)
+# Copy this file there verbatim — these header comments are harmless if copied.
+# Selected at runtime by apex-code via:  codex exec -p apex-coder ...
+# ============================================================================
+#
+# Goal: Codex behaves like a DeepSeek in-session worker — write, verify, fix, iterate;
+# never halt to escalate. Blast radius stays repo-confined (workspace-write) because the
+# Codex subprocess does NOT ride Claude Code's permissions.deny floor — its sandbox is its
+# only guardrail, so do not widen to danger-full-access here.
+
+approval_policy = "never"   # exec has no human; failures return to the model -> it fixes & retries, never stalls
+model           = "gpt-5.5" # re-pin after a Codex upgrade (Codex churns model IDs)
+
+[sandbox_workspace_write]
+network_access  = true      # dep installs succeed -> no "blocked: cannot reach network" stops
+
+# Windows restricted-token sandbox: files written by sandboxed SHELL COMMANDS get an ACL tied to
+# the sandbox SID, so the interactive user can't delete them without elevation. Source files Codex
+# edits are fine; only command side-effects (caches) lock. Suppress the common in-tree caches so the
+# tree never accumulates lock-prone junk. (Heavy artifacts — node_modules/.venv — install as the
+# normal user via apex-code's verify step, NOT inside Codex; see apex-code § Codex dispatch.)
+[shell_environment_policy]
+set = { PYTHONDONTWRITEBYTECODE = "1", PYTEST_ADDOPTS = "-p no:cacheprovider" }
