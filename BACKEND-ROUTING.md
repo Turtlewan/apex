@@ -1,19 +1,25 @@
 # Backend Routing
 
-This project runs under two AI backends. The active backend is detected from
-`ANTHROPIC_BASE_URL` at session start. Each backend has a distinct role.
+> **ADR-027 (current).** Coding is **Codex-primary**: `gpt-5.5` via `codex exec` is the default coder,
+> dispatched from a **Claude coding host** (`APEX_MODE=coding`); **Opus** is the manual fallback when
+> Codex quota runs out. **DeepSeek (Flash/Pro) is archived** — recovery-only, parked launchers. Planning
+> stays Claude/Opus. The DeepSeek-centric detail below is retained for recovery context only.
+
+This project detects its mode from `ANTHROPIC_BASE_URL` + `APEX_MODE` at session start.
 
 ---
 
 ## Detection rule
 
-| `ANTHROPIC_BASE_URL` | `ANTHROPIC_MODEL` | Active backend | Mode |
-|----------------------|-------------------|----------------|------|
-| unset or `api.anthropic.com` | — | **Claude (Anthropic)** | Planning |
-| contains `deepseek` | `deepseek-v4-flash` (or unset) | **DeepSeek V4 Flash** | Coding |
-| contains `deepseek` | `deepseek-v4-pro` | **DeepSeek V4 Pro** | Coding |
+| `ANTHROPIC_BASE_URL` | `APEX_MODE` | Mode | Coder |
+|----------------------|-------------|------|-------|
+| unset / `api.anthropic.com` | unset | **Planning** | — |
+| unset / `api.anthropic.com` | `coding` | **Claude coding** (build host) | **Codex `gpt-5.5`** primary (`codex exec`); **Opus** inline fallback on Codex quota-out |
+| contains `deepseek` | — | **DeepSeek** | _archived (ADR-027) — recovery-only_ |
 
-The coding tier is selected by **which launcher you use** (see [Switching backends](#switching-backends)): `coding-mode` = Flash, `apex-code` = Pro. Each is a dedicated launcher that sets the full DeepSeek env block to its tier; there is no toggle and no persisted state. Pro is ~3.1× the cost of Flash. The SessionStart hook reads `ANTHROPIC_MODEL` and injects a `coder_tier` value (`flash`|`pro`); apex-orchestrate surfaces it in the Step-6 status line as `Tier: {flash|pro}`.
+Launchers: **`codex-code`** = run Codex directly (supervised); **`apex-opus`** = the Claude coding host
+(`APEX_MODE=coding`, Opus fallback that dispatches Codex per task). The archived DeepSeek launchers are
+`coding-mode-deepseek` / `apex-code-deepseek-pro` (parked, recover by un-renaming).
 
 The harness enforces this automatically via a PreToolUse hook:
 - Planning mode gates Write/Edit on non-`.md` files behind an approval prompt (default
@@ -47,9 +53,10 @@ Use Claude for activities that require judgment, design, and decision-making:
 | Debugging investigation | apex-debug |
 | Any question requiring explanation | — |
 
-### DeepSeek V4 Flash — Coding mode
+### Coding mode (Codex-primary, Opus fallback) — _DeepSeek archived (ADR-027)_
 
-Use DeepSeek for activities that require file manipulation and execution:
+Coding runs in the Claude coding host (`APEX_MODE=coding`); Codex (`gpt-5.5`) builds each task via
+`codex exec`, Opus is the inline fallback. (The DeepSeek references below are the archived form.)
 
 | Activity | Skill invoked |
 |----------|-------------|
@@ -134,20 +141,19 @@ See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
 
 ## Switching backends
 
-**To switch to coding mode (DeepSeek) — pick the launcher for the tier you want:**
-
+**Primary coding — run Codex directly (supervised):**
 ```sh
-coding-mode    # Flash tier (deepseek-v4-flash) — the default coding tier
-apex-code      # Pro tier (deepseek-v4-pro, ~3.1× Flash cost)
+codex-code     # launches the Codex CLI (gpt-5.5, workspace-write). Point it at a spec; you supervise + commit.
 ```
 
-Both are dedicated launchers: each sets the **full** DeepSeek env block — `ANTHROPIC_BASE_URL`,
-`ANTHROPIC_AUTH_TOKEN` (from `$DEEPSEEK_API_KEY` / `$env:DEEPSEEK_API_KEY`), `ANTHROPIC_MODEL`, the
-`ANTHROPIC_DEFAULT_OPUS/SONNET/HAIKU_MODEL` alias mappings, `CLAUDE_CODE_SUBAGENT_MODEL`, and
-`CLAUDE_CODE_EFFORT_LEVEL=max` — to its tier, then launches `claude`. Setting the full block (not
-just `ANTHROPIC_MODEL`) is what keeps subagents and the alias-resolved model on the same tier as the
-main session. Defined in `$PROFILE` (Windows). _Mac `~/.zshrc` still carries the older `apex-code`
-flip-flop — port these two symmetric launchers there on the next Mac session._
+**Opus fallback — the Claude coding host (when Codex quota is out):**
+```sh
+apex-opus      # APEX_MODE=coding on the Anthropic backend; Opus host dispatches Codex per task and builds
+               # inline as Opus on quota-out. Write-guard relaxed.
+```
+
+**Archived (DeepSeek, recovery-only — ADR-027):** `coding-mode-deepseek` (Flash) / `apex-code-deepseek-pro`
+(Pro). Parked out of the everyday namespace; un-rename in `$PROFILE` to restore.
 
 **To switch to planning mode (Claude):**
 ```powershell
@@ -166,7 +172,7 @@ Planning session (Claude)
   └── Writes specs → docs/changes/*.md
         │
         ▼
-Coding session (DeepSeek)
+Coding session (Codex via Claude host; Opus fallback)
   └── Executes specs → docs/changes/done/
   └── Writes handoff → docs/handoff/YYYY-MM-DD.md
         │
@@ -177,4 +183,4 @@ Planning session (Claude)
 
 ---
 
-_Last updated: 2026-06-17 | DeepSeek: V4 Flash (`coding-mode`) / V4 Pro (`apex-code`) | Claude: Sonnet 4.6 / Opus 4.8_
+_Last updated: 2026-06-22 (ADR-027) | Coding: Codex `gpt-5.5` primary (`codex-code`) / Opus fallback (`apex-opus`) | DeepSeek: archived | Planning: Opus 4.8_

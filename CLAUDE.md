@@ -16,12 +16,13 @@ Every file is a `.md` skill, registry entry, or planning document.
 
 ## Backend routing
 
-Two backends, one harness. Detection is automatic from `ANTHROPIC_BASE_URL`.
+Detection is automatic from `ANTHROPIC_BASE_URL` + `APEX_MODE` (ADR-027).
 
-| Backend | URL contains | Mode | Can write source files? |
-|---------|-------------|------|------------------------|
-| **Claude (Anthropic)** | unset / `api.anthropic.com` | Planning | No — `.md` only* |
-| **DeepSeek V4 Flash** | `deepseek` | Coding | Yes — all files |
+| Session | Signal | Mode | Coder | Can write source files? |
+|---------|--------|------|-------|------------------------|
+| **Planning** | Anthropic, no flag | Planning | — | No — `.md` only* |
+| **Claude coding** | `APEX_MODE=coding` (Anthropic) | Coding | **Codex `gpt-5.5` primary** (codex exec subprocess); **Opus inline fallback** on Codex quota-out | Yes — all files |
+| **DeepSeek** | `deepseek` URL | Coding | _archived (ADR-027) — recovery-only_ | Yes — all files |
 
 \* In planning mode the non-`.md` write-guard is an approval prompt (default: defer to coding
 mode), **except** within the APEX project itself, `~/.claude/` system files, and any project's

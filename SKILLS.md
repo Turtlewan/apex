@@ -385,8 +385,8 @@ New session
         ├── In-flight work? → surface and ask
         ├── Planning mode (Anthropic)
         │     └── apex-plan → writes docs/changes/*.md specs
-        └── Coding mode (DeepSeek)
-              └── apex-code → executes specs, writes handoff
+        └── Coding mode (Codex-primary via Claude host; Opus fallback — ADR-027)
+              └── apex-code → executes specs (codex exec per task), writes handoff
 
 Pause: saves draft/checkpoint to docs/status.md In-Flight table
 Resume: reads In-Flight table, continues from checkpoint
