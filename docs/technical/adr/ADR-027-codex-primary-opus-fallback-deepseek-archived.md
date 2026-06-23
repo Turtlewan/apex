@@ -1,6 +1,10 @@
 # ADR-027 — Codex-primary coding, Opus manual fallback, DeepSeek archived
 
-Status: **Accepted** — execution in progress (session 61, 2026-06-22).
+Status: **Accepted** — rolled out. **Mechanic A proven live 2026-06-22** (session 61): the Opus
+`APEX_MODE=coding` host dispatched `codex exec -p apex-coder` per task end-to-end — Codex built files
+and the verify recipe passed (evidence `~/.codex/history.jsonl`; pilot `docs/probes/codex-pilot-results.md`).
+The Codex-quota-out → inline-Opus fallback path is still unexercised (only triggers at quota exhaustion).
+Parallelism within a wave added by ADR-028.
 Date: 2026-06-22 (session 61). **Promotes** ADR-026 (Codex ceiling → primary coder); **supersedes**
 ADR-019 (DeepSeek Flash/Pro tiers) and **ADR-016's local-inference end-state** (abandoned — Codex is
 cloud-only); **collapses** the ADR-024 multi-model router to a single proactive coder; **redefines**
