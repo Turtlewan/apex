@@ -1,7 +1,14 @@
 # ADR-020 — Capability-routed UI escalation (Claude steps in on the visual slice)
 
-**Status:** Accepted · 2026-06-16 (session 45)
-**Amends:** [ADR-002](./ADR-002-dual-backend-two-mode-workflow.md) (dual-backend two-mode workflow)
+**Status:** **Superseded / moot** by [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md)
+(2026-06-23). This ADR's entire premise — "DeepSeek V4 is image-blind; Claude is multimodal" — no
+longer holds: under ADR-027 the coder is **Codex (`gpt-5.5`, native vision)** or **Opus (multimodal)**
+on fallback. A sighted coder fixes a visual divergence as a **normal coding task**; the bounded
+planning-mode UI-code-edit carve-out below is no longer needed and is retired in apex-governance. The
+live-preview design loop (design lane → build → visual gate) survives in apex-ui-ux-design — only the
+*image-blindness* escalation rationale is gone. Original text retained below for history.
+_Originally: Accepted · 2026-06-16 (session 45)_
+**Amended:** [ADR-002](./ADR-002-dual-backend-two-mode-workflow.md) (dual-backend two-mode workflow)
 
 ## Context
 
