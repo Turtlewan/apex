@@ -52,6 +52,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-nextjs** | Next.js 15+ App Router, Server Components, Server Actions, caching | stack skill via `stack_skills` |
 | **apex-python** | Typed Python / FastAPI — uv, ruff, mypy --strict, pydantic-settings, async boundaries | stack skill via `stack_skills` |
 | **apex-swift** | Swift 6 / SwiftUI (macOS/iOS/iPadOS) — strict concurrency, @Observable, SwiftData | stack skill via `stack_skills` _(v0.1.0 — recipe pending Mac validation)_ |
+| **apex-tauri** | Tauri 2 desktop client — Rust shell + React/Vite/TS webview, IPC/capabilities/CSP, WebKit-safe rendering, native crypto FFI | stack skill via `stack_skills` _(v1.0.0 — frontend recipe validated; Rust pending MSVC toolchain)_ |
 | **apex-observability** | OpenTelemetry, Sentry, Grafana, logging (stack-neutral) | topic keyword |
 | **apex-performance** | Profiling, Core Web Vitals, optimisation (stack-neutral: Prisma/SQLAlchemy eager-load) | topic keyword |
 | **apex-accessibility** | WCAG 2.2 AA, EAA, a11y, screen readers (web + native) | topic keyword |
@@ -197,6 +198,16 @@ SwiftData, NavigationStack, shared SPM module + platform-conditional UI. The nat
 client/hub layer; the RAG engine is the separate `apex-python` sidecar. _v0.1.0 — recipe authored
 from research but **not yet run** (needs a Mac); validate on first Xcode build, then → 1.0.0._
 Loaded via `stack_skills` binding; recipe = `swift build`/`test` + `xcodebuild` per platform + lint.
+
+**apex-tauri** — Stack skill for Tauri 2 desktop apps: a Rust shell (`src-tauri/`) hosting a
+React/Vite/TS webview, shipped as a native binary (`.exe` → `.app`). Owns the Tauri layer
+(IPC commands/events/channels, capabilities/permissions ACL + strict CSP, the v1→v2 migration
+traps, WebKit-safe rendering for WebView2 vs WKWebView, and native crypto FFI for hardware-sealed
+keys) — the React/DOM half is `apex-frontend`, the server is `apex-python`. _v1.0.0 — research +
+**frontend/`cargo fmt`/scaffold recipe run live** on the Windows dev box; Rust compile pending the
+MSVC C++ Build Tools (`rustup default stable-msvc`) — the Tauri-on-Windows toolchain prereq._
+Loaded via `stack_skills` binding; recipe = `tsc --noEmit`/`vite build` + `cargo fmt`/`clippy -D
+warnings`/`check`/`test` + `tauri build --no-bundle`.
 
 **apex-mobile** — Native-vs-cross-platform decision + the cross-platform framework choice
 (React Native/Expo with New Architecture, Flutter/Impeller, Kotlin Multiplatform), Expo Router,
