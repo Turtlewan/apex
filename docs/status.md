@@ -461,6 +461,17 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
   APEX's `codex exec` CLI subprocess — confirm what's actually observable/approvable before building a
   remote autonomous loop.
 
+- **Multi-model architecture — BANKED for stronger-model revisit (2026-06-28).** Full design + the
+  stress-tested reasoning captured in `docs/research/multi-model-architecture/README.md`. Provisional
+  decisions (gpt-5.5 = default coder · **Opus = judgment/gate layer, NOT a coding tier** · split-ceiling
+  escalation rationing the scarce Opus weekly cap · planning OpenAI cross-check/takeover toggle with skills
+  always gating Claude-side · retrieval stays Claude) are a **prior, NOT built**. Also banks the per-spec
+  `coder_model` control + model-visibility knob (the "more control" ask). **Revisit trigger:** newer OpenAI
+  models reach our Codex auth (GPT-5.6 GA) **AND** the ADR-016 eval harness exists. **Empirical linchpin:**
+  does OpenAI's ceiling (Sol/`ultra`) actually clear our hard tasks? — if not, the ladder re-centers on Opus.
+  Economic spine = two subscription quotas, ration only Opus. Retrieval sub-question still being dived
+  (subscription-vs-metered-API path for OpenAI web retrieval).
+
 ## APEX-fully-local research (session 33, 2026-06-12) — COMPLETE, ADR-016
 Ran the local-inference brief: 6 parallel gather agents (WS-A…F) → `docs/research/local-inference/`
 + synthesis `docs/research/local-inference-migration.md` + **ADR-016** (re-research 2026-06-26).
