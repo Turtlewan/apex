@@ -469,8 +469,16 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
   `coder_model` control + model-visibility knob (the "more control" ask). **Revisit trigger:** newer OpenAI
   models reach our Codex auth (GPT-5.6 GA) **AND** the ADR-016 eval harness exists. **Empirical linchpin:**
   does OpenAI's ceiling (Sol/`ultra`) actually clear our hard tasks? — if not, the ladder re-centers on Opus.
-  Economic spine = two subscription quotas, ration only Opus. Retrieval sub-question still being dived
-  (subscription-vs-metered-API path for OpenAI web retrieval).
+  Economic spine = two subscription quotas, ration only Opus. **Retrieval sub-question ✅ RESOLVED (2026-06-28)
+  — "retrieval stays Claude" upgraded provisional→settled.** Dive `docs/research/openai-subscription-retrieval-path.md`
+  (apex-research 3-phase, all VERIFIED): the ChatGPT/Codex subscription and the OpenAI API are separate billing
+  products (subscription = 0 API credits); **no subscription path does capable + non-interactive full-page
+  retrieval** (`codex exec --search` = snippets only; ChatGPT browsing / Codex browser-use / Chrome extension all
+  interactive-only — headless computer-use explicitly declined by OpenAI); the only capable + programmatic path is
+  the **metered** Responses-API `web_search` tool (~$0.01/call + tokens, on the API product the subscription doesn't
+  fund). APEX retrieval already runs capable full-page on the Anthropic subscription (dispatched Sonnet/Haiku +
+  WebFetch/WebSearch) — switching to OpenAI either loses capability or adds a metered bill for no quality gain.
+  Metered `web_search` kept only as a narrow fallback if a future OpenAI-native agent must cite its own search.
 
 ## APEX-fully-local research (session 33, 2026-06-12) — COMPLETE, ADR-016
 Ran the local-inference brief: 6 parallel gather agents (WS-A…F) → `docs/research/local-inference/`
