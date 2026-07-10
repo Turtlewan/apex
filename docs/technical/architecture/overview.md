@@ -28,12 +28,14 @@ skills that load on demand when their keywords appear.
 
 ## How it's structured
 
-APEX runs as **two modes bound to two AI backends**, switched by an environment variable and
+APEX runs as **two modes detected from environment signals** (`APEX_MODE` / base URL) and
 enforced by harness hooks:
 
 - **Planning mode** runs on **Claude** (judgment) and may write only `.md` files.
-- **Coding mode** runs on **DeepSeek V4 Flash** (cheap, literal execution) and may write
-  anything.
+- **Coding mode** runs on a Claude host (**Sonnet 5 default** — ADR-032) that dispatches each
+  task to **Codex (`gpt-5.6-terra`)** as a subprocess; verify-fail escalation runs
+  Terra-effort → Sol → **Opus** (fresh `model: opus` worker at quota-out) (ADR-027/032;
+  DeepSeek archived) — and may write anything.
 
 The two modes never share live process state. They communicate only through files, and every
 fact has exactly **one home**:
@@ -65,6 +67,9 @@ The handful of decisions that define APEX's architecture — each links to its A
 | Every APEX-built project maintains this Overview + an ADR log (enforced-capture) | [ADR-001](../adr/ADR-001-per-project-documentation-contract.md) |
 | Stack skills — a global best-practices family per language/framework, picked by merit-based, buildability-weighted selection and bound per project *(in implementation)* | [ADR-005](../adr/ADR-005-stack-best-practice-skills.md) |
 | Buildability layer — stack skills declare the Verification Recipe; coding runners go stack-agnostic *(in implementation)* | [ADR-006](../adr/ADR-006-buildability-layer-verification-inversion.md) |
+| Codex is the primary coder (per-task `codex exec` subprocess), Opus the inline fallback; DeepSeek archived | [ADR-027](../adr/ADR-027-codex-primary-opus-fallback-deepseek-archived.md) |
+| Codex context propagation — thin AGENTS.md + selective generated `.agents/skills/` cards + per-task dispatch pack with JSON completion contract | [ADR-031](../adr/ADR-031-codex-context-propagation.md) |
+| GPT-5.6 role split — Sol plan-checks (+ offer-only deliberation), Sonnet 5 hosts builds, cross-family review routing, Sol escalation rung | [ADR-032](../adr/ADR-032-gpt56-role-split.md) |
 
 ## Where to look next
 
