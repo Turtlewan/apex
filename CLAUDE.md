@@ -21,7 +21,7 @@ Detection is automatic from `ANTHROPIC_BASE_URL` + `APEX_MODE` (ADR-027).
 | Session | Signal | Mode | Coder | Can write source files? |
 |---------|--------|------|-------|------------------------|
 | **Planning** | Anthropic, no flag | Planning | — | No — `.md` only* |
-| **Claude coding** | `APEX_MODE=coding` (Anthropic) | Coding | **Codex `gpt-5.5` primary** (codex exec subprocess); **Opus inline fallback** on Codex quota-out | Yes — all files |
+| **Claude coding** | `APEX_MODE=coding` (Anthropic) | Coding | **Codex `gpt-5.6-terra` primary** (codex exec subprocess); **Opus inline fallback** on Codex quota-out | Yes — all files |
 | **DeepSeek** | `deepseek` URL | Coding | _archived (ADR-027) — recovery-only_ | Yes — all files |
 
 \* In planning mode the non-`.md` write-guard is an approval prompt (default: defer to coding

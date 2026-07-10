@@ -1,4 +1,12 @@
-# DRAFT (access-gated — NOT ready to build) — GPT-5.6 family adoption
+# DRAFT — GPT-5.6 family adoption (PARTIALLY LANDED 2026-07-10)
+
+> **2026-07-10 update — access gate LIFTED, Terra is now the default coder.** `gpt-5.6-terra`
+> resolves + answers on our auth (required upgrading `@openai/codex` 0.142.5 → 0.144.1; the id was
+> recognised server-side but the old CLI was rejected). The effort dial (`-c model_reasoning_effort`)
+> works against Terra. **Stage 2's core move (Terra as default coder) is DONE** — all live `gpt-5.5`
+> pins swapped to `gpt-5.6-terra` (session 64; see SKILL-HISTORY). **Still open:** Stage 1 (`max`
+> effort enum — now unblocked, trivial), Stage 3 (`ultra` eval), and the full Sol/Luna tier menu
+> (Sol for `risk:high`/hard specs, Luna for trivial). Re-verify exact Sol/Luna ids at adoption time.
 
 **Identity:** wire the GPT-5.6 coder family (Sol/Terra/Luna) + `max` effort + `ultra` mode into the
 APEX coding workflow. Extends ADR-030 (reasoning-effort dial) and ADR-027 (Codex-primary).
