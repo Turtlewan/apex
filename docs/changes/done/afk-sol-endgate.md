@@ -39,10 +39,10 @@ Simplicity check: considered folding A1 into the existing `cross_model_review` p
 | `C:\Users\User\apex\SKILL-HISTORY.md` | modify | Prepend rows (apex-code + apex-handoff + apex-governance) |
 
 ## Tasks
-- [ ] Task 1: The pass reference + schema — files: `references/afk-sol-endgate.md` (create), `references/afk-sol-endgate-schema.json` (create) — content: the exact invocation (`git diff <base>..HEAD | ` fed as the diff; `codex exec -c approval_policy=never --sandbox read-only --output-schema afk-sol-endgate-schema.json -o <out> -m gpt-5.6-sol -c model_reasoning_effort=max`), the adversarial prompt (focus: temporal/async behavior, source-to-sink provenance, program-intent regressions — the classes green gates miss), and the triage rule (P1 fix-before-handoff, P2 park with a flag, rest park). Schema = `{findings:[{severity:"P1"|"P2"|"note", issue, file, why}], verdict}`. done when: both files exist; the schema is valid JSON (`node -e "JSON.parse(...)"`).
-- [ ] Task 2: Wire into apex-code — files: `apex-code/SKILL.md` (modify) — § AFK Build Mode: at build start capture `run_base_sha` (from the A4 ledger if present, else `git rev-parse HEAD`); § Post-build steps: add a numbered step BEFORE the docs-technical-agent handoff step — "AFK only: run the standing Sol adversarial pass (references/afk-sol-endgate.md) over `run_base_sha..HEAD`; triage P1/P2; pass the findings table to the handoff." done when: both edits present; `grep -c afk-sol-endgate apex-code/SKILL.md` ≥ 1; SKILL.md ≤ 500 lines.
-- [ ] Task 3: Handoff + governance — files: `apex-handoff/SKILL.md` (add the Sol-pass findings table to the handoff contract — a labeled block the docs-technical-agent fills for AFK runs), `apex-governance/SKILL.md` (§ Build Mode AFK: one line on the mandatory standing pass) — done when: both mention the standing Sol adversarial pass; neither exceeds its cap.
-- [ ] Task 4: History — files: `SKILL-HISTORY.md` (prepend rows for the three skills) — done when: rows present.
+- [x] Task 1: The pass reference + schema — files: `references/afk-sol-endgate.md` (create), `references/afk-sol-endgate-schema.json` (create) — content: the exact invocation (`git diff <base>..HEAD | ` fed as the diff; `codex exec -c approval_policy=never --sandbox read-only --output-schema afk-sol-endgate-schema.json -o <out> -m gpt-5.6-sol -c model_reasoning_effort=max`), the adversarial prompt (focus: temporal/async behavior, source-to-sink provenance, program-intent regressions — the classes green gates miss), and the triage rule (P1 fix-before-handoff, P2 park with a flag, rest park). Schema = `{findings:[{severity:"P1"|"P2"|"note", issue, file, why}], verdict}`. done when: both files exist; the schema is valid JSON (`node -e "JSON.parse(...)"`).
+- [x] Task 2: Wire into apex-code — files: `apex-code/SKILL.md` (modify) — § AFK Build Mode: at build start capture `run_base_sha` (from the A4 ledger if present, else `git rev-parse HEAD`); § Post-build steps: add a numbered step BEFORE the docs-technical-agent handoff step — "AFK only: run the standing Sol adversarial pass (references/afk-sol-endgate.md) over `run_base_sha..HEAD`; triage P1/P2; pass the findings table to the handoff." done when: both edits present; `grep -c afk-sol-endgate apex-code/SKILL.md` ≥ 1; SKILL.md ≤ 500 lines.
+- [x] Task 3: Handoff + governance — files: `apex-handoff/SKILL.md` (add the Sol-pass findings table to the handoff contract — a labeled block the docs-technical-agent fills for AFK runs), `apex-governance/SKILL.md` (§ Build Mode AFK: one line on the mandatory standing pass) — done when: both mention the standing Sol adversarial pass; neither exceeds its cap.
+- [x] Task 4: History — files: `SKILL-HISTORY.md` (prepend rows for the three skills) — done when: rows present.
 
 ## Wave plan
 Wave 1: [Task 1] | Wave 2: [Task 2, Task 3] | Wave 3: [Task 4]
@@ -78,11 +78,11 @@ Wave 1: [Task 1] | Wave 2: [Task 2, Task 3] | Wave 3: [Task 4]
 | History | SKILL-HISTORY.md | rows |
 
 ## Acceptance Criteria
-- [ ] Pass reference + valid schema → verify: both files exist; `node -e "JSON.parse(require('fs').readFileSync('.../afk-sol-endgate-schema.json'))"` exits 0.
-- [ ] apex-code wired, base-SHA captured, insertion before handoff → verify: `grep -n afk-sol-endgate apex-code/SKILL.md` shows the step is numbered before the docs-technical-agent step; `grep -c run_base_sha apex-code/SKILL.md` ≥ 1.
-- [ ] Handoff + governance updated → verify: `grep -il "sol adversarial\|end-of-run sol" apex-handoff/SKILL.md apex-governance/SKILL.md` returns both.
-- [ ] Caps held → verify: `wc -l` on apex-code/apex-handoff/apex-governance SKILL.md each ≤ 500.
-- [ ] History rows present.
+- [x] Pass reference + valid schema → verify: both files exist; `node -e "JSON.parse(require('fs').readFileSync('.../afk-sol-endgate-schema.json'))"` exits 0.
+- [x] apex-code wired, base-SHA captured, insertion before handoff → verify: `grep -n afk-sol-endgate apex-code/SKILL.md` shows the step is numbered before the docs-technical-agent step; `grep -c run_base_sha apex-code/SKILL.md` ≥ 1.
+- [x] Handoff + governance updated → verify: `grep -il "sol adversarial\|end-of-run sol" apex-handoff/SKILL.md apex-governance/SKILL.md` returns both.
+- [x] Caps held → verify: `wc -l` on apex-code/apex-handoff/apex-governance SKILL.md each ≤ 500 (499/160/263).
+- [x] History rows present.
 
 ## Progress
 _(Coding mode writes here — do not edit manually)_
