@@ -35,9 +35,9 @@ Simplicity check: considered per-dispatch inline stdin/ledger handling in apex-c
 | `C:\Users\User\apex\SKILL-HISTORY.md` | modify | Prepend `updated (SKILL)` row |
 
 ## Tasks
-- [ ] Task 1: Write the wrapper — files: `codex-dispatch.ps1` (create) — params: `-Spec -Task -Worktree -BaseSha -Phase -Effort -NoOutputTimeoutMin(8) -Adopt`. Normal mode: append a ledger row (status `running`) to `docs/progress/codex-run-ledger.jsonl`; launch `codex exec ... --json` with **stdin closed**, `--json` → `docs/progress/codex-<spec>-<task>.log`; poll the log's last-write time — if no growth for `NoOutputTimeoutMin` → mark ledger row `stalled` and return non-zero (killing/flagging per caller); on exit → update the row's `status` + `ended`. `-Adopt` mode: read the ledger, find the newest row matching `-Spec -Phase`, print its `worktree` + `git -C <worktree> diff <base_sha>..HEAD`. done when: a dispatch with a fast codex command writes a `running`→`done` ledger row + a log; an artificially stalled command flips the row to `stalled` within the timeout; `-Adopt` on a completed row prints the worktree diff.
-- [ ] Task 2: Wire apex-code to the wrapper — files: `apex-code/SKILL.md` (modify the codex-dispatch pointer to call `scripts/codex-dispatch.ps1` for AFK builds), `apex-code/references/codex-observability.md` (modify: add the ledger schema + watchdog + adopt/resume subsection) — done when: SKILL.md's AFK dispatch line references the wrapper and the reference documents the four invariants; apex-code/SKILL.md stays ≤500 lines.
-- [ ] Task 3: History — files: `SKILL-HISTORY.md` (prepend: today | apex-code | scripts/codex-dispatch.ps1 + SKILL.md + references/codex-observability.md | {bump} | updated (SKILL) | durable codex dispatcher — stdin-closed + ledger + watchdog + adopt (A4) | ADR-033) — done when: row present.
+- [x] Task 1: Write the wrapper — files: `codex-dispatch.ps1` (create) — params: `-Spec -Task -Worktree -BaseSha -Phase -Effort -NoOutputTimeoutMin(8) -Adopt`. Normal mode: append a ledger row (status `running`) to `docs/progress/codex-run-ledger.jsonl`; launch `codex exec ... --json` with **stdin closed**, `--json` → `docs/progress/codex-<spec>-<task>.log`; poll the log's last-write time — if no growth for `NoOutputTimeoutMin` → mark ledger row `stalled` and return non-zero (killing/flagging per caller); on exit → update the row's `status` + `ended`. `-Adopt` mode: read the ledger, find the newest row matching `-Spec -Phase`, print its `worktree` + `git -C <worktree> diff <base_sha>..HEAD`. done when: a dispatch with a fast codex command writes a `running`→`done` ledger row + a log; an artificially stalled command flips the row to `stalled` within the timeout; `-Adopt` on a completed row prints the worktree diff.
+- [x] Task 2: Wire apex-code to the wrapper — files: `apex-code/SKILL.md` (modify the codex-dispatch pointer to call `scripts/codex-dispatch.ps1` for AFK builds), `apex-code/references/codex-observability.md` (modify: add the ledger schema + watchdog + adopt/resume subsection) — done when: SKILL.md's AFK dispatch line references the wrapper and the reference documents the four invariants; apex-code/SKILL.md stays ≤500 lines.
+- [x] Task 3: History — files: `SKILL-HISTORY.md` (prepend: today | apex-code | scripts/codex-dispatch.ps1 + SKILL.md + references/codex-observability.md | {bump} | updated (SKILL) | durable codex dispatcher — stdin-closed + ledger + watchdog + adopt (A4) | ADR-033) — done when: row present.
 
 ## Wave plan
 Wave 1: [Task 1] | Wave 2: [Task 2] | Wave 3: [Task 3]
@@ -73,11 +73,11 @@ Wave 1: [Task 1] | Wave 2: [Task 2] | Wave 3: [Task 3]
 | History | SKILL-HISTORY.md | row |
 
 ## Acceptance Criteria
-- [ ] Wrapper runs + ledgers → verify: dispatching a trivial codex command via `codex-dispatch.ps1` writes a `running` row that becomes `done`, plus a `--json` log under docs/progress/.
-- [ ] Stdin closed → verify: the wrapper launches codex with no inherited stdin (a command that would read stdin does not hang past the no-output timeout).
-- [ ] Watchdog fires → verify: a command that emits nothing flips its ledger row to `stalled` within `NoOutputTimeoutMin`.
-- [ ] Adopt works → verify: `codex-dispatch.ps1 -Adopt -Spec X -Phase Y` on a completed run prints the worktree path + its base..HEAD diff.
-- [ ] apex-code wired + within cap → verify: `grep codex-dispatch apex-code/SKILL.md` matches and `wc -l apex-code/SKILL.md` ≤ 500.
+- [x] Wrapper runs + ledgers → verify: dispatching a trivial codex command via `codex-dispatch.ps1` writes a `running` row that becomes `done`, plus a `--json` log under docs/progress/. (Host-verified directly with a real codex round-trip, superseding Codex's own inconclusive self-test — see Progress notes: nested Codex-launching-Codex hit a 401 auth artifact specific to its own sandboxed subprocess, not a wrapper bug.)
+- [x] Stdin closed → verify: the wrapper launches codex with no inherited stdin (a command that would read stdin does not hang past the no-output timeout).
+- [x] Watchdog fires → verify: a command that emits nothing flips its ledger row to `stalled` within `NoOutputTimeoutMin`.
+- [x] Adopt works → verify: `codex-dispatch.ps1 -Adopt -Spec X -Phase Y` on a completed run prints the worktree path + its base..HEAD diff.
+- [x] apex-code wired + within cap → verify: `grep codex-dispatch apex-code/SKILL.md` matches and `wc -l apex-code/SKILL.md` ≤ 500 (exactly 500 — net-neutral in-line edit, no new lines added).
 
 ## Progress
 _(Coding mode writes here — do not edit manually)_

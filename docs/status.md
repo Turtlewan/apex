@@ -37,12 +37,11 @@ _Last updated by coding mode:_ 2026-06-16 (session 43 — built pro-mode-mechani
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `afk-durable-dispatcher` | A4 — one durable codex dispatcher (stdin-closed + run ledger + no-output watchdog + resume/adopt). Prereq: afk-permission-mode. |
 | `afk-sol-endgate` | A1 — standing end-of-run `gpt-5.6-sol` adversarial pass over the full AFK-run diff before handoff (owner-ratified spend). Prereq: afk-durable-dispatcher. |
 | `cadence-regression-lenses` | A2 silent-regression review lenses (reference) + A3 invariant-freshness in pre-flight. Prereq: afk-sol-endgate. |
 
-_Remaining three = the ADR-033 "safe unattended builds" initiative (afk-permission-mode done → done/). **Build order (serialize on apex-code/SKILL.md):** afk-durable-dispatcher → afk-sol-endgate → cadence-regression-lenses. Coding session = Sonnet host, Terra coder (per the user's plan/orchestrate/execute split)._
-_Session 67 (2026-07-12) → `done/`: `afk-permission-mode.md` — built (Sonnet host, Terra coder), all 7 tasks + Task 6 integration test + required cross-model (Opus) security review (3 post-review BLOCK fixes), all live-verified. See `docs/handoff/2026-07-12.md`._
+_Remaining two = the ADR-033 "safe unattended builds" initiative (afk-permission-mode, afk-durable-dispatcher done → done/). **Build order (serialize on apex-code/SKILL.md):** afk-sol-endgate → cadence-regression-lenses. Coding session = Sonnet host, Terra coder (per the user's plan/orchestrate/execute split)._
+_Session 67 (2026-07-12) → `done/`: `afk-permission-mode.md` — built (Sonnet host, Terra coder), all 7 tasks + Task 6 integration test + required cross-model (Opus) security review (3 post-review BLOCK fixes), all live-verified. `afk-durable-dispatcher.md` — built (Sonnet host, Terra coder), durable codex-dispatch wrapper (stdin-closed launch + run ledger + no-output watchdog + `-Adopt`), apex-code wired at exactly 500/500 lines, all criteria live-verified. See `docs/handoff/2026-07-12.md`._
 
 _Session 65 (2026-07-10) → `done/`: `gpt56-b1-planning-surface.md` · `gpt56-b2-dispatch-pack.md` · `gpt56-b3-skills-projection.md` · `gpt56-c1-sol-plan-check.md` · `gpt56-c2-sonnet-host.md` · `gpt56-c3-review-routing.md` — **Phases B + C EXECUTED directly in planning** (user: "apply directly" + "assume everything will be done today"). All acceptance criteria verified green incl. the Luna schema probe, the hook smoke test (both branches), and the **Sol plan-check live-fire on C2/C3** — its own proving run, which returned 2 substantive BLOCK verdicts (launcher-pins-the-model mechanism gap, ExecutionPolicy, always-on-reviewer routing gap, 4 "inline" residue sites) that were resolved before apply. 🟡 uncommitted._
 
