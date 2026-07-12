@@ -35,9 +35,9 @@ Simplicity check: considered one merged section — rejected: A2 is diff-review 
 | `C:\Users\User\apex\SKILL-HISTORY.md` | modify | Prepend rows |
 
 ## Tasks
-- [ ] Task 1: A2 — silent-regression lens — files: `apex-code/references/silent-regression-lenses.md` (create), `apex-code/references/codex-review.md` (modify) — the reference lists the four classes, each one-line detect→why applied to every codex diff at integration: **await-before-first-yield** in an SSE/async generator = live-streaming regression; **unshielded `create_task` + `await`** forwards cancellation (shield detached tasks); **provider/adapter return types that drop metadata a safety counter depends on** (verify the source of a safety value, not just the consumer); **optimistic re-entry guards** must register synchronously before the first await. Then add a one-line pointer in `codex-review.md` so the diff-review applies them. done when: the reference exists with all four classes and `codex-review.md` points to it.
-- [ ] Task 2: A3 — invariant freshness in pre-flight — files: `apex-code/SKILL.md` (modify § Karpathy Pre-Flight) — add step 6e: "Invariant freshness — if the spec predates a program/ADR shift, verify its `## Intent` invariants still hold against the current program; trace any UX lockout/gating it asserts to the current ADR before building. Contradiction → treat like a wrong `Stop` assumption (halt, flag)." **SKILL.md is at 500/500 — make this net-neutral: tighten an adjacent pre-flight line to offset the addition.** done when: step 6e present; `grep -ci "invariant freshness" apex-code/SKILL.md` ≥ 1; `wc -l apex-code/SKILL.md` ≤ 500.
-- [ ] Task 3: History — files: `SKILL-HISTORY.md` (prepend rows: A2 silent-regression lenses reference; A3 invariant-freshness pre-flight) — done when: rows present.
+- [x] Task 1: A2 — silent-regression lens — files: `apex-code/references/silent-regression-lenses.md` (create), `apex-code/references/codex-review.md` (modify) — the reference lists the four classes, each one-line detect→why applied to every codex diff at integration: **await-before-first-yield** in an SSE/async generator = live-streaming regression; **unshielded `create_task` + `await`** forwards cancellation (shield detached tasks); **provider/adapter return types that drop metadata a safety counter depends on** (verify the source of a safety value, not just the consumer); **optimistic re-entry guards** must register synchronously before the first await. Then add a one-line pointer in `codex-review.md` so the diff-review applies them. done when: the reference exists with all four classes and `codex-review.md` points to it.
+- [x] Task 2: A3 — invariant freshness in pre-flight — files: `apex-code/SKILL.md` (modify § Karpathy Pre-Flight) — add step 6e: "Invariant freshness — if the spec predates a program/ADR shift, verify its `## Intent` invariants still hold against the current program; trace any UX lockout/gating it asserts to the current ADR before building. Contradiction → treat like a wrong `Stop` assumption (halt, flag)." **SKILL.md is at 500/500 — make this net-neutral: tighten an adjacent pre-flight line to offset the addition.** done when: step 6e present; `grep -ci "invariant freshness" apex-code/SKILL.md` ≥ 1; `wc -l apex-code/SKILL.md` ≤ 500.
+- [x] Task 3: History — files: `SKILL-HISTORY.md` (prepend rows: A2 silent-regression lenses reference; A3 invariant-freshness pre-flight) — done when: rows present.
 
 ## Wave plan
 Wave 1: [Task 1, Task 2] | Wave 2: [Task 3]
@@ -66,9 +66,9 @@ Wave 1: [Task 1, Task 2] | Wave 2: [Task 3]
 | History | SKILL-HISTORY.md | rows |
 
 ## Acceptance Criteria
-- [ ] A2 reference present + wired → verify: `apex-code/references/silent-regression-lenses.md` exists with all four classes named, and `grep -l silent-regression apex-code/references/codex-review.md` matches (the pointer).
-- [ ] A3 step present + cap held → verify: `grep -in "invariant freshness" apex-code/SKILL.md` matches inside § Karpathy Pre-Flight, and `wc -l apex-code/SKILL.md` ≤ 500 (net-neutral edit).
-- [ ] History rows present.
+- [x] A2 reference present + wired → verify: `apex-code/references/silent-regression-lenses.md` exists with all four classes named, and `grep -l silent-regression apex-code/references/codex-review.md` matches (the pointer).
+- [x] A3 step present + cap held → verify: `grep -in "invariant freshness" apex-code/SKILL.md` matches inside § Karpathy Pre-Flight, and `wc -l apex-code/SKILL.md` ≤ 500 (exactly 500, net-neutral edit).
+- [x] History rows present.
 
 ## Progress
 _(Coding mode writes here — do not edit manually)_
