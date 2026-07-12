@@ -63,6 +63,7 @@ you need. This prevents burning context on skills you won't use.
 | **apex-github** | GitHub setup, issue tracking, PR workflow | topic keyword |
 | **apex-homelab** | Home Assistant, ESPHome, IoT, smart home | topic keyword |
 | **apex-google** | Google OAuth2, Sign in with Google, Gmail/Calendar/Drive (stack-neutral: googleapis/google-api-python-client) | topic keyword |
+| **apex-afk** | Explicitly human-armed unattended coding run — "afk mode", "run afk", "afk off", "run overnight" | topic keyword |
 
 ---
 
@@ -115,6 +116,13 @@ levels L0–L5 (canonical definitions in `levels/`), approval-gate format, the p
 forbidden hard-block list (canonical home — orchestrate/code carry summaries), critical-file
 confirmation, evaluator-independence invariant, opt-in **cross-model review** (independent 2nd
 review on the other model family for high-stakes builds), and the L4+ audit log.
+
+**apex-afk** — AFK permission gate + trigger (ADR-033). An `afk-gate` PreToolUse hook that
+bounded-auto-allows tool calls while a human-armed flag is present (fail-closed allowlist: never-list
++ exfiltration + RCE stay denied, critical files fall through to the normal ask gate, any tool-layer
+attempt to touch the flag itself always asks). Arming is a terminal-only action (`afk` in the shell) —
+the skill never writes the flag — so an unattended build runs prompt-free without a self-arming or
+injection path.
 
 **apex-refresh** — Skill-set maintenance: research-driven currency refresh of one/all skills
 (diff + approval, never silent overwrite), date-based staleness audit (`--audit`), and the
