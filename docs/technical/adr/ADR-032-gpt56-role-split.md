@@ -1,6 +1,10 @@
 # ADR-032 — GPT-5.6 role split: Sol plan-check + cross-model deliberation, Sonnet build host, cross-family review routing, Sol escalation rung
 
-**Status:** Accepted — 2026-07-10 (session 65)
+**Status:** Accepted — 2026-07-10 (session 65). **Partly superseded by [ADR-034](./ADR-034-sol-default-coder.md)
+(2026-07-13):** Sol is now the *default coder*, so the **Sol escalation rung is gone** (the ladder ends at the
+`ultra` effort rung, then Opus) and the **AFK end-of-run adversarial pass moved from Sol to Opus** (evaluator-
+independence — the coder must not review its own run). The Sol *plan-check* gate, the Sonnet build host, and
+the cross-family review routing in this ADR are unchanged.
 **Extends:** ADR-010 (multi-pass review / council), ADR-015 (bounded dispatch), ADR-027 (Codex-primary), ADR-030 (effort dial), ADR-031 (context propagation); honours apex-governance § Evaluator independence
 **Evidence:** `docs/research/gpt56-apex-integration/README.md` §2 (verdict + Amendments 1–2), user decisions 2026-07-10
 

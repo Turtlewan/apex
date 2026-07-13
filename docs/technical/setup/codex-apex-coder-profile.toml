@@ -12,7 +12,7 @@
 # only guardrail, so do not widen to danger-full-access here.
 
 approval_policy = "never"   # exec has no human; failures return to the model -> it fixes & retries, never stalls
-model           = "gpt-5.6-terra" # re-pin after a Codex upgrade (Codex churns model IDs)
+model           = "gpt-5.6-sol" # re-pin after a Codex upgrade (Codex churns model IDs)
 
 [sandbox_workspace_write]
 network_access  = true      # dep installs succeed -> no "blocked: cannot reach network" stops

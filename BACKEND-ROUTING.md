@@ -1,6 +1,6 @@
 # Backend Routing
 
-> **ADR-027 (current).** Coding is **Codex-primary**: `gpt-5.6-terra` via `codex exec` is the default coder,
+> **ADR-027 (current).** Coding is **Codex-primary**: `gpt-5.6-sol` via `codex exec` is the default coder,
 > dispatched from a **Claude coding host** (`APEX_MODE=coding`, Sonnet 5 default — ADR-032); **Opus** is the manual fallback (fresh `model: opus` worker) when
 > Codex quota runs out. **DeepSeek (Flash/Pro) is archived** — recovery-only, parked launchers. Planning
 > stays Claude/Opus. The DeepSeek-centric detail below is retained for recovery context only.
@@ -14,7 +14,7 @@ This project detects its mode from `ANTHROPIC_BASE_URL` + `APEX_MODE` at session
 | `ANTHROPIC_BASE_URL` | `APEX_MODE` | Mode | Coder |
 |----------------------|-------------|------|-------|
 | unset / `api.anthropic.com` | unset | **Planning** | — |
-| unset / `api.anthropic.com` | `coding` | **Claude coding** (build host; Sonnet 5 default — ADR-032) | **Codex `gpt-5.6-terra`** primary (`codex exec`); **Opus** fallback (fresh worker) on Codex quota-out |
+| unset / `api.anthropic.com` | `coding` | **Claude coding** (build host; Sonnet 5 default — ADR-032) | **Codex `gpt-5.6-sol`** primary (`codex exec`); **Opus** fallback (fresh worker) on Codex quota-out |
 | contains `deepseek` | — | **DeepSeek** | _archived (ADR-027) — recovery-only_ |
 
 Launchers: **`codex-code`** = run Codex directly (supervised); **`apex-build`** = the Claude coding host
@@ -55,7 +55,7 @@ Use Claude for activities that require judgment, design, and decision-making:
 
 ### Coding mode (Codex-primary, Opus fallback) — _DeepSeek archived (ADR-027)_
 
-Coding runs in the Claude coding host (`APEX_MODE=coding`, Sonnet 5 default — ADR-032); Codex (`gpt-5.6-terra`) builds each task via
+Coding runs in the Claude coding host (`APEX_MODE=coding`, Sonnet 5 default — ADR-032); Codex (`gpt-5.6-sol`) builds each task via
 `codex exec`, Opus is the fallback (fresh `model: opus` worker). (The DeepSeek references below are the archived form.)
 
 | Activity | Skill invoked |
@@ -143,7 +143,7 @@ See `docs/findings/deepseek-v4-paper-vs-apex-coding-assumptions.md`.
 
 **Primary coding — run Codex directly (supervised):**
 ```sh
-codex-code     # launches the Codex CLI (gpt-5.6-terra, workspace-write). Point it at a spec; you supervise + commit.
+codex-code     # launches the Codex CLI (gpt-5.6-sol, workspace-write). Point it at a spec; you supervise + commit.
 ```
 
 **Claude coding hosts — `apex-build` (Sonnet, default) / `apex-opus` (deliberate Opus escalation; also the quota-out fallback path):**
@@ -183,4 +183,4 @@ Planning session (Claude)
 
 ---
 
-_Last updated: 2026-07-10 (coder → `gpt-5.6-terra`, codex-cli ≥0.144.1) | Coding: Codex `gpt-5.6-terra` primary (`codex-code`) / host Sonnet 5 (`apex-build`) / Opus fallback (`apex-opus`) | DeepSeek: archived | Planning: Opus 4.8_
+_Last updated: 2026-07-10 (coder → `gpt-5.6-sol`, codex-cli ≥0.144.1) | Coding: Codex `gpt-5.6-sol` primary (`codex-code`) / host Sonnet 5 (`apex-build`) / Opus fallback (`apex-opus`) | DeepSeek: archived | Planning: Opus 4.8_

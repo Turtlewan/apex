@@ -33,9 +33,11 @@ enforced by harness hooks:
 
 - **Planning mode** runs on **Claude** (judgment) and may write only `.md` files.
 - **Coding mode** runs on a Claude host (**Sonnet 5 default** — ADR-032) that dispatches each
-  task to **Codex (`gpt-5.6-terra`)** as a subprocess; verify-fail escalation runs
-  Terra-effort → Sol → **Opus** (fresh `model: opus` worker at quota-out) (ADR-027/032;
-  DeepSeek archived) — and may write anything.
+  task to **Codex (`gpt-5.6-sol`)** as a subprocess; verify-fail escalation climbs the
+  reasoning-effort dial (`…→max→ultra`) and then falls back to **Opus** (fresh `model: opus`
+  worker at quota-out) (ADR-027/032/034; DeepSeek archived) — and may write anything.
+  Unattended (AFK) runs end with a standing **Opus** adversarial pass over the whole run diff —
+  cross-family, so the coder never reviews itself (ADR-033 A1 / ADR-034).
 
 The two modes never share live process state. They communicate only through files, and every
 fact has exactly **one home**:

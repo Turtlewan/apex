@@ -1,6 +1,9 @@
 # ADR-033 — AFK gate + safe unattended builds
 
-**Status:** Accepted (2026-07-12)
+**Status:** Accepted (2026-07-12). **Amended by [ADR-034](./ADR-034-sol-default-coder.md) (2026-07-13):** the A1
+standing end-of-run adversarial pass still runs on every AFK build, but on **Opus, not Sol** — Sol became the
+default coder, and the end-gate must not review its own run (evaluator-independence). Recipe:
+`apex-code/references/afk-endgate.md` (was `afk-sol-endgate.md`).
 **Supersedes/extends:** ADR-032 (role split), ADR-015 (dispatch return contract / one-retry), ADR-028/029 (parallel waves)
 
 ## Context
