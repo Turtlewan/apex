@@ -391,6 +391,42 @@ _status.md holds current state only — session history lives in git + handoff d
 ## Open Questions
 _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resolved (see plan §6 + ADR-007). Remaining:_
 
+- **status.md is an unowned shared-write file during AFK builds (B1–B3) — `docs/findings/artemis-13-7-issues.md`.**
+  From Artemis's 2026-07-13 19-stage AFK run; all APEX-cadence gaps, not Artemis product bugs. **Investigated +
+  verified against APEX source (session 69); two of the write-up's own proposed fixes do not survive that check.**
+  **B1 (P1)** codex writes `docs/status.md` outside its scope-lock. The brief *already* says "authorized set —
+  touch nothing else" + "`git diff --stat` must show only those" (`dispatch-pack.md:18,23`) and codex wrote it
+  anyway → **adding another prohibition is not a fix** (`removal-over-prohibition`); and **a PreToolUse deny cannot
+  see these writes at all** — the Codex subprocess does not ride Claude Code's permission floor (`apex-code:174`).
+  The one enforceable fix is the **post-dispatch diff check** the spec already promises but nobody runs: after each
+  `▸codex` task, `git diff --name-only` vs the authorized set; any extra path = scope violation. Generalises to
+  every out-of-scope write. **B2 (P1)** blanket-revert destroyed concurrent host edits and produced a *false*
+  "codex fabricated ADRs" finding — **not an APEX bug** (Artemis's own AFK pipeline; APEX's only `git checkout --`
+  is the ADR-028/029 integration mechanic, already file-scoped) but it **constrains B1's fix: revert only the
+  offending paths, never the file wholesale.** **B3 (P2)** status.md carries commit-state claims that its own
+  commit falsifies — and this contradicts APEX itself: `apex-handoff:32-34` routes commit state to `git log`, then
+  `:124` defines a `🟡 uncommitted` column that CLAUDE.md *mandates*. The In-Flight table already contains **two
+  hand-written workarounds** ("this row's ✅ rides the next commit"). Proposed shape: (1) host-side scope check,
+  reverting only offending paths; (2) delete the `🟡 uncommitted` column + the CLAUDE.md step that writes it —
+  `git status` is the answer. Two small, mostly-deleting changes; no new hook. **Not yet specced.**
+
+- **B4 — canonical records froze at `gpt-5.5` while builds ran GPT-5.6 (P2, filed not fixed). A *different*
+  mechanism from B1–B3 — do not conflate.** B1–B3 are concurrency (many writers, no owner); B4 is staleness (a
+  fact changed and nothing forced the record to catch up). Same file, unrelated cause; fixing either leaves the
+  other live. **The live config surface is correct** (`coder_models: [codex]`, `backends: gpt-5.6-sol`) — the rot
+  is in the records, and splits three ways: *decision records* (`ADR-030:14,23` "keep gpt-5.5 as the single build
+  model") are **correct as-is** — editing an ADR falsifies history; *present-tense claims about the live system*
+  (`ADR-020:5` "the coder **is** Codex (`gpt-5.5`)") are **stale, wrong twice over**; *missing supersession*
+  (`ADR-026` still reads `Accepted (design)` though ADR-027 "promotes" it). Plus status.md's session-60 note — a
+  rolling session log that aged into misinformation, **already forbidden** by status.md's own hygiene rule ("current
+  state only — no rolling session-log Notes"). Cause: `docs/drafts/gpt-5.6-family-adoption.md` was never promoted
+  (access-gated) so canonical docs froze at 5.5 — **but when the gate lifted (session 64) the swap updated ~20 files
+  of live pins and zero records.** The catch-up procedure doesn't miss because it's blocked; it misses because *it
+  only ever looks at config*. Recurred on session 69's Terra→Sol swap: `overview.md` was caught only because the
+  operator grepped for it. **Missing mechanism:** a pin-change sweep covering the *record* class (living docs +
+  present-tense claims must catch up; decision records must never be touched). Generalises past model pins to any
+  fact living in both config and prose. Artemis has corrected its own copy.
+
 - **Cadence gaps from the Artemis 2026-07-11→12 run retro (BACKLOG — handle separately).** An Opus×Sol
   retro found the per-spec coding cadence has no adversarial step: 3 P1 safety bugs reached commit and
   were caught only by an ad-hoc end-of-run Sol pass; a 07-10 unshielded-await fix regressed in new code.
@@ -399,6 +435,16 @@ _SP2-composition + agent-wiring (planning **and** coding slices), SP3, SP4 resol
   classes (await-before-yield, unshielded await, dropped safety metadata, late optimistic guard) · **A3**
   invariant-freshness in pre-build re-verify · **A4** one durable codex dispatcher (stdin-closed + run
   ledger + watchdog + adopt). A1 needs owner ratify; A2–A4 are host-authorable.
+
+- **13-7 issues: APEX's Codex model record still says `gpt-5.5` (BACKLOG — APEX to fix its own docs).** The
+  session-60 Codex-integration note below (ADR-026) asserts `Codex = gpt-5.5`, and `coder_models` is written
+  as `{flash,pro,codex}`. That was true in 2026-06; it is now stale. Real builds have run on the **GPT-5.6
+  family** for weeks — Artemis pins `code = codex gpt-5.6-sol` and built its whole 2026-07-13 19-stage AFK run
+  on it. The gap is that `docs/drafts/gpt-5.6-family-adoption.md` was never promoted (access-gated), so APEX's
+  canonical docs still name a retired model while practice moved on. Anything reading APEX's status/ADR-026 for
+  the coder model gets the wrong answer. Fix = promote the draft (or annotate the session-60 note as
+  historical) so the record matches what actually runs. _(Artemis's own copy of this rot is already
+  corrected — its `coder_models` comment now reads `gpt-5.6-sol` and defers to its `apex_model_roles` line.)_
 
 - **13-7 issues: `docs/status.md` is an unowned shared-write file during AFK builds (BACKLOG — owner will
   harden).** Artemis's 2026-07-13 AFK run hit a three-way collision on status.md, all three items
