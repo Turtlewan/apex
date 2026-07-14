@@ -29,17 +29,6 @@ _ADR-036/037/038 + the AFK revert are shipped: `~/.claude` `d968fd0` · `~/apex`
 
 ## Open Questions
 
-- **Codex writes outside its scope-lock — the post-dispatch diff check (P1, unspecced).**
-  A `▸codex` task wrote `docs/status.md` despite the dispatch brief's "authorized set — touch nothing
-  else". Adding another prohibition is not a fix (the rule was already there and was ignored), and a
-  PreToolUse deny **cannot see these writes at all** — the Codex subprocess does not ride Claude
-  Code's permission floor (`apex-code:174`). The one enforceable fix is host-side: after each
-  `▸codex` task, `git diff --name-only` against the authorized set; any extra path = scope violation,
-  **revert only the offending paths, never the file wholesale** (a blanket revert once destroyed
-  concurrent host edits and produced a false "codex fabricated ADRs" finding). This subsumes the
-  parked "safety-guard Freeze" hook idea — same fix, better placed. Source:
-  `docs/findings/artemis-13-7-issues.md`.
-
 - **Stale present-tense claims in records (P2).** When a model pin changes, ~20 config files get
   updated and **zero records do**. Live config is correct; the rot is in prose. Three classes, three
   rules: *decision records* (an ADR saying "we chose gpt-5.5") are correct as-is — never edit, that
