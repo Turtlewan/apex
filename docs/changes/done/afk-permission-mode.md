@@ -1,6 +1,12 @@
+> ⚠️ **REVERTED 2026-07-14 — this spec's output no longer exists.** The `afk-gate.js` hook, its
+> `settings.json` registration, the `apex-afk` skill, the `afk` PowerShell arming function and the
+> `afk.on` flag were all removed: armed AFK was a fail-closed allowlist with no build/test command on
+> it, so every unattended run stalled at its own Verification Recipe. Kept for the record only — do not
+> rebuild from it. See ADR-033 § Reversal.
+
 ---
 spec: afk-permission-mode
-status: ready
+status: reverted
 token_profile: balanced
 autonomy_level: L2
 cross_model_review: true   # security-critical: this weakens the permission boundary

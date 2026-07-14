@@ -1,9 +1,13 @@
 # ADR-033 — AFK gate + safe unattended builds
 
-**Status:** Accepted (2026-07-12). **Amended by [ADR-034](./ADR-034-sol-default-coder.md) (2026-07-13):** the A1
-standing end-of-run adversarial pass still runs on every AFK build, but on **Opus, not Sol** — Sol became the
-default coder, and the end-gate must not review its own run (evaluator-independence). Recipe:
-`apex-code/references/afk-endgate.md` (was `afk-sol-endgate.md`).
+**Status:** **Partially REVERTED (2026-07-14).** The **AFK gate half (the `afk-permission-mode` spec — flag
+file, `!afk` terminal arming, `afk-gate.js` PreToolUse hook, `apex-afk` skill) is REMOVED.** The three safety
+mechanisms (A1 end-of-run pass, A2 silent-regression lenses, A3 invariant freshness, A4 durable dispatcher)
+**stand and remain in force**. See § Reversal below.
+
+**Amended by [ADR-034](./ADR-034-sol-default-coder.md) (2026-07-13):** the A1 standing end-of-run adversarial
+pass still runs on every AFK build, but on **Opus, not Sol** — Sol became the default coder, and the end-gate
+must not review its own run (evaluator-independence). Recipe: `apex-code/references/afk-endgate.md`.
 **Supersedes/extends:** ADR-032 (role split), ADR-015 (dispatch return contract / one-retry), ADR-028/029 (parallel waves)
 
 ## Context
@@ -100,3 +104,47 @@ Ship "safe unattended builds" as two halves — remove the stops, add the net.
   not generalise to the next unforeseen AFK-necessary op.
 - **Skip A1 (checklist only)** — the retro shows the checklist classes are necessary but a fresh
   adversarial read caught what no checklist enumerated; the standing pass is the net.
+
+---
+
+## Reversal (2026-07-14) — the AFK gate is removed; the safety net stays
+
+**What was removed:** `hooks/afk-gate.js`, its `settings.json` PreToolUse registration, the AFK-armed
+bypass block in `hooks/backend-pretool-write.ps1`, the `apex-afk` skill + registry row, the `afk` PowerShell
+arming function, and the `~/.claude/afk.on` flag. (The `lib/destructive-detect.js` extraction stays — the
+destructive-command guard depends on it; its AFK-only helpers are now uncalled.)
+
+**Why.** The gate made unattended runs *worse*, not safer, and the mechanism was self-defeating:
+
+1. **Armed ≠ unattended.** The gate was a **fail-closed allowlist**: armed, it auto-approved ~24 read/copy/git
+   commands (`ls`/`cat`/`grep`/`git`/`cp`) and non-critical writes; *everything else fell through to the normal
+   prompt*. **No build or test command was on the list** — no `pytest`, `npm`, `python`, `node`, `uv`, `cargo` —
+   and none are in `settings.json`'s `permissions.allow` either. So every armed run **stalled at its own
+   Verification Recipe**, which is the one thing an unattended build must be able to do. Arming bought a
+   halt, not a run.
+
+2. **`isCriticalPath` held back ordinary build targets.** Auth code, migrations, package manifests and CI
+   configs are *normal* things a spec changes. Routing them to a prompt guarantees an overnight stall on
+   real work. (It also substring-matched `auth` inside `author`, so `apex-skill-author/**` was "critical".)
+
+3. **The security review pushed it the wrong way.** The round-2 BLOCK correctly noted a Bash *denylist* is
+   leaky and flipped it to an allowlist — which is right for a sandbox and wrong for a mode whose entire
+   purpose is "the owner armed this at the terminal and left." The threat model was inverted: arming is a
+   physical, injection-proof act by the machine's owner, so the gate should default to *go* and stop only
+   at the irreversible.
+
+4. **It solved a problem the system already solved.** Sessions 65, 68 and 69 each drained a full spec queue
+   unattended with **no AFK flag at all** — via `acceptEdits` + the APEX/`~/.claude` write-guard exemption +
+   `permissions.allow`. The original AFK — *the autonomy mode in `apex-governance` (Build/AFK vs Edit): "run
+   the list, don't ask questions"* — was already sufficient. ADR-033's gate added ceremony on top of a
+   working path and broke it.
+
+**What still stands (unaffected by this reversal):** A1 the standing end-of-run **Opus** adversarial pass ·
+A2 silent-regression lenses · A3 invariant-freshness pre-flight · A4 the durable Codex dispatcher
+(`scripts/codex-dispatch.ps1`). These were the *safety net* half of ADR-033 and never depended on the flag.
+The Context section's failure #2 (green gates ship P1 bugs) remains real and remains addressed.
+
+**Do not re-propose a permission-flag gate** without first showing that the plain path (autonomy mode +
+`acceptEdits` + `permissions.allow`) actually fails. It did not; the gate was the thing that failed.
+If an unattended run genuinely needs a command the classifier won't clear, add that command to
+`permissions.allow` — a targeted, inspectable, always-on grant — rather than a second permission system.
