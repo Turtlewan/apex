@@ -16,9 +16,10 @@ _Last updated:_ 2026-07-14
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | — |
+| **APEX v2 — first live proving run (Artemis)** | in progress | `~/artemis` | `cap-deps-1a` **landed** (`done_with_concerns`, 6 files, all gates green) — **uncommitted in `~/artemis`, awaiting owner review.** Four dispatch bugs found + fixed *from* that run (see handoff 2026-07-14). **Still unproven:** the readiness gate's `Batch-joinable` check, a build dispatched *through* `codex-dispatch.ps1` (both Artemis runs used the raw path), and whether the trimmed review gates still catch what domain skills did. |
 
-_ADR-036/037/038 + the AFK revert are shipped: `~/.claude` `d968fd0` · `~/apex` `29da72b`. Rows deleted per the new rule — git is the record._
+_APEX shipped today: 50 skills → 14 · 17,716 → ~2,300 lines · 3 modes → 1. All committed
+(`~/.claude` `dacbeb0` · `~/apex` clean). Rows are deleted when done — git is the record._
 <!-- CODING:END -->
 
 <!-- PLANNING:START -->
