@@ -14,13 +14,11 @@ _Last updated:_ 2026-07-14
 
 <!-- CODING:START -->
 ## In-Flight
-| What | Mode | State | File | Next |
-|------|------|-------|------|------|
-| **Knowledge layer removed (ADR-036)** | planning · system edit | built, uncommitted | ADR-036 | 36 domain skills + domain registry + 4 agents deleted (−12k lines). Design workflow salvaged → `apex-plan/references/design-workflow.md`. Review gates re-anchored on evidence. Commit. |
-| **Three context files (ADR-037)** | planning · system edit | built, uncommitted | ADR-037 | status.md 641→71 · CLAUDE.md 269→77 · new AGENTS.md · `context-cap-guard.js` hook live. Commit. |
-| **Mode split removed (ADR-038)** | planning · system edit | built, uncommitted | ADR-038 | One session. Write-guard + `APEX_MODE` + all 6 mode launchers gone (PS profile cleaned + reloaded; backup at `Microsoft.PowerShell_profile.ps1.pre-adr038.bak` holds the DeepSeek recovery env block). Commit. |
-| **GSD residue removed** | planning · system edit | built, uncommitted | — | 33 agents + gsd-map-codebase + 9 dead hooks deleted (−14.5 KB/session). 3 functional hooks kept (injection scanner · context monitor · statusline) — **still `gsd-`-named and the statusline reads GSD's `.planning/`; rename + re-home as a small follow-up.** Commit. |
-| **AFK `!afk` gate reverted** | planning · system edit | done, uncommitted | ADR-033 § Reversal | Commit. Follow-up: `lib/destructive-detect.js` retains uncalled AFK helpers + an `auth`⊂`author` substring bug in `isCriticalPath` (still live in the planning write-guard). |
+| What | State | File | Next |
+|------|-------|------|------|
+| _none_ | — | — | — |
+
+_ADR-036/037/038 + the AFK revert are shipped: `~/.claude` `d968fd0` · `~/apex` `29da72b`. Rows deleted per the new rule — git is the record._
 <!-- CODING:END -->
 
 <!-- PLANNING:START -->
