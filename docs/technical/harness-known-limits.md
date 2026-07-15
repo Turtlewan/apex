@@ -31,6 +31,35 @@ reading the diff before it is committed.
 | Writes **outside the worktree**, or through an escaping symlink | Not visible to a worktree-scoped check. This is what `--sandbox` is for. |
 | **`GONE`** (a pre-dirty path that vanished) | Reported, never acted on. The host tidying its own draft mid-dispatch has the *same signature* as a coder deleting it, and the check cannot tell them apart. Named for a human to judge. |
 
+## The encoding gate (exit 73) — stated limits
+
+Added 2026-07-15. `codex-scope-check.ps1 -EncodingScan` catches Codex-on-Windows double-encoding
+(an em-dash written as `â€"`). It exists because **the test suite cannot catch this class by
+construction**: the coder writes the same corrupted bytes into the *expected* string as into the
+source, so the assertion compares corrupt to corrupt and passes. A green suite is what the bug looks
+like.
+
+Two cross-family review rounds. Round 1 returned **9 BLOCKs on code that was already green** — all
+real. These are what survives, and they are limits, not bugs:
+
+| Limit | Why it is accepted |
+|---|---|
+| **Staged content is not scanned** | The gate reads the working tree, not the index. A file staged corrupt but clean in the worktree slips through. Codex is forbidden to `git add`/`commit` by `AGENTS.md`, and the threat model is a *careless* coder — a coder staging around the gate is evading it. |
+| **A file legitimately encoded latin-1** | Its bytes decode as clean UTF-8, so real runtime mojibake reads as fine. APEX repos are UTF-8; supporting declared per-file encodings means parsing coding headers for one hypothetical. |
+| **Legitimate code containing the signature** | Encoding-repair code and parser fixtures that *intentionally* hold `Ã©`-style bytes will trip it, and there is deliberately **no override switch** — every exemption in this harness became a hole someone walked through. Such a file is unshippable through this gate. Stated, not hidden. |
+| **Overlong / malformed UTF-8 (C0, C1, F5–FF)** | Not emitted by a conforming encoder, so not this bug. The gate detects *double-encoding*, not malformed UTF-8 generally. |
+| **Prose (`.md`, `.txt`, `.rst`, …) is not scanned** | Documentation about this bug legitimately quotes the corrupt bytes — the first cut flagged its own `SKILL.md` and comments, so a dispatch authorized to edit the harness could never come back clean. The silent-green-test failure is a *code* failure; mojibake in a `.md` is visible to a human reading the diff. |
+
+**What it does fail closed on:** an unreadable file, an un-enumerable directory subtree, a failed
+`git status`, and a missing helper script. Each was a fail-open in the first cut, and each reads as a
+pass — which is worse than no gate at all.
+
+**The lesson worth more than the gate:** the first detector was derived from the single example in the
+memory (an em-dash) rather than from the encoding, so it only matched 2-byte lead chars and **missed
+double-encoded CJK, Cyrillic and emoji entirely** — a mojibake detector that missed most mojibake.
+Derive a mechanism from the thing itself, or you have built a confident detector of the bug you
+already knew about.
+
 ## Open findings from round 7 (fixed, but worth re-testing)
 
 All twelve round-7 findings were fixed and are covered by tests. They are listed here because the
