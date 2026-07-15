@@ -44,11 +44,11 @@ pipe-deadlock fix that unblocked Codex dispatch is committed too (51b795a)._
   *before-dispatch* end** — a wrapper pre-flight (fast lint+mypy subset) that refuses to launch a build
   on a red baseline (new exit 72). Deferred because Sol's 4 BLOCKs all lived there; design them in.
 
-- **Two latent `codex-dispatch.ps1` bugs found (session 73), not yet fixed** — worth a short debug pass:
-  (a) the child's stdin isn't pinned to UTF-8, so a **non-ASCII prompt is rejected by codex** ("input is
-  not valid UTF-8") — likely breaks real dispatches with em-dashes in the prompt from non-console
-  contexts; (b) the M1 **encoding scan sweeps transcript/log dirs**, tripping a spurious exit 73 on a
-  review dispatch into any log-bearing tree (masks the verdict). Both worked around this session.
+- **Wrapper maintenance pass DONE (session 73)** — the dispatch path is repaired end-to-end, all
+  cross-family reviewed: pipe deadlock `51b795a`; UTF-8 stdin + read-only encoding-scan skip `bbaee8c`;
+  scope-snapshot hang (per-file `git hash-object` on ignored node_modules → every build dispatch wedged
+  pre-launch, mis-read as the shared-worktree guard) `ef45402`+`1445ba4`. The guard + `-AllowSharedWorktree`
+  were never broken. Build dispatches into real repos (artemis) now snapshot in seconds and launch.
 
 - **M3 — Files-to-Change completeness.** `spec-files-to-change-include-tests` +
   `specs-underlist-api-shape-tests`, bitten 3×+, are **one rule**: a spec's `## Files to Change` must
