@@ -16,8 +16,7 @@ _Last updated:_ 2026-07-16
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Audit step-1 quick fixes | BUILT 6/6, host-challenged; spec → done/ | `docs/changes/done/audit-step1-quick-fixes.md` | Awaiting user approval of 3 commit messages (2× `~/.claude`, 1× `~/apex`), then delete this row. |
-| Reconciliation pass — **M2b** (dispatch pre-flight, exit 72) and **M3** (Files-to-Change completeness) | not started (queue behind quick fixes) | `docs/research/reconciliation-pass.md` | M2b: design in Sol's 4 pre-flight BLOCKs (before-reservation placement so no phantom row, tree-pin the pre-flight, `&&`-aware test-line split, no circular DetectOnly). M3 as planned. |
+| Audit 10-BLOCK run — steps 1 & 2 DONE (#1 #2 #4 #5 + #6-half #13 done); remaining: #6-fail-closed+#8+#9 (step 2.5) · #3+#7 (step 3) · round 8 #10 | between steps | — | Next: step-2.5 hardening spec (4-role pipeline). **User pre-approved per-step commits for this run (2026-07-16).** |
 
 <!-- CODING:END -->
 
@@ -29,50 +28,27 @@ _Last updated:_ 2026-07-16
 
 ## Open Questions
 
-- **Joint Fable×Sol audit of APEX v2 (2026-07-15) — step 1 (quick fixes) IN FLIGHT, rest queued.** 10 agreed BLOCKs, 6 FLAG
-  clusters, with an agreed execution order (quick fixes → M2b/M3 upgrades → family-ledger +
-  critical-path pre-flight → round 8 → hygiene wave). Report:
-  `docs/research/apex-v2-joint-audit-2026-07-15.md`. Top BLOCKs: destructive guard misses the
-  PowerShell tool; apex-wave-reviewer has all tools; cross-family review breaks on quota fallback
-  (apex-reviewer pinned sonnet); baseline check cmd.exe-only + fail-open NO_RECIPE; scope lock
-  optional + snapshot not passed `-Authorized`. It also refines the In-Flight M2b/M3 designs.
-
-- **The reconciliation pass RAN (session 72).** 58 Artemis memories → **23 are APEX-GENERIC** (build-system
-  lessons parked in a consumer project); 12 of those had recurred *after* being written down. Report:
-  `docs/research/reconciliation-pass.md`. **The finding: the lessons that stopped recurring are exactly
-  the ones that got a hook or a script. Every lesson still recurring only ever got a paragraph.**
-  Six were already mechanised by session 71's rebuild and can be **retired** (stdin wedge · orchestrator
-  early-return · status.md rewrites · quiet-tree deletions · `ab-revert` worktree trap · part of the git
-  traps). M1/M2a built and committed; **M2b and M3 remain** (see In-Flight).
-
-- **M3 — Files-to-Change completeness.** `spec-files-to-change-include-tests` +
-  `specs-underlist-api-shape-tests`, bitten 3×+, are **one rule**: a spec's `## Files to Change` must
-  contain every file its acceptance criteria and task bodies name — that list is also the wave-grouping
-  and the scope-lock, so an omission forces the coder out of scope (now exit 65). Mechanically checkable.
-
-- **The readiness gate is itself ten checkboxes of prose in a SKILL.md, self-checked by the model** —
-  structurally identical to "always dispatch through the wrapper", which lost three times running until
-  a hook made it impossible. **On this pass's own logic it is the next prose control to fail.**
+- **Audit + reconciliation reports on disk:** `docs/research/apex-v2-joint-audit-2026-07-15.md` (10
+  BLOCKs, execution order) and `docs/research/reconciliation-pass.md`. Steps 1–2 closed #1 #2 #4 #5
+  (+ #6-half, #13); M1/M2a/M2b/M3 all built and committed.
 
 - **Migrate the 23 APEX-GENERIC memories out of Artemis** into APEX's own memory (and delete the 6 now
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **Live session data lives inside the judged tree** (2026-07-16 build): `~/.claude` co-hosts the
-  session runtime (`projects/`, `sessions/`, `backups/`…), so EVERY dispatch into that tree exits 65
-  while a session runs — the host's own transcript is "out of scope". Session-71's "nothing of the
-  harness's in the judged tree", now from the session-state side. Needs a scope-check runtime-path
-  exclusion (harness change → round 8); interim: host adjudicates 65s whose flagged list ⊆ runtime dirs.
+- **Round 8 (#10) — accumulated review backlog. Do not trust the author's summary, incl. mine.** Feeds:
+  the round-7 harness fixes (unreviewed; limits in `docs/technical/harness-known-limits.md`); step-2
+  carryover FLAGs (code-confirmed, non-blocking) — (a) `codex-dispatch.ps1` writes/truncates the log
+  BEFORE the exit-71 shared-worktree check, so a same-spec+task second dispatch truncates a live sibling's
+  log; (b) `apex-spec-validate.ps1` check-1 counts a URL/version string as a "file"; (c) pin-cleanup gated
+  on `$preflightPinArmed` can leak a partial pin on an I/O failure mid-`tree-pin -Pin`; (d) Task-7 exit-71
+  cleanup reviewer-traced not live-tested; **scope-check runtime-path exclusion** (see below); test suites
+  that can't fail loudly (`scope-check-test.ps1`, `dispatch-test.ps1` print FAIL but exit 0).
 
-- **Harness test suites can't fail loudly** (Sol, 2026-07-16 spec-check r2): `scope-check-test.ps1`
-  and `dispatch-test.ps1` print FAIL per assertion but keep exit 0 — a visually failing run reads as
-  green to any exit-code consumer. Same class as the session-71 "84 tests passed" bug. Fold into
-  round 8.
-
-- **Round 8 of the harness review was never run.** The round-7 fixes are new and unreviewed. Known
-  limits, accepted trade-offs, and the hook's false-positive cost are written down in
-  `docs/technical/harness-known-limits.md`. **If you change the harness, have the other family review
-  it — and do not trust the author's summary, including mine.**
+- **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
+  (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
+  session runs — the host's own transcript is "out of scope". Interim: host adjudicates 65s whose flagged
+  list ⊆ runtime dirs. Real fix = a scope-check runtime-path exclusion (round 8).
 
 - **Stale present-tense claims in records (P2).** When a model pin changes, ~20 config files get
   updated and **zero records do**. Live config is correct; the rot is in prose. *Decision records*
