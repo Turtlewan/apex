@@ -29,9 +29,6 @@ When asked to implement `docs/changes/<name>.md`:
 
 ## Verify commands
 
-There is no test suite. Verification here is **structural**, and these are the checks that actually
-catch regressions:
-
 ```bash
 # 1. No skill exceeds its line cap (500 for SKILL.md) — a cap breach is a real failure
 wc -l ~/.claude/skills/apex-*/SKILL.md | sort -rn | head -3
@@ -42,8 +39,11 @@ grep -roE '~/\.claude/skills/apex-[a-z-]+' ~/.claude/skills/ | sort -u
 # 3. The three files are inside their caps
 wc -l docs/status.md          # ≤100
 wc -l ~/.claude/CLAUDE.md     # ≤200
-wc -c AGENTS.md               # <32768
+wc -c AGENTS.md               # ≤32768
 ```
+
+There is no test suite. Verification here is **structural**, and these are the checks that actually
+catch regressions:
 
 A spec that edits a skill must also land its `SKILL-HISTORY.md` row and, if the skill set changed,
 its `SKILLS.md` entry. That double-write **is** part of the acceptance criteria — a missing row is a

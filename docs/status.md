@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-16
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Audit 10-BLOCK run — steps 1 & 2 DONE (#1 #2 #4 #5 + #6-half #13 done); remaining: #6-fail-closed+#8+#9 (step 2.5) · #3+#7 (step 3) · round 8 #10 | between steps | — | Next: step-2.5 hardening spec (4-role pipeline). **User pre-approved per-step commits for this run (2026-07-16).** |
+| Audit 10-BLOCK run — steps 1/2/2.5 DONE (#1 #2 #4 #5 #6 #8 #9 + #13); remaining: #3+#7 (step 3) · round 8 #10 | between steps — 7/10 BLOCKs closed & committed | — | Next: step 3 spec (critical-path pre-flight #3 + family ledger #7, 4-role pipeline). **User pre-approved per-step commits for this run (2026-07-16).** |
 
 <!-- CODING:END -->
 
@@ -43,12 +43,21 @@ _Last updated:_ 2026-07-16
   log; (b) `apex-spec-validate.ps1` check-1 counts a URL/version string as a "file"; (c) pin-cleanup gated
   on `$preflightPinArmed` can leak a partial pin on an I/O failure mid-`tree-pin -Pin`; (d) Task-7 exit-71
   cleanup reviewer-traced not live-tested; **scope-check runtime-path exclusion** (see below); test suites
-  that can't fail loudly (`scope-check-test.ps1`, `dispatch-test.ps1` print FAIL but exit 0).
+  that can't fail loudly (`scope-check-test.ps1`, `dispatch-test.ps1` print FAIL but exit 0). Step-2.5
+  cap-guard FLAGs: (e) `context-cap-guard.js` `path.basename` throws on a non-string `file_path` (unreachable
+  from CC's schema; fails open on crash — add a `typeof` guard); (f) it matches by BASENAME, so once blocking
+  it gates ANY `status.md`/`CLAUDE.md`/`AGENTS.md` in any repo, not just APEX's (correct for AGENTS.md/32KB,
+  over-reach for the line caps); (g) the "shrinking edit" test lands at cap not over it (equal-size test covers
+  the over-cap case).
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
   session runs — the host's own transcript is "out of scope". Interim: host adjudicates 65s whose flagged
-  list ⊆ runtime dirs. Real fix = a scope-check runtime-path exclusion (round 8).
+  list ⊆ runtime dirs. Real fix = a scope-check runtime-path exclusion (round 8). **Design note (Sol,
+  step-2.5 r1):** git-status CLASS is useless as a discriminator here — the blanket `*` ignore makes
+  churn `!!`, not `??`, and force-added memory/skills are tracked. Use the git INDEX (tracked vs not)
+  as the discriminator; residual gap = a new untracked file under a runtime dir stays masked — decide
+  accept-as-known-limit vs pattern-tighten. (Attempted in step 2.5, pulled as too hard for that spec.)
 
 - **Stale present-tense claims in records (P2).** When a model pin changes, ~20 config files get
   updated and **zero records do**. Live config is correct; the rot is in prose. *Decision records*

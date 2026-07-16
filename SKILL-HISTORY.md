@@ -3,6 +3,8 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-07-17 | apex-code | SKILL.md | 2.7.0 | updated | Wrapper hardening pass closing audit BLOCKs #6/#8/#9: fail-closed exit-74 scope-lock gate in codex-dispatch.ps1 (with a -ScopeUnlocked/-ScopeUnlockedReason deliberate-bypass escape recorded in the ledger row); context-cap-guard.js converted from an advisory PostToolUse reporter to a blocking PreToolUse deny gate (deterministic size projection, no-growth escape, wc -l line semantics); tree-pin.ps1 gained multi-root (-PinAlso) pin/verify for gates spanning both ~/apex and ~/.claude, single-root path byte-for-byte unchanged. SKILL.md's exit-code contract table gained the 74 row. | docs/technical/adr/ADR-041-wrapper-hardening-scope-cap-pin.md |
+
 | 2026-07-16 | apex-code | SKILL.md | 2.6.0 | updated | exit-72 pre-dispatch baseline pre-flight built (M2b), launch-boundary pin verify; frontmatter version caught up from stale 2.3.0 past recorded 2.5.0 | docs/technical/adr/ADR-040-preflight-gate-and-spec-validator.md |
 
 | 2026-07-16 | apex-plan | SKILL.md | 2.1.0 | updated | readiness gate now runs apex-spec-validate on draft->changes (M3) | docs/technical/adr/ADR-040-preflight-gate-and-spec-validator.md |
