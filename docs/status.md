@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-16
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Audit 10-BLOCK run — steps 1/2/2.5 DONE (#1 #2 #4 #5 #6 #8 #9 + #13); remaining: #3+#7 (step 3) · round 8 #10 | between steps — 7/10 BLOCKs closed & committed | — | Next: step 3 spec (critical-path pre-flight #3 + family ledger #7, 4-role pipeline). **User pre-approved per-step commits for this run (2026-07-16).** |
+| Audit 10-BLOCK run — steps 1/2/2.5 DONE & COMMITTED (#1 #2 #4 #5 #6 #8 #9 + #13); **step 3 (#3 #7) spec READY — BUILD NEXT**; round 8 #10 last | 7/10 committed; step-3 spec CLEAN after 4 Sol rounds (10→3→3→FLAG), promoted | `docs/changes/audit-step3-criticalfile-crossfamily.md` + ADR-042 | RESUME (fresh session): dispatch **Sonnet build orchestrator** for the spec — 10 tasks, waves `[T1,T8,T9][T2,T3][T4,T5][T6,T7][T10]`, **3 cross-family wave reviews after T1/T3/T5** (classifier, wrapper Layer-B, family-gate). BaseSha ~/.claude **0802b55**, ~/apex **eef04ee**. HOST runs dispatches (native run_in_background), Sonnet plans/routes; exit-65 session-runtime adjudication rule; -Authorized REPO-RELATIVE. Spec does NOT trip its own Layer B (Sol-confirmed) — no -CriticalFilesConfirmed needed. **Pre-approved per-step commits this run.** Then **round 8 (#10)** = final cross-family review of ALL harness work steps 1-3 + the logged FLAGs (see Open Questions). |
 
 <!-- CODING:END -->
 
