@@ -31,6 +31,14 @@ pipe-deadlock fix that unblocked Codex dispatch is committed too (51b795a)._
 
 ## Open Questions
 
+- **Joint Fable×Sol audit of APEX v2 (2026-07-15) — NOT YET ACTIONED.** 10 agreed BLOCKs, 6 FLAG
+  clusters, with an agreed execution order (quick fixes → M2b/M3 upgrades → family-ledger +
+  critical-path pre-flight → round 8 → hygiene wave). Report:
+  `docs/research/apex-v2-joint-audit-2026-07-15.md`. Top BLOCKs: destructive guard misses the
+  PowerShell tool; apex-wave-reviewer has all tools; cross-family review breaks on quota fallback
+  (apex-reviewer pinned sonnet); baseline check cmd.exe-only + fail-open NO_RECIPE; scope lock
+  optional + snapshot not passed `-Authorized`. It also refines the In-Flight M2b/M3 designs.
+
 - **The reconciliation pass RAN (session 72).** 58 Artemis memories → **23 are APEX-GENERIC** (build-system
   lessons parked in a consumer project); 12 of those had recurred *after* being written down. Report:
   `docs/research/reconciliation-pass.md`. **The finding: the lessons that stopped recurring are exactly
