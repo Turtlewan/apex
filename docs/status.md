@@ -10,17 +10,15 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/CLAUDE.md`, not here. See ADR-037.
 
-_Last updated:_ 2026-07-15
+_Last updated:_ 2026-07-16
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Reconciliation pass — **M2b** (dispatch pre-flight, exit 72) and **M3** (Files-to-Change completeness) | not started | `docs/research/reconciliation-pass.md` | M2b: design in Sol's 4 pre-flight BLOCKs (before-reservation placement so no phantom row, tree-pin the pre-flight, `&&`-aware test-line split, no circular DetectOnly). M3 as planned. |
+| Audit step-1 quick fixes | BUILT 6/6, host-challenged; spec → done/ | `docs/changes/done/audit-step1-quick-fixes.md` | Awaiting user approval of 3 commit messages (2× `~/.claude`, 1× `~/apex`), then delete this row. |
+| Reconciliation pass — **M2b** (dispatch pre-flight, exit 72) and **M3** (Files-to-Change completeness) | not started (queue behind quick fixes) | `docs/research/reconciliation-pass.md` | M2b: design in Sol's 4 pre-flight BLOCKs (before-reservation placement so no phantom row, tree-pin the pre-flight, `&&`-aware test-line split, no circular DetectOnly). M3 as planned. |
 
-_**M1 (encoding gate)** committed `~/.claude` 4876e79. **M2a (baseline commit hook)** committed
-`~/.claude` d0a18df — staged-snapshot pre-commit hook, 2 cross-family BLOCK rounds → CLEAN. The
-pipe-deadlock fix that unblocked Codex dispatch is committed too (51b795a)._
 <!-- CODING:END -->
 
 <!-- PLANNING:START -->
@@ -31,7 +29,7 @@ pipe-deadlock fix that unblocked Codex dispatch is committed too (51b795a)._
 
 ## Open Questions
 
-- **Joint Fable×Sol audit of APEX v2 (2026-07-15) — NOT YET ACTIONED.** 10 agreed BLOCKs, 6 FLAG
+- **Joint Fable×Sol audit of APEX v2 (2026-07-15) — step 1 (quick fixes) IN FLIGHT, rest queued.** 10 agreed BLOCKs, 6 FLAG
   clusters, with an agreed execution order (quick fixes → M2b/M3 upgrades → family-ledger +
   critical-path pre-flight → round 8 → hygiene wave). Report:
   `docs/research/apex-v2-joint-audit-2026-07-15.md`. Top BLOCKs: destructive guard misses the
@@ -45,18 +43,7 @@ pipe-deadlock fix that unblocked Codex dispatch is committed too (51b795a)._
   the ones that got a hook or a script. Every lesson still recurring only ever got a paragraph.**
   Six were already mechanised by session 71's rebuild and can be **retired** (stdin wedge · orchestrator
   early-return · status.md rewrites · quiet-tree deletions · `ab-revert` worktree trap · part of the git
-  traps). **M1 (encoding gate) is now built.** Two remain:
-
-- **M2a — baseline commit hook: DONE** (`~/.claude` d0a18df). The *before-commit* end of the rule is
-  now a git pre-commit hook that verifies the STAGED snapshot and blocks a red commit. **M2b is the
-  *before-dispatch* end** — a wrapper pre-flight (fast lint+mypy subset) that refuses to launch a build
-  on a red baseline (new exit 72). Deferred because Sol's 4 BLOCKs all lived there; design them in.
-
-- **Wrapper maintenance pass DONE (session 73)** — the dispatch path is repaired end-to-end, all
-  cross-family reviewed: pipe deadlock `51b795a`; UTF-8 stdin + read-only encoding-scan skip `bbaee8c`;
-  scope-snapshot hang (per-file `git hash-object` on ignored node_modules → every build dispatch wedged
-  pre-launch, mis-read as the shared-worktree guard) `ef45402`+`1445ba4`. The guard + `-AllowSharedWorktree`
-  were never broken. Build dispatches into real repos (artemis) now snapshot in seconds and launch.
+  traps). M1/M2a built and committed; **M2b and M3 remain** (see In-Flight).
 
 - **M3 — Files-to-Change completeness.** `spec-files-to-change-include-tests` +
   `specs-underlist-api-shape-tests`, bitten 3×+, are **one rule**: a spec's `## Files to Change` must
@@ -70,6 +57,17 @@ pipe-deadlock fix that unblocked Codex dispatch is committed too (51b795a)._
 - **Migrate the 23 APEX-GENERIC memories out of Artemis** into APEX's own memory (and delete the 6 now
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
+
+- **Live session data lives inside the judged tree** (2026-07-16 build): `~/.claude` co-hosts the
+  session runtime (`projects/`, `sessions/`, `backups/`…), so EVERY dispatch into that tree exits 65
+  while a session runs — the host's own transcript is "out of scope". Session-71's "nothing of the
+  harness's in the judged tree", now from the session-state side. Needs a scope-check runtime-path
+  exclusion (harness change → round 8); interim: host adjudicates 65s whose flagged list ⊆ runtime dirs.
+
+- **Harness test suites can't fail loudly** (Sol, 2026-07-16 spec-check r2): `scope-check-test.ps1`
+  and `dispatch-test.ps1` print FAIL per assertion but keep exit 0 — a visually failing run reads as
+  green to any exit-code consumer. Same class as the session-71 "84 tests passed" bug. Fold into
+  round 8.
 
 - **Round 8 of the harness review was never run.** The round-7 fixes are new and unreviewed. Known
   limits, accepted trade-offs, and the hook's false-positive cost are written down in

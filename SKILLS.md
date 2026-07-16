@@ -3,7 +3,6 @@
 Every APEX skill lives at `~/.claude/skills/apex-*/SKILL.md`.
 
 > **Skill history:** [SKILL-HISTORY.md](./SKILL-HISTORY.md) — versions, dates, sources.
-> **Backend routing:** [BACKEND-ROUTING.md](./BACKEND-ROUTING.md)
 
 ## What APEX is (and is not)
 
@@ -27,7 +26,7 @@ review* — never written down.
 
 | Skill | Invoke when | Loading |
 |-------|-------------|---------|
-| **apex-orchestrate** | Session start — orient, detect mode, route | always, first |
+| **apex-orchestrate** | Session start — orient, route | always, first |
 | **apex-init** | No `docs/status.md` — bootstrap a new project | auto via orchestrate |
 | **apex-plan** | Planning, designing, speccing | auto via orchestrate |
 | **apex-code** | Building — executing a spec | auto via orchestrate |
@@ -80,7 +79,6 @@ failing scenario), not a skill rule. Cross-family routing holds: Codex builds �
 |-------|------|
 | Skills | `~/.claude/skills/apex-*/SKILL.md` |
 | Agents | `~/.claude/agents/` |
-| Registry | `~/.claude/registry/` (skills, agents, token-config — **no domain registry**) |
 | Templates | `~/.claude/skills/apex-orchestrate/templates/` |
 | Design workflow | `~/.claude/skills/apex-plan/references/design-workflow.md` |
-| Verification Recipe | **the project's** `status.md` + `AGENTS.md` — a per-project fact, not a skill |
+| Verification Recipe | **the project's** `AGENTS.md` — a per-project fact, not a skill |
