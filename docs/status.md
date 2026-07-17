@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-17
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | Next: **round 8 (#10)** — final cross-family review of ALL harness work steps 1–3 + the accumulated FLAG backlog (see Open Questions). Deserves a fresh session. |
+| _none_ | — | — | W1 done+committed (`~/.claude` **fbfc32d**). Next: **W2** (4 JS hooks + settings.json — see round8-review-findings.md) |
 
 <!-- CODING:END -->
 
@@ -38,26 +38,18 @@ _Last updated:_ 2026-07-17
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **Round 8 (#10) — accumulated review backlog. Do not trust the author's summary, incl. mine.**
-  Step-3 FLAGs (all LOW, full detail in `docs/handoff/2026-07-17-session75.md`): classifier
-  `-Test`-mandatory hang risk / comma-`-Paths` silent-0 misuse / inert `-AdditionalPaths` surface;
-  wrapper `-Phase` unvalidated (typo skips Layer B + scope lock + baseline — ValidateSet closes it) +
-  `$LASTEXITCODE` sentinel is discipline-dependent; family gate corrupt-line silent skip /
-  `started`-MinValue ordering / `worktree_key` case-sensitive false-13; tree-pin blind to
-  ignored-untracked files (all of `~/.claude`); exit-65 runtime adjudication has no ledger record;
-  pre-family-field ledger rows permanently gate-13 (migration boundary). Older feeds:
-  the round-7 harness fixes (unreviewed; limits in `docs/technical/harness-known-limits.md`); step-2
-  carryover FLAGs (code-confirmed, non-blocking) — (a) `codex-dispatch.ps1` writes/truncates the log
-  BEFORE the exit-71 shared-worktree check, so a same-spec+task second dispatch truncates a live sibling's
-  log; (b) `apex-spec-validate.ps1` check-1 counts a URL/version string as a "file"; (c) pin-cleanup gated
-  on `$preflightPinArmed` can leak a partial pin on an I/O failure mid-`tree-pin -Pin`; (d) Task-7 exit-71
-  cleanup reviewer-traced not live-tested; **scope-check runtime-path exclusion** (see below); test suites
-  that can't fail loudly (`scope-check-test.ps1`, `dispatch-test.ps1` print FAIL but exit 0). Step-2.5
-  cap-guard FLAGs: (e) `context-cap-guard.js` `path.basename` throws on a non-string `file_path` (unreachable
-  from CC's schema; fails open on crash — add a `typeof` guard); (f) it matches by BASENAME, so once blocking
-  it gates ANY `status.md`/`CLAUDE.md`/`AGENTS.md` in any repo, not just APEX's (correct for AGENTS.md/32KB,
-  over-reach for the line caps); (g) the "shrinking edit" test lands at cap not over it (equal-size test covers
-  the over-cap case).
+- **Round 8 executed (2026-07-17) — 4-way cross-family review, ~35 real defects, all BLOCK. Full durable
+  record + wave roadmap: `docs/research/round8-review-findings.md`.** Sequenced as file-disjoint waves:
+  **W1** (6 gate scripts) BUILDING now; **W2** (4 JS hooks + settings.json — env kill-switch reason+audit,
+  remove raw `codex exec` allow-entry, destructive-detect correctness bugs); **W3** (`codex-dispatch.ps1`,
+  13 findings, incl. the `-Phase review` fake-review-row that defeats the family gate); **W4** (SKILL.md
+  ledger-mutex race + stale paths + `dispatch-test.ps1` always-exit-0). Decisions: threat model UNCHANGED
+  (careless-not-hostile → evasion items are documented limits); kill-switches gain reason+audit; raw-exec
+  allow-entry removed.
+- **Round-8 DEFERRED fail-opens — need design, not a mechanical fix** (cut from W1): (1) directory/prefix-grant
+  critical detection; (2) host-file non-authorizable predicate (path-set undefined, overlaps cap-guard);
+  (3) tree-pin ignored-entry fingerprint (needs in-process digest first, else re-triggers the dep-tree
+  git-hash storm). Detail in the findings doc above.
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
