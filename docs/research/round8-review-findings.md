@@ -36,7 +36,20 @@ returned BLOCK. This file is the durable record; the fix is sequenced as file-di
   (race drops a row); SKILL.md:195 stale observability path; `dispatch-test.ps1` always-exit-0 (C1, sibling of
   the scope-check-test fix done in W1).
 
-## Deferred — need a design decision, NOT a mechanical fix (cut from W1 after review)
+## Wave status (updated 2026-07-17)
+- W1 DONE + committed (`~/.claude` fbfc32d, `~/apex` bd472bb).
+- W2 (hooks + settings + ADR-043): specced, cross-family reviewed (Claude + Sol, both BLOCK — 2+5 BLOCKs), amended (14 amendments incl. dd command-predicate, async cap-guard stdin, real permissionDecision emission, malformed-shape-denies), BUILDING.
+- W3 (codex-dispatch.ps1): specced, reviewed (Claude 3 BLOCK + Sol 8 BLOCK), re-scoped 12→10 fixes, ready to build. Cuts below.
+- W4 (apex-code/SKILL.md ledger-mutex race + stale path): skill-authoring (apex-skill-author), pending.
+
+## Deferred — need a design decision, NOT a mechanical fix
+### From W3 review (cut 12→10)
+4. **Spec-resolution / `-SpecSourcePath`** (was W3 Fix 3). Refusing an unresolvable spec breaks the APEX two-tree self-build model (specs in ~/apex, build worktree ~/.claude → always "cross-tree"). Needs a first-class `-SpecSourcePath` param + rewiring every dispatch caller so the wrapper validates the spec at its real location; plan-time apex-spec-validate already covers the careless case.
+5. **Bind a review to the build it reviewed** (was W3 Fix 8). `worktree_key`+`base_sha` can't identify a build ATTEMPT — two uncommitted same-worktree builds share both, so a review of A validates against B. Needs a durable per-attempt build identity (a tree/diff digest recorded at launch) that doesn't exist yet.
+6. **Family-gate accepts a bound-but-VOID review** (Sol-discovered). A CLEAN review whose tree moved is written `status:done, tree_moved:true` then exits 69 (VOID), but `apex-family-gate.ps1` (164-203) accepts terminal `done` review rows and never checks `tree_moved`. Fix lives in family-gate.ps1 (cross-file). Important — revisit next.
+
+### From W1 review
+
 1. **Directory/prefix-grant critical detection** (was W1 Task 1a). The scope checker treats every authorized
    token as a descendant prefix, so `-Authorized src` (or dotted `api.v2`) authorizes `src/auth/login.ps1`
    while apex-critical-files classifies only the literal token → auth code skips confirmation. The

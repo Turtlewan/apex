@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-17
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | W1 done+committed (`~/.claude` **fbfc32d**). Next: **W2** (4 JS hooks + settings.json — see round8-review-findings.md) |
+| round8 W3/W4 — drain remaining waves | W1+W2 done (`~/.claude` **fbfc32d**, **19b2fc9**); W3 building (codex-dispatch.ps1, 10 fixes) | docs/research/round8-review-findings.md | W3 build+verify+commit → W4 SKILL.md skill-authoring |
 
 <!-- CODING:END -->
 
