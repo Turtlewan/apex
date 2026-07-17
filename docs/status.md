@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-17
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | Round 8 (#10) fully executed — W1–W4 shipped (`~/.claude` fbfc32d/19b2fc9/6b70ad5/fbb1bc7). Remaining: **6 deferred design items** + pre-existing test-debt cleanup (see round8-review-findings.md). Deserve a fresh session. |
+| Round-8 Wave A build | starting | docs/changes/round8-d*.md | 4 specs, Codex Sol, isolated worktrees, host integrates + verifies |
 
 <!-- CODING:END -->
 
@@ -24,7 +24,10 @@ _Last updated:_ 2026-07-17
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| _none_ | — |
+| round8-d1-treepin-digest | tree-pin in-process digest + `!!`-only runtime-excluded ignored fingerprint + treepin-v2 |
+| round8-d2-familygate-void | family-gate discounts tree_moved/scopeViolation review rows |
+| round8-d3-hoststate-critical | host-state CRITICAL category (6 matchers, ratified) + normalization harmonized |
+| round8-d4-test-debt | realign deadlock/encoding-utf8 fixtures (-Authorized + -SkipBaselineCheck) |
 
 ## Open Questions
 
@@ -38,17 +41,16 @@ _Last updated:_ 2026-07-17
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **Round 8 (#10) DONE (2026-07-17) — all 4 fix waves shipped** (`~/.claude` fbfc32d/19b2fc9/6b70ad5/fbb1bc7).
-  4-way review found ~35 defects; mechanically-clear ones fixed. Full record + handoff:
-  `docs/research/round8-review-findings.md`, `docs/handoff/2026-07-17-session76.md`.
-- **★ NEXT SESSION — round-8 deferred design pass. 6 real fail-opens, each needs a DESIGN decision, not a patch
-  (open these):** (1) directory/prefix-grant critical detection; (2) host-file non-authorizable predicate
-  (path-set undefined, overlaps cap-guard); (3) tree-pin ignored-entry fingerprint (needs in-process digest
-  first, else the dep-tree git-hash storm); (4) spec-resolution `-SpecSourcePath` param + caller rewiring
-  (cross-tree self-build); (5) review→build binding (needs a durable per-attempt build-identity digest);
-  (6) family-gate accepts a bound-but-VOID tree-moved review (fix in apex-family-gate.ps1). PLUS pre-existing
-  test-debt cleanup (dispatch-deadlock / dispatch-encoding-utf8 / `-SkipScopeCheck`-alone — red before round 8,
-  not regressions). Detail per item in the findings doc.
+- **Round-8 deferred design pass DONE (2026-07-17): ADR-044 records all six decisions.** D1–D4 = the
+  four pending Wave-A specs (Sol plan-check ×2 rounds + 3-lens review, all BLOCKs resolved; path-set
+  ratified incl. root CLAUDE.md). D5–D6 (SpecSourcePath, post-hoc write classification + per-attempt
+  digest binding, adopt-path encoding-scan guard, classifier root plumbing, SKILL.md authoring note)
+  = **Wave B, spec only after Wave A ships** — all land in codex-dispatch.ps1.
+- **Wave-A close checklist (host):** harness-known-limits rows (D1 partial-collapse + runtime-exclusion
+  invisibility + quotePath per-script; D3 directory/absolute-grant gap, NO interim mitigation) ·
+  SKILL-HISTORY row for apex-governance 2.2.0 · catalogue review-findings-test.ps1 state-dir hardcode
+  as test debt · update sol-plan-check.md reference (raw `codex exec` now guard-blocked; use wrapper
+  `-Phase review -AllowSharedWorktree`).
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
