@@ -39,7 +39,15 @@ returned BLOCK. This file is the durable record; the fix is sequenced as file-di
 ## Wave status (updated 2026-07-17)
 - W1 DONE + committed (`~/.claude` fbfc32d, `~/apex` bd472bb).
 - W2 (hooks + settings + ADR-043): specced, cross-family reviewed (Claude + Sol, both BLOCK — 2+5 BLOCKs), amended (14 amendments incl. dd command-predicate, async cap-guard stdin, real permissionDecision emission, malformed-shape-denies), BUILDING.
-- W3 (codex-dispatch.ps1): specced, reviewed (Claude 3 BLOCK + Sol 8 BLOCK), re-scoped 12→10 fixes, ready to build. Cuts below.
+- W3 (codex-dispatch.ps1): 10 fixes BUILT (Codex xhigh, isolated worktree, scope-clean, exit-code contract intact). Cross-family review CLEAN on all 10 + confirmed NO over-strict regression. Wave 2 (realign 5 stale test fixtures) RUNNING. Cuts below. NOTE: the Task-1 dispatch exceeded the 10-min foreground ceiling → the Sonnet orchestrator subagent ended but the Codex process detached and finished; host took over (watcher + host-owned run_in_background for Wave 2). Lesson: xhigh big-file dispatches must be HOST-owned run_in_background, not subagent-foreground.
+
+## Pre-existing test debt (discovered during W3, NOT caused by round 8)
+Empirically confirmed red against the OLD (pre-W3) wrapper, so no regression — track as a separate cleanup spec:
+- `dispatch-deadlock-test.ps1` (3 fail), `dispatch-encoding-utf8-test.ps1` (1 fail), `review-findings-test.ps1` #11, `dispatch-encoding-utf8` Test 1: fixtures dispatch a workspace-write build with `-SkipScopeCheck` ALONE (no `-Authorized`/`-ScopeUnlocked`) → hit the long-standing empty-scope refusal (byte-identical old & new wrapper). `-SkipScopeCheck` never bypassed that gate.
+- `review-findings-test.ps1` #5, `careless-coder-test.ps1` #1: fixtures omit the AGENTS.md/baseline pre-flight input.
+- `dispatch-scopelock-test.ps1` 'unlocked': `-ScopeUnlocked` without `-CriticalFilesConfirmed`.
+- `dispatch-test.ps1`: hardcodes the installed dispatcher path + hits sandbox-denied LOCALAPPDATA when run from a worktree.
+(W3 Wave 2 opportunistically fixes the in-file pre-existing cases for the 5 suites it must touch anyway; the two purely-untouched suites — deadlock, encoding-utf8 — stay for the cleanup spec.)
 - W4 (apex-code/SKILL.md ledger-mutex race + stale path): skill-authoring (apex-skill-author), pending.
 
 ## Deferred — need a design decision, NOT a mechanical fix

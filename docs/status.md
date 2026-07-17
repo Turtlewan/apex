@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-17
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| round8 W3/W4 — drain remaining waves | W1+W2 done (`~/.claude` **fbfc32d**, **19b2fc9**); W3 building (codex-dispatch.ps1, 10 fixes) | docs/research/round8-review-findings.md | W3 build+verify+commit → W4 SKILL.md skill-authoring |
+| round8 W4 — last wave | W1+W2+W3 done (`~/.claude` **fbfc32d**, **19b2fc9**, **6b70ad5**); W4 = apex-code SKILL.md ledger-mutex race + stale path (skill-authoring) | docs/research/round8-review-findings.md | W4 via apex-skill-author → then session close |
 
 <!-- CODING:END -->
 
