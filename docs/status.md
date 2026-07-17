@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-17
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Round-8 Wave A build | starting | docs/changes/round8-d*.md | 4 specs, Codex Sol, isolated worktrees, host integrates + verifies |
+| _none_ | — | — | Wave A (round8-d1..d4) SHIPPED (`~/.claude` 4f75dd2/a8386b7/0663ea7/173de66). Next: spec **Wave B** (ADR-044 D5/D6 + carve-outs) against the shipped code. |
 
 <!-- CODING:END -->
 
@@ -24,10 +24,7 @@ _Last updated:_ 2026-07-17
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| round8-d1-treepin-digest | tree-pin in-process digest + `!!`-only runtime-excluded ignored fingerprint + treepin-v2 |
-| round8-d2-familygate-void | family-gate discounts tree_moved/scopeViolation review rows |
-| round8-d3-hoststate-critical | host-state CRITICAL category (6 matchers, ratified) + normalization harmonized |
-| round8-d4-test-debt | realign deadlock/encoding-utf8 fixtures (-Authorized + -SkipBaselineCheck) |
+| _none_ | — |
 
 ## Open Questions
 
@@ -41,16 +38,12 @@ _Last updated:_ 2026-07-17
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **Round-8 deferred design pass DONE (2026-07-17): ADR-044 records all six decisions.** D1–D4 = the
-  four pending Wave-A specs (Sol plan-check ×2 rounds + 3-lens review, all BLOCKs resolved; path-set
-  ratified incl. root CLAUDE.md). D5–D6 (SpecSourcePath, post-hoc write classification + per-attempt
-  digest binding, adopt-path encoding-scan guard, classifier root plumbing, SKILL.md authoring note)
-  = **Wave B, spec only after Wave A ships** — all land in codex-dispatch.ps1.
-- **Wave-A close checklist (host):** harness-known-limits rows (D1 partial-collapse + runtime-exclusion
-  invisibility + quotePath per-script; D3 directory/absolute-grant gap, NO interim mitigation) ·
-  SKILL-HISTORY row for apex-governance 2.2.0 · catalogue review-findings-test.ps1 state-dir hardcode
-  as test debt · update sol-plan-check.md reference (raw `codex exec` now guard-blocked; use wrapper
-  `-Phase review -AllowSharedWorktree`).
+- **★ NEXT — spec Wave B (ADR-044) against the shipped Wave-A code.** All in codex-dispatch.ps1 (+
+  SKILL.md + a family-gate digest compare): D5 `-SpecSourcePath` (silent cross-tree skip → refuse);
+  D6 post-hoc critical classification of ACTUAL writes + per-attempt tree digest binding (build on
+  the new tree-pin); adopt-path encoding-scan guard (review-phase adopts); classifier worktree-root
+  plumbing (absolute-grant gap); SKILL.md Layer-A host-state authoring note. Plus test debt:
+  `review-findings-test.ps1` state-dir hardcode (live-ledger rewrite, mutex-less — see findings doc).
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a

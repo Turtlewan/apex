@@ -60,6 +60,17 @@ double-encoded CJK, Cyrillic and emoji entirely** — a mojibake detector that m
 Derive a mechanism from the thing itself, or you have built a confident detector of the bug you
 already knew about.
 
+## Round-8 Wave A — stated limits (2026-07-17, ADR-044)
+
+| Limit | Why it is accepted |
+|---|---|
+| **tree-pin: partial-collapse per-file hashing** | O(1) digesting applies to directories git fully collapses; ignored files listed individually inside tracked directories still hash per-file. The storm-scale dirs (node_modules-class) are the collapsed ones. |
+| **tree-pin: runtime-exclusion invisibility** | On the `~/.claude` runtime tree only, ignored (`!!`) churn under the fixed runtime list (`sessions/`, `projects/`, `backups/`, `jobs/`, `shell-snapshots/`, `todos/`, `file-history/`, `history.jsonl`, `.last-update-result.json`) is invisible to the pin — the same class the exit-65 adjudication rule already treats as host noise. Tracked and `??` entries are never excluded; other worktrees get no exclusions. |
+| **tree-pin: directory digest is metadata, not content** | Same path+length+mtime with different bytes, and empty-directory churn inside a collapsed ignored dir, are invisible — accepted to keep the mechanism identical to scope-check's. |
+| **tree-pin: C-quoted (Unicode) paths stay trim-only** | scope-check C-unquotes; tree-pin deliberately does not. A pre-existing individually-listed Unicode ignored path can digest as missing. Per-script difference, stated. |
+| **host-state classification: directory and absolute grants slip past** | The six ratified host-state matchers operate on repo-relative literal tokens. `-Authorized docs` (a directory grant) or an absolute-path token bypasses them. **No interim mitigation exists** — context-cap-guard only size-caps three files and allows under-cap edits. Closed by Wave B: post-hoc classification of actual writes + worktree-root plumbing into the classifier call. |
+| **family gate: `encoding_violation` on review rows is not discounted** | Deliberate — the `-Adopt` path runs the encoding scan unguarded over the whole dirty tree, so the flag on a read-only review is noise (pre-existing mojibake the reviewer never touched), never signal. The adopt-path scan guard is Wave-B scope. |
+
 ## Open findings from round 7 (fixed, but worth re-testing)
 
 All twelve round-7 findings were fixed and are covered by tests. They are listed here because the

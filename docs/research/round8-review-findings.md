@@ -50,7 +50,13 @@ Empirically confirmed red against the OLD (pre-W3) wrapper, so no regression —
 (W3 Wave 2 opportunistically fixes the in-file pre-existing cases for the 5 suites it must touch anyway; the two purely-untouched suites — deadlock, encoding-utf8 — stay for the cleanup spec.)
 - W4 (apex-code/SKILL.md ledger-mutex race + stale path): DONE + committed (`~/.claude` fbb1bc7). SKILL.md 2.8.1 — ledger append mutex-guarded; stale codex log/ledger paths corrected in SKILL.md + references/codex-observability.md.
 
-**ROUND 8 (#10) FULLY EXECUTED.** All 4 waves shipped. Remaining round-8 work = the 6 deferred design items below + the pre-existing test-debt cleanup — both need a fresh session.
+**ROUND 8 (#10) FULLY EXECUTED.** All 4 waves shipped. **2026-07-17 (session 77): the deferred design
+pass ran — ADR-044 records all six decisions; Wave A (D1 tree-pin digest `0663ea7`, D2 family-gate
+VOID `173de66`, D3 host-state critical `a8386b7`, D4 test-debt `4f75dd2`) is BUILT and shipped.
+Deferred items 4/5 + the adopt-path encoding-scan guard + classifier root plumbing = Wave B, spec
+after this. Additional test debt catalogued during Wave A: `review-findings-test.ps1` (≈14-15)
+resolves the LIVE LOCALAPPDATA ledger ignoring `APEX_STATE_DIR` and rewrites it without the dispatch
+mutex — never run it as a casual canary; fix alongside the deadlock/encoding cleanup class.**
 
 ## Deferred — need a design decision, NOT a mechanical fix
 ### From W3 review (cut 12→10)

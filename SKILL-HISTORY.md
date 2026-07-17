@@ -3,6 +3,10 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-07-17 | apex-governance | SKILL.md | 2.2.0 | updated | host-state added to the Critical files section (six ratified matchers: docs/status.md, root AGENTS.md, root CLAUDE.md, docs/changes/, docs/handoff/, codex-run-ledger.jsonl — TIER-2, confirmable) | docs/technical/adr/ADR-044-round8-deferred-designs.md (D3) |
+
+| 2026-07-17 | apex-plan | references/sol-plan-check.md | — | updated | cold-read command corrected: raw `codex exec` is now guard-blocked; plan-checks dispatch through codex-dispatch.ps1 (-Phase review -Schema review, -AllowSharedWorktree + reason for concurrent read-only checks) | round-8 Wave A session |
+
 | 2026-07-17 | apex-code | SKILL.md, references/codex-observability.md | 2.8.1 | updated | ledger append now mutex-guarded (was Add-Content race); corrected stale codex log path | round-8 review (Sol S37/S38) |
 
 | 2026-07-17 | apex-code | SKILL.md | 2.8.0 | updated | two-tier two-layer critical-file confirmation (Layer A interactive + wrapper Layer B exit-76 sharing apex-critical-files.ps1; docs/audit is a never-confirmable hard block) and the #7 executable family gate (apex-family-gate.ps1, run at completion, diff-bound human-review substitute); exit-76 added to the contract; cross-family reworded to the achievable policy | docs/technical/adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md |
