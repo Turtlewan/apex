@@ -48,7 +48,9 @@ Empirically confirmed red against the OLD (pre-W3) wrapper, so no regression —
 - `dispatch-scopelock-test.ps1` 'unlocked': `-ScopeUnlocked` without `-CriticalFilesConfirmed`.
 - `dispatch-test.ps1`: hardcodes the installed dispatcher path + hits sandbox-denied LOCALAPPDATA when run from a worktree.
 (W3 Wave 2 opportunistically fixes the in-file pre-existing cases for the 5 suites it must touch anyway; the two purely-untouched suites — deadlock, encoding-utf8 — stay for the cleanup spec.)
-- W4 (apex-code/SKILL.md ledger-mutex race + stale path): skill-authoring (apex-skill-author), pending.
+- W4 (apex-code/SKILL.md ledger-mutex race + stale path): DONE + committed (`~/.claude` fbb1bc7). SKILL.md 2.8.1 — ledger append mutex-guarded; stale codex log/ledger paths corrected in SKILL.md + references/codex-observability.md.
+
+**ROUND 8 (#10) FULLY EXECUTED.** All 4 waves shipped. Remaining round-8 work = the 6 deferred design items below + the pre-existing test-debt cleanup — both need a fresh session.
 
 ## Deferred — need a design decision, NOT a mechanical fix
 ### From W3 review (cut 12→10)

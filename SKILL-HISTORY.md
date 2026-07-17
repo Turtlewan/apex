@@ -3,6 +3,8 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-07-17 | apex-code | SKILL.md, references/codex-observability.md | 2.8.1 | updated | ledger append now mutex-guarded (was Add-Content race); corrected stale codex log path | round-8 review (Sol S37/S38) |
+
 | 2026-07-17 | apex-code | SKILL.md | 2.8.0 | updated | two-tier two-layer critical-file confirmation (Layer A interactive + wrapper Layer B exit-76 sharing apex-critical-files.ps1; docs/audit is a never-confirmable hard block) and the #7 executable family gate (apex-family-gate.ps1, run at completion, diff-bound human-review substitute); exit-76 added to the contract; cross-family reworded to the achievable policy | docs/technical/adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md |
 
 | 2026-07-17 | apex-governance | SKILL.md | 2.1.0 | updated | critical-file section names the two-tier/two-layer mechanism + the -CriticalFilesConfirmed switch; cross-model review reworded to cross-family-when-available with a diff-bound attended-human-review substitute on same-family fallback | docs/technical/adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md |

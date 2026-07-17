@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-17
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| round8 W4 — last wave | W1+W2+W3 done (`~/.claude` **fbfc32d**, **19b2fc9**, **6b70ad5**); W4 = apex-code SKILL.md ledger-mutex race + stale path (skill-authoring) | docs/research/round8-review-findings.md | W4 via apex-skill-author → then session close |
+| _none_ | — | — | Round 8 (#10) fully executed — W1–W4 shipped (`~/.claude` fbfc32d/19b2fc9/6b70ad5/fbb1bc7). Remaining: **6 deferred design items** + pre-existing test-debt cleanup (see round8-review-findings.md). Deserve a fresh session. |
 
 <!-- CODING:END -->
 
