@@ -3,6 +3,10 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-07-17 | apex-code | SKILL.md | 2.8.0 | updated | two-tier two-layer critical-file confirmation (Layer A interactive + wrapper Layer B exit-76 sharing apex-critical-files.ps1; docs/audit is a never-confirmable hard block) and the #7 executable family gate (apex-family-gate.ps1, run at completion, diff-bound human-review substitute); exit-76 added to the contract; cross-family reworded to the achievable policy | docs/technical/adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md |
+
+| 2026-07-17 | apex-governance | SKILL.md | 2.1.0 | updated | critical-file section names the two-tier/two-layer mechanism + the -CriticalFilesConfirmed switch; cross-model review reworded to cross-family-when-available with a diff-bound attended-human-review substitute on same-family fallback | docs/technical/adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md |
+
 | 2026-07-17 | apex-code | SKILL.md | 2.7.0 | updated | Wrapper hardening pass closing audit BLOCKs #6/#8/#9: fail-closed exit-74 scope-lock gate in codex-dispatch.ps1 (with a -ScopeUnlocked/-ScopeUnlockedReason deliberate-bypass escape recorded in the ledger row); context-cap-guard.js converted from an advisory PostToolUse reporter to a blocking PreToolUse deny gate (deterministic size projection, no-growth escape, wc -l line semantics); tree-pin.ps1 gained multi-root (-PinAlso) pin/verify for gates spanning both ~/apex and ~/.claude, single-root path byte-for-byte unchanged. SKILL.md's exit-code contract table gained the 74 row. | docs/technical/adr/ADR-041-wrapper-hardening-scope-cap-pin.md |
 
 | 2026-07-16 | apex-code | SKILL.md | 2.6.0 | updated | exit-72 pre-dispatch baseline pre-flight built (M2b), launch-boundary pin verify; frontmatter version caught up from stale 2.3.0 past recorded 2.5.0 | docs/technical/adr/ADR-040-preflight-gate-and-spec-validator.md |

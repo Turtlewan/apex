@@ -72,6 +72,7 @@ The handful of decisions that define APEX's architecture — each links to its A
 | Codex is the primary coder (per-task `codex exec` subprocess), Opus the inline fallback; DeepSeek archived | [ADR-027](../adr/ADR-027-codex-primary-opus-fallback-deepseek-archived.md) |
 | Codex context propagation — thin AGENTS.md + selective generated `.agents/skills/` cards + per-task dispatch pack with JSON completion contract | [ADR-031](../adr/ADR-031-codex-context-propagation.md) |
 | GPT-5.6 role split — Sol plan-checks (+ offer-only deliberation), Sonnet 5 hosts builds, cross-family review routing, Sol escalation rung | [ADR-032](../adr/ADR-032-gpt56-role-split.md) |
+| Two-tier critical-file confirmation (shared classifier, interactive Layer A + wrapper exit-76 Layer B) and the executable cross-family completion gate reading recorded ledger facts | [ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md) |
 
 ## Where to look next
 

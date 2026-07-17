@@ -10,13 +10,13 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/CLAUDE.md`, not here. See ADR-037.
 
-_Last updated:_ 2026-07-16
+_Last updated:_ 2026-07-17
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Audit 10-BLOCK run — steps 1/2/2.5 DONE & COMMITTED (#1 #2 #4 #5 #6 #8 #9 + #13); **step 3 (#3 #7) spec READY — BUILD NEXT**; round 8 #10 last | 7/10 committed; step-3 spec CLEAN after 4 Sol rounds (10→3→3→FLAG), promoted | `docs/changes/audit-step3-criticalfile-crossfamily.md` + ADR-042 | RESUME (fresh session): dispatch **Sonnet build orchestrator** for the spec — 10 tasks, waves `[T1,T8,T9][T2,T3][T4,T5][T6,T7][T10]`, **3 cross-family wave reviews after T1/T3/T5** (classifier, wrapper Layer-B, family-gate). BaseSha ~/.claude **0802b55**, ~/apex **eef04ee**. HOST runs dispatches (native run_in_background), Sonnet plans/routes; exit-65 session-runtime adjudication rule; -Authorized REPO-RELATIVE. Spec does NOT trip its own Layer B (Sol-confirmed) — no -CriticalFilesConfirmed needed. **Pre-approved per-step commits this run.** Then **round 8 (#10)** = final cross-family review of ALL harness work steps 1-3 + the logged FLAGs (see Open Questions). |
+| _none_ | — | — | Next: **round 8 (#10)** — final cross-family review of ALL harness work steps 1–3 + the accumulated FLAG backlog (see Open Questions). Deserves a fresh session. |
 
 <!-- CODING:END -->
 
@@ -29,14 +29,23 @@ _Last updated:_ 2026-07-16
 ## Open Questions
 
 - **Audit + reconciliation reports on disk:** `docs/research/apex-v2-joint-audit-2026-07-15.md` (10
-  BLOCKs, execution order) and `docs/research/reconciliation-pass.md`. Steps 1–2 closed #1 #2 #4 #5
-  (+ #6-half, #13); M1/M2a/M2b/M3 all built and committed.
+  BLOCKs, execution order) and `docs/research/reconciliation-pass.md`. Steps 1–3 closed #1–#9 (+ #13);
+  step 3 (2026-07-17, `~/.claude` **b3cee7a**): two-tier critical-file gate + exit-76 Layer B +
+  executable family gate, all suites green, 3 wave reviews + apex-reviewer + Opus review, no BLOCK.
+  Only **#10 (round 8)** remains.
 
 - **Migrate the 23 APEX-GENERIC memories out of Artemis** into APEX's own memory (and delete the 6 now
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **Round 8 (#10) — accumulated review backlog. Do not trust the author's summary, incl. mine.** Feeds:
+- **Round 8 (#10) — accumulated review backlog. Do not trust the author's summary, incl. mine.**
+  Step-3 FLAGs (all LOW, full detail in `docs/handoff/2026-07-17-session75.md`): classifier
+  `-Test`-mandatory hang risk / comma-`-Paths` silent-0 misuse / inert `-AdditionalPaths` surface;
+  wrapper `-Phase` unvalidated (typo skips Layer B + scope lock + baseline — ValidateSet closes it) +
+  `$LASTEXITCODE` sentinel is discipline-dependent; family gate corrupt-line silent skip /
+  `started`-MinValue ordering / `worktree_key` case-sensitive false-13; tree-pin blind to
+  ignored-untracked files (all of `~/.claude`); exit-65 runtime adjudication has no ledger record;
+  pre-family-field ledger rows permanently gate-13 (migration boundary). Older feeds:
   the round-7 harness fixes (unreviewed; limits in `docs/technical/harness-known-limits.md`); step-2
   carryover FLAGs (code-confirmed, non-blocking) — (a) `codex-dispatch.ps1` writes/truncates the log
   BEFORE the exit-71 shared-worktree check, so a same-spec+task second dispatch truncates a live sibling's
