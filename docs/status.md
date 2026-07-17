@@ -32,24 +32,23 @@ _Last updated:_ 2026-07-17
   BLOCKs, execution order) and `docs/research/reconciliation-pass.md`. Steps 1–3 closed #1–#9 (+ #13);
   step 3 (2026-07-17, `~/.claude` **b3cee7a**): two-tier critical-file gate + exit-76 Layer B +
   executable family gate, all suites green, 3 wave reviews + apex-reviewer + Opus review, no BLOCK.
-  Only **#10 (round 8)** remains.
+  **#10 (round 8) DONE 2026-07-17** — all audit steps closed; only the 6 deferred design items remain (below).
 
 - **Migrate the 23 APEX-GENERIC memories out of Artemis** into APEX's own memory (and delete the 6 now
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **Round 8 executed (2026-07-17) — 4-way cross-family review, ~35 real defects, all BLOCK. Full durable
-  record + wave roadmap: `docs/research/round8-review-findings.md`.** Sequenced as file-disjoint waves:
-  **W1** (6 gate scripts) BUILDING now; **W2** (4 JS hooks + settings.json — env kill-switch reason+audit,
-  remove raw `codex exec` allow-entry, destructive-detect correctness bugs); **W3** (`codex-dispatch.ps1`,
-  13 findings, incl. the `-Phase review` fake-review-row that defeats the family gate); **W4** (SKILL.md
-  ledger-mutex race + stale paths + `dispatch-test.ps1` always-exit-0). Decisions: threat model UNCHANGED
-  (careless-not-hostile → evasion items are documented limits); kill-switches gain reason+audit; raw-exec
-  allow-entry removed.
-- **Round-8 DEFERRED fail-opens — need design, not a mechanical fix** (cut from W1): (1) directory/prefix-grant
-  critical detection; (2) host-file non-authorizable predicate (path-set undefined, overlaps cap-guard);
-  (3) tree-pin ignored-entry fingerprint (needs in-process digest first, else re-triggers the dep-tree
-  git-hash storm). Detail in the findings doc above.
+- **Round 8 (#10) DONE (2026-07-17) — all 4 fix waves shipped** (`~/.claude` fbfc32d/19b2fc9/6b70ad5/fbb1bc7).
+  4-way review found ~35 defects; mechanically-clear ones fixed. Full record + handoff:
+  `docs/research/round8-review-findings.md`, `docs/handoff/2026-07-17-session76.md`.
+- **★ NEXT SESSION — round-8 deferred design pass. 6 real fail-opens, each needs a DESIGN decision, not a patch
+  (open these):** (1) directory/prefix-grant critical detection; (2) host-file non-authorizable predicate
+  (path-set undefined, overlaps cap-guard); (3) tree-pin ignored-entry fingerprint (needs in-process digest
+  first, else the dep-tree git-hash storm); (4) spec-resolution `-SpecSourcePath` param + caller rewiring
+  (cross-tree self-build); (5) review→build binding (needs a durable per-attempt build-identity digest);
+  (6) family-gate accepts a bound-but-VOID tree-moved review (fix in apex-family-gate.ps1). PLUS pre-existing
+  test-debt cleanup (dispatch-deadlock / dispatch-encoding-utf8 / `-SkipScopeCheck`-alone — red before round 8,
+  not regressions). Detail per item in the findings doc.
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
