@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-18
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | Wave B2 (D6) specced + gated (3-lens + Sol ×2: 24 BLOCKs resolved at cap). Awaiting user "start build". Order c1 → c2 → c3, isolated worktree, X1–X4. |
+| Wave B2 build | partial | docs/changes/round8-c{1,2,3}-*.md | HALTED mid-c1 by user (session clear). c1 task-1 DONE, task-3 coder RUNNING at halt (adopt on resume), tasks 2/4 pending, then c2→c3. **Full resume state: `docs/progress/wave-b2-c1-halt.md`** — drain it first. |
 
 <!-- CODING:END -->
 
