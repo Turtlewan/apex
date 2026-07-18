@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-18
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | Wave B1 SHIPPED to live `~/.claude` (cherry-picks 80d91ff / a2d0e23 / ac1a7cc; full live battery green, scopelock at known 2-failure parity). Next: spec **Wave B2 = D6** against the shipped code. |
+| _none_ | — | — | Wave B2 (D6) specced + gated (3-lens + Sol ×2: 24 BLOCKs resolved at cap). Awaiting user "start build". Order c1 → c2 → c3, isolated worktree, X1–X4. |
 
 <!-- CODING:END -->
 
@@ -24,7 +24,9 @@ _Last updated:_ 2026-07-18
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| _none_ | — |
+| round8-c1-digest-emitters | tree-pin `-Digest` mode + scope-check `-WrittenPathsFile` attribution emission. Build FIRST. |
+| round8-c2-dispatch-binding | Dispatcher digest binding (exits 77/78), post-hoc critical classification, adopt-path controls, SKILL.md 2.11.0. After c1. |
+| round8-c3-gate-compare | Family-gate digest state-matrix compare + override disqualification. After c2. |
 
 ## Open Questions
 
@@ -38,11 +40,10 @@ _Last updated:_ 2026-07-18
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **★ NEXT — spec Wave B2 = D6** against the shipped B1 code (ADR-044 grounding addendum:
-  scope-check `-WrittenPathsFile` emission + tree-pin `-Digest` mode + dispatcher digest binding +
-  family-gate compare + post-hoc critical classification; exit codes 77/78 reserved; consumes b2's
-  classifier `-Root`). Known debt deliberately left: scopelock's 2 pre-existing failures
-  (cleanup-spec class, findings doc) · verdict-test try-placement consistency (reviewer FLAG).
+- **★ NEXT — build Wave B2** (3 pending specs, c1→c2→c3). This closes ADR-044 / D6 and with it
+  the whole round-8 deferred set. Known debt deliberately left: scopelock's 2 pre-existing
+  failures (cleanup-spec class, findings doc) · verdict-test try-placement consistency (FLAG) ·
+  deleted-leaf-in-collapsed-dir attribution blind spot (stated limit, c1).
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
