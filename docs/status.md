@@ -10,13 +10,12 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/CLAUDE.md`, not here. See ADR-037.
 
-_Last updated:_ 2026-07-18
+_Last updated:_ 2026-07-19
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Wave B2 build | partial | docs/changes/round8-c{1,2,3}-*.md | HALTED mid-c1 by user (session clear). c1 task-1 DONE, task-3 coder RUNNING at halt (adopt on resume), tasks 2/4 pending, then c2→c3. **Full resume state: `docs/progress/wave-b2-c1-halt.md`** — drain it first. |
 
 <!-- CODING:END -->
 
@@ -24,9 +23,6 @@ _Last updated:_ 2026-07-18
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| round8-c1-digest-emitters | tree-pin `-Digest` mode + scope-check `-WrittenPathsFile` attribution emission. Build FIRST. |
-| round8-c2-dispatch-binding | Dispatcher digest binding (exits 77/78), post-hoc critical classification, adopt-path controls, SKILL.md 2.11.0. After c1. |
-| round8-c3-gate-compare | Family-gate digest state-matrix compare + override disqualification. After c2. |
 
 ## Open Questions
 
@@ -40,10 +36,11 @@ _Last updated:_ 2026-07-18
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **★ NEXT — build Wave B2** (3 pending specs, c1→c2→c3). This closes ADR-044 / D6 and with it
-  the whole round-8 deferred set. Known debt deliberately left: scopelock's 2 pre-existing
-  failures (cleanup-spec class, findings doc) · verdict-test try-placement consistency (FLAG) ·
-  deleted-leaf-in-collapsed-dir attribution blind spot (stated limit, c1).
+- **Wave B2 SHIPPED 2026-07-19** (live ~/.claude d294d46/175868b/5049219, 11-suite battery green)
+  — ADR-044 D6 and the whole round-8 deferred set are CLOSED. Catalogued debt (see session-79
+  handoff): scopelock's 2 pre-existing failures · verdict-test try-placement · c2's three advisory
+  coverage gaps (pin-first read path untested, adopt-77 rung untested, scope-throw handling
+  duplicated). Worktrees `%TEMP%\apex-wt-waveb1` AND `-waveb2` (+ branches) await manual deletion.
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a

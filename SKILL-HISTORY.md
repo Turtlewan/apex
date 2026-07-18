@@ -3,6 +3,8 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-07-19 | apex-code | SKILL.md | 2.11.0 | updated | Wave B2 (D6) exit rows 77 (post-hoc critical write — classified from the coder's ACTUAL writes via shared Invoke-PostHocGates; HEAD-move stays 65) and 78 (review-launch digest binding refused: bad -ReviewedRunId / unverifiable-or-mismatched digest / helper unavailable, with per-cause operator actions); 74 row notes -ReviewedRunId+build refusal; in-session row contract gains reviewed_tree_digest (review, computed via tree-pin -Digest at pin-verify) and end_tree_digest (build, at build close) | docs/technical/adr/ADR-044-round8-deferred-designs.md (D6 items 1+5, grounding addendum exits 77/78) |
+
 | 2026-07-18 | apex-code | SKILL.md | 2.10.0 | updated | Layer-A host-state authoring note (six matchers incl. bare `docs/changes`/`docs/handoff` directory grants; attended -CriticalFilesConfirmed required; AFK → exit-76 PARK; broader-dir gap cited to D3(a)/D6); documented Layer-A classifier invocation gains -Root | docs/technical/adr/ADR-044-round8-deferred-designs.md (Wave-B carve-outs i/ii/iii) |
 
 | 2026-07-18 | apex-code | SKILL.md, references/codex-observability.md | 2.9.0 | updated | -SpecSourcePath documented: build-dispatch example, exit-72 routing row + description name the cross-tree remedy (refuse-not-skip); dispatch-guard hook's recommended command updated to match | docs/technical/adr/ADR-044-round8-deferred-designs.md (D5) |
