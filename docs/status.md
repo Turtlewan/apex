@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-18
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | Wave B1 specced + gated (3-lens + Sol ×2, all BLOCKs resolved). Awaiting user "start build". Build order: b3 → b1 → b2, isolated worktree, X1–X4. |
+| _none_ | — | — | Wave B1 SHIPPED to live `~/.claude` (cherry-picks 80d91ff / a2d0e23 / ac1a7cc; full live battery green, scopelock at known 2-failure parity). Next: spec **Wave B2 = D6** against the shipped code. |
 
 <!-- CODING:END -->
 
@@ -24,9 +24,7 @@ _Last updated:_ 2026-07-18
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| round8-b3-suite-isolation | Isolate 4 suites to scratch APEX_STATE_DIR (+ verdict-test empty-scope repair). Build FIRST. |
-| round8-b1-specsource | D5 `-SpecSourcePath` refuse-not-skip + fixture arming + doc-site updates. After b3. |
-| round8-b2-adopt-classifier | Adopt-scan sandbox guard + classifier `-Root` + bare-dir host-state + SKILL.md note. After b1. |
+| _none_ | — |
 
 ## Open Questions
 
@@ -40,11 +38,11 @@ _Last updated:_ 2026-07-18
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **★ NEXT — build Wave B1** (the 3 pending specs, order b3→b1→b2), then **spec Wave B2 = D6**
-  against the shipped B1 code (ADR-044 grounding addendum: needs scope-check `-WrittenPathsFile`
-  emission + tree-pin `-Digest` mode + b2's classifier `-Root`; exit codes 77/78 reserved).
-  Known debt left out of B1 deliberately: scopelock's 2 pre-existing failures ('no-scope refusal
-  precedence', 'unlocked loud note') — cleanup-spec class, catalogued in the findings doc.
+- **★ NEXT — spec Wave B2 = D6** against the shipped B1 code (ADR-044 grounding addendum:
+  scope-check `-WrittenPathsFile` emission + tree-pin `-Digest` mode + dispatcher digest binding +
+  family-gate compare + post-hoc critical classification; exit codes 77/78 reserved; consumes b2's
+  classifier `-Root`). Known debt deliberately left: scopelock's 2 pre-existing failures
+  (cleanup-spec class, findings doc) · verdict-test try-placement consistency (reviewer FLAG).
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a

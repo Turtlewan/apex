@@ -3,6 +3,10 @@
 Quick reference for skill creation and update events. Newest first.
 One row per event — append new rows at the top when updating a skill.
 
+| 2026-07-18 | apex-code | SKILL.md | 2.10.0 | updated | Layer-A host-state authoring note (six matchers incl. bare `docs/changes`/`docs/handoff` directory grants; attended -CriticalFilesConfirmed required; AFK → exit-76 PARK; broader-dir gap cited to D3(a)/D6); documented Layer-A classifier invocation gains -Root | docs/technical/adr/ADR-044-round8-deferred-designs.md (Wave-B carve-outs i/ii/iii) |
+
+| 2026-07-18 | apex-code | SKILL.md, references/codex-observability.md | 2.9.0 | updated | -SpecSourcePath documented: build-dispatch example, exit-72 routing row + description name the cross-tree remedy (refuse-not-skip); dispatch-guard hook's recommended command updated to match | docs/technical/adr/ADR-044-round8-deferred-designs.md (D5) |
+
 | 2026-07-17 | apex-governance | SKILL.md | 2.2.0 | updated | host-state added to the Critical files section (six ratified matchers: docs/status.md, root AGENTS.md, root CLAUDE.md, docs/changes/, docs/handoff/, codex-run-ledger.jsonl — TIER-2, confirmable) | docs/technical/adr/ADR-044-round8-deferred-designs.md (D3) |
 
 | 2026-07-17 | apex-plan | references/sol-plan-check.md | — | updated | cold-read command corrected: raw `codex exec` is now guard-blocked; plan-checks dispatch through codex-dispatch.ps1 (-Phase review -Schema review, -AllowSharedWorktree + reason for concurrent read-only checks) | round-8 Wave A session |
