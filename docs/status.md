@@ -10,13 +10,13 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/CLAUDE.md`, not here. See ADR-037.
 
-_Last updated:_ 2026-07-17
+_Last updated:_ 2026-07-18
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| _none_ | — | — | Wave A (round8-d1..d4) SHIPPED (`~/.claude` 4f75dd2/a8386b7/0663ea7/173de66). Next: spec **Wave B** (ADR-044 D5/D6 + carve-outs) against the shipped code. |
+| _none_ | — | — | Wave B1 specced + gated (3-lens + Sol ×2, all BLOCKs resolved). Awaiting user "start build". Build order: b3 → b1 → b2, isolated worktree, X1–X4. |
 
 <!-- CODING:END -->
 
@@ -24,7 +24,9 @@ _Last updated:_ 2026-07-17
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| _none_ | — |
+| round8-b3-suite-isolation | Isolate 4 suites to scratch APEX_STATE_DIR (+ verdict-test empty-scope repair). Build FIRST. |
+| round8-b1-specsource | D5 `-SpecSourcePath` refuse-not-skip + fixture arming + doc-site updates. After b3. |
+| round8-b2-adopt-classifier | Adopt-scan sandbox guard + classifier `-Root` + bare-dir host-state + SKILL.md note. After b1. |
 
 ## Open Questions
 
@@ -38,12 +40,11 @@ _Last updated:_ 2026-07-17
   enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
   project.
 
-- **★ NEXT — spec Wave B (ADR-044) against the shipped Wave-A code.** All in codex-dispatch.ps1 (+
-  SKILL.md + a family-gate digest compare): D5 `-SpecSourcePath` (silent cross-tree skip → refuse);
-  D6 post-hoc critical classification of ACTUAL writes + per-attempt tree digest binding (build on
-  the new tree-pin); adopt-path encoding-scan guard (review-phase adopts); classifier worktree-root
-  plumbing (absolute-grant gap); SKILL.md Layer-A host-state authoring note. Plus test debt:
-  `review-findings-test.ps1` state-dir hardcode (live-ledger rewrite, mutex-less — see findings doc).
+- **★ NEXT — build Wave B1** (the 3 pending specs, order b3→b1→b2), then **spec Wave B2 = D6**
+  against the shipped B1 code (ADR-044 grounding addendum: needs scope-check `-WrittenPathsFile`
+  emission + tree-pin `-Digest` mode + b2's classifier `-Root`; exit codes 77/78 reserved).
+  Known debt left out of B1 deliberately: scopelock's 2 pre-existing failures ('no-scope refusal
+  precedence', 'unlocked loud note') — cleanup-spec class, catalogued in the findings doc.
 
 - **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
   (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
