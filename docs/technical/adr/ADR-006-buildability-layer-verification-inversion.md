@@ -1,7 +1,7 @@
 # ADR-006: Buildability layer — verification inversion and the layered Verification Recipe
 
 **Date:** 2026-05-31
-**Status:** Accepted
+**Status:** Superseded — like ADR-005, the buildability/stack-skill layer was removed with the knowledge layer by [ADR-036](./ADR-036-remove-knowledge-layer.md); the Verification Recipe now lives in each repo's `AGENTS.md` ([ADR-037](./ADR-037-three-context-files.md)). Decision text below is a dated record.
 **Builds on:** [ADR-005](./ADR-005-stack-best-practice-skills.md) (stack best-practice skills), [ADR-004](./ADR-004-skill-system-structure.md) (skill structure)
 
 ## Context

@@ -8,53 +8,59 @@ preserves state across session boundaries so no context is lost when a session e
 It is built for a single solo developer using Claude Code as a primary development partner,
 and it is **self-hosting**: APEX is itself a set of skills, specced, built, and maintained
 through the same pipeline it provides. There is no application code, no build step, and no
-test runner — every file is Markdown (a skill, a registry entry, or a planning document).
+test runner — every file is Markdown (a skill or a planning document).
 
 ## What it does
 
 APEX sits between the developer and Claude Code and gives every session a known shape:
 
 1. **Orient** — at session start an orchestrator reads the project's live state, surfaces any
-   in-flight work, detects which mode it is in, and routes to the right skill.
+   in-flight work, sets the autonomy level, and routes to the right skill.
 2. **Plan** — judgment work (turning a request into a complete, unambiguous spec; writing
-   ADRs; design and research) happens in *planning mode*.
-3. **Build** — literal execution of a frozen spec happens in *coding mode*.
-4. **Hand off** — each side leaves the other a single file: planning leaves a spec, coding
-   leaves a handoff doc. State that must survive lives in durable artifacts, not in the
-   conversation.
+   ADRs; design and research) is done by the host.
+3. **Build** — literal execution of a frozen spec is dispatched to a coder (see below).
+4. **Hand off** — the build leaves a handoff doc; planning leaves a spec. State that must
+   survive lives in durable artifacts, not in the conversation.
 
-Domain knowledge (auth, storage, search, frontend, cloud, etc.) lives in ~40 specialist
-skills that load on demand when their keywords appear.
+APEX carries **workflow, state, and gates — not domain knowledge**. The 36 domain skills that
+once loaded on demand were deleted in [ADR-036](../adr/ADR-036-remove-knowledge-layer.md):
+written-down knowledge a frontier model already has measurably degrades its output. Fourteen
+workflow skills remain.
 
 ## How it's structured
 
-APEX runs as **two modes detected from environment signals** (`APEX_MODE` / base URL) and
-enforced by harness hooks:
+**One session plans, builds, and verifies** ([ADR-038](../adr/ADR-038-single-session.md)).
+There are no modes, no `APEX_MODE`, no environment-detected backend swap, and no write-guard —
+the mode split and its hooks were all removed. Work is divided by **role**, not by session:
 
-- **Planning mode** runs on **Claude** (judgment) and may write only `.md` files.
-- **Coding mode** runs on a Claude host (**Sonnet 5 default** — ADR-032) that dispatches each
-  task to **Codex (`gpt-5.6-sol`)** as a subprocess; verify-fail escalation climbs the
-  reasoning-effort dial (`…→max→ultra`) and then falls back to **Opus** (fresh `model: opus`
-  worker at quota-out) (ADR-027/032/034; DeepSeek archived) — and may write anything.
-  Unattended (AFK) runs end with a standing **Opus** adversarial pass over the whole run diff —
-  cross-family, so the coder never reviews itself (ADR-033 A1 / ADR-034).
+- **Host (Fable)** — reasons, plans, and challenges. Dispatches every worker below; makes no
+  mechanical edits and writes no code, but owns the project's state-keeping (status.md,
+  handoff, memory).
+- **Spec author (Opus)** — a `model: opus` worker drafts specs and ADRs from the host's plan.
+- **Build orchestrator (Sonnet)** — a `model: sonnet` worker runs waves and routes exit codes.
+- **Coder (Codex `gpt-5.6-sol`)** — dispatched per task as a `codex exec` subprocess (own auth,
+  own quota). Verify-fail escalation climbs the reasoning-effort dial (`…→max→ultra`), then
+  falls back to **Opus** (fresh `model: opus` worker) if Codex quota is exhausted.
+- **Review is cross-family, both directions** — Codex checks the host's plans/specs; Claude
+  reviews Codex's code. An agent never reviews its own output
+  ([ADR-032](../adr/ADR-032-gpt56-role-split.md)/[ADR-034](../adr/ADR-034-sol-default-coder.md)/[ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md)).
 
-The two modes never share live process state. They communicate only through files, and every
-fact has exactly **one home**:
+Roles communicate only through files, and every fact has exactly **one home**:
 
 | Artifact | Source of truth for |
 |----------|--------------------|
 | git history | what changed, commits, SHAs |
 | `docs/status.md` | durable live state — in-flight work, pending specs, open questions, parked items |
 | handoff doc (`docs/handoff/`) | narrative "what the build learned that git can't show" — a read-once inbox |
-| spec (`docs/changes/`) | the forward work definition (planning → coding) |
+| spec (`docs/changes/`) | the forward work definition (planning → build) |
 | memory | cross-session user/project facts |
 | ADR (`docs/technical/adr/`) | the *why* behind architectural decisions |
 
 The skills themselves live outside the project repo, under `~/.claude/skills/apex-*/`, with a
-routing registry at `~/.claude/registry/` and a human-readable index (`SKILLS.md`) plus a
-change log (`SKILL-HISTORY.md`) in this repo. Each skill is a `SKILL.md` (loaded in planning)
-and optionally an `impl.md` (loaded in coding when there are enforcement patterns to follow).
+human-readable index (`SKILLS.md`) plus a change log (`SKILL-HISTORY.md`) in this repo. There is
+**no registry** — it duplicated the index and routed nothing (removed with the knowledge layer,
+ADR-036). Skill loading is by frontmatter `description`; a skill is a `SKILL.md` plus optional
+`references/` loaded on demand. Only `apex-coding-principles` still carries an `impl.md`.
 
 ## Shaping decisions
 
@@ -63,22 +69,22 @@ The handful of decisions that define APEX's architecture — each links to its A
 
 | Decision | Why (→ ADR) |
 |----------|-------------|
-| Dual-backend, two-mode workflow — planning on Claude, coding on DeepSeek, hook-enforced | [ADR-002](../adr/ADR-002-dual-backend-two-mode-workflow.md) |
+| One session, no modes — host plans/builds/verifies; role split replaces the backend split | [ADR-038](../adr/ADR-038-single-session.md) · [ADR-045](../adr/ADR-045-four-role-split.md) |
 | One home per fact; thin handoff drained to inbox-zero; spec = execution script | [ADR-003](../adr/ADR-003-pipeline-artifact-model.md) |
-| Skill structure — single-file default, triple-write registry, author-to-capability-floor, Iron Law | [ADR-004](../adr/ADR-004-skill-system-structure.md) |
+| Three-file doctrine — CLAUDE.md (prefs) · AGENTS.md (build contract) · status.md (live state) | [ADR-037](../adr/ADR-037-three-context-files.md) |
+| Knowledge layer removed — 14 workflow skills, no domain skills, no registry | [ADR-036](../adr/ADR-036-remove-knowledge-layer.md) |
 | Every APEX-built project maintains this Overview + an ADR log (enforced-capture) | [ADR-001](../adr/ADR-001-per-project-documentation-contract.md) |
-| Stack skills — a global best-practices family per language/framework, picked by merit-based, buildability-weighted selection and bound per project *(in implementation)* | [ADR-005](../adr/ADR-005-stack-best-practice-skills.md) |
-| Buildability layer — stack skills declare the Verification Recipe; coding runners go stack-agnostic *(in implementation)* | [ADR-006](../adr/ADR-006-buildability-layer-verification-inversion.md) |
 | Codex is the primary coder (per-task `codex exec` subprocess), Opus the inline fallback; DeepSeek archived | [ADR-027](../adr/ADR-027-codex-primary-opus-fallback-deepseek-archived.md) |
 | Codex context propagation — thin AGENTS.md + selective generated `.agents/skills/` cards + per-task dispatch pack with JSON completion contract | [ADR-031](../adr/ADR-031-codex-context-propagation.md) |
-| GPT-5.6 role split — Sol plan-checks (+ offer-only deliberation), Sonnet 5 hosts builds, cross-family review routing, Sol escalation rung | [ADR-032](../adr/ADR-032-gpt56-role-split.md) |
-| Two-tier critical-file confirmation (shared classifier, interactive Layer A + wrapper exit-76 Layer B) and the executable cross-family completion gate reading recorded ledger facts | [ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md) |
+| GPT-5.6 role split — Sol plan-checks + codes; cross-family review routing; Sol escalation rung | [ADR-032](../adr/ADR-032-gpt56-role-split.md) |
+| Two-tier critical-file confirmation and the executable cross-family completion gate reading recorded ledger facts | [ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md) |
 
 ## Where to look next
 
 - **PROJECT.md** — vision and success criteria.
-- **BACKEND-ROUTING.md** — the full backend → mode → skill routing table.
-- **CLAUDE.md** — the operating instructions both modes follow each session.
+- **CLAUDE.md** — the operating instructions the session follows.
+- **AGENTS.md** — the coder's build contract for this repo.
 - **SKILLS.md** — the index of every skill.
-- **`docs/research/`** — the design notes the ADRs distil (pipeline artifact model, skill
-  authoring, model-specific authoring).
+- **`docs/technical/pin-change-sweep.md`** — the checklist to run when any model pin or
+  architecture doctrine changes, so this overview and its peers don't rot.
+- **`docs/research/`** — the design notes the ADRs distil.

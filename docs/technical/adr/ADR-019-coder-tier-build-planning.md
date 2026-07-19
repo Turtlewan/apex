@@ -1,6 +1,6 @@
 # ADR-019 — Coder-tier build planning (DeepSeek Flash ↔ Pro)
 
-**Status:** Accepted · 2026-06-13 (session 39)
+**Status:** Superseded by [ADR-024](./ADR-024-complexity-routed-multi-model-coding.md) (which states "Supersedes ADR-019"); the DeepSeek Flash/Pro tiers were later archived by [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md). Decision text below is a dated record. · 2026-06-13 (session 39)
 **Context home:** `docs/research/pro-mode-audit/` (audit + worked example + design)
 
 ## Context

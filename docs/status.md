@@ -32,41 +32,27 @@ _Last updated:_ 2026-07-19
   executable family gate, all suites green, 3 wave reviews + apex-reviewer + Opus review, no BLOCK.
   **#10 (round 8) DONE 2026-07-17** — all audit steps closed; only the 6 deferred design items remain (below).
 
-- **Migrate the 23 APEX-GENERIC memories out of Artemis** into APEX's own memory (and delete the 6 now
-  enforced). A lesson about the build system, filed under the thing it built, is invisible to the next
-  project.
+- **★ USER RATIFICATION QUEUE (2026-07-19 "do all" run — see session-79b handoff):**
+  **A1** Sonnet 5 as the Claude CODING fallback (recommend ADOPT; edits global CLAUDE.md + apex-code
+  SKILL.md) · **A2** `max_parallel_codex` 3→2, guardrail half closed as moot (recommend ADOPT) ·
+  **ADR-045** four-role split (drafted, supersedes ADR-035 — ratify or amend) · manual deletion of
+  `%TEMP%\apex-wt-c45` + branch `wave-c45` (fully integrated).
 
-- **Wave B2 SHIPPED 2026-07-19** (live ~/.claude d294d46/175868b/5049219, 11-suite battery green)
-  — ADR-044 D6 and the whole round-8 deferred set are CLOSED. Catalogued debt (see session-79
-  handoff): scopelock's 2 pre-existing failures · verdict-test try-placement · c2's three advisory
-  coverage gaps (pin-first read path untested, adopt-77 rung untested, scope-throw handling
-  duplicated). Worktrees `%TEMP%\apex-wt-waveb1` AND `-waveb2` (+ branches) await manual deletion.
+- **2026-07-19 "do all" run SHIPPED** (live ~/.claude `1035192` `5cd10e9`, full battery + live smoke
+  green): c4 closed c2's coverage debt (pin-first + adopt-77 cases, lockstep comments); c5 shipped the
+  scope-check runtime-path exclusion (index-or-HEAD host-curated discriminator — the live-tree exit-65
+  wedge is DEAD; 138 session paths excluded in the live smoke). Memory migration done (15 moved,
+  5 deleted-enforced). P2 repair done (49 files; pin-change-sweep checklist at
+  `docs/technical/pin-change-sweep.md`). Codex Remote answered: `codex exec` is OUTSIDE the remote
+  surface; only Xcode/Swift stays Mac-gated (`docs/research/codex-remote-windows-2026-07.md`).
+  Session-66 assessment: `docs/research/session66-amendments-assessment-2026-07-19.md` (A4 stays
+  parked; `ultra` keeps an event-triggered eval design — first 3 real escalations become the corpus).
 
-- **Live session data lives inside the judged tree:** `~/.claude` co-hosts the session runtime
-  (`projects/`, `sessions/`, `backups/`, `jobs/`…), so EVERY dispatch into that tree exits 65 while a
-  session runs — the host's own transcript is "out of scope". Interim: host adjudicates 65s whose flagged
-  list ⊆ runtime dirs. Real fix = a scope-check runtime-path exclusion (round 8). **Design note (Sol,
-  step-2.5 r1):** git-status CLASS is useless as a discriminator here — the blanket `*` ignore makes
-  churn `!!`, not `??`, and force-added memory/skills are tracked. Use the git INDEX (tracked vs not)
-  as the discriminator; residual gap = a new untracked file under a runtime dir stays masked — decide
-  accept-as-known-limit vs pattern-tighten. (Attempted in step 2.5, pulled as too hard for that spec.)
+- Remaining catalogued debt: scopelock's 2 pre-existing failures · verdict-test try-placement ·
+  wave-final digest-binding granularity (known-limits row) · add `tasks/` to the tree-pin/scope-check
+  runtime lists (lockstep pair edit, queue with next harness spec). Worktrees `apex-wt-waveb1`/`-waveb2`
+  deleted 2026-07-19 by user.
 
-- **Stale present-tense claims in records (P2).** When a model pin changes, ~20 config files get
-  updated and **zero records do**. Live config is correct; the rot is in prose. *Decision records*
-  (an ADR saying "we chose gpt-5.5") are correct as-is — never edit, that falsifies history;
-  *present-tense claims about the live system* ("the coder **is** gpt-5.5") are stale and must catch
-  up; *missing supersession* headers must be added. Missing mechanism: a pin-change sweep that covers
-  the record class, not just config.
-
-- **Session-66 model-usage amendments — parked until ~2026-07-25** (awaiting more GPT-5.6 data).
-  **A1** Sonnet 5 as the Claude coding fallback [MED-HIGH] · **A2** wave concurrency 3→2 + token/$
-  guardrails [HIGH] · **A4** cheap-worker tier (needs its own ADR + eval). A3 closed by ADR-034.
-  Report: `docs/research/gpt56-vs-claude-model-usage/README.md`.
-
-- **Codex Remote on Windows may retire the "autonomous builds are Mac-gated" assumption.** Verify
-  first: Codex Remote watches the *Codex app's* sessions, a different surface from APEX's
-  `codex exec` subprocess. Confirm what is observable/approvable before building a remote loop.
-
-- **`ultra` effort rung is un-evaled.** Promoted on structural grounds (ADR-034), never measured
-  against `max`. First to cut if an eval disappoints.
+- A concurrent session is active in this repo (transient `docs/changes/gpt-5.6-family-adoption.md`
+  sighting; its draft left uncommitted by this session's sweep deliberately).
 <!-- PLANNING:END -->

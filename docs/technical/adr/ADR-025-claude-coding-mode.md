@@ -1,7 +1,7 @@
 # ADR-025: Claude coding mode (third operating mode)
 
 **Date:** 2026-06-21
-**Status:** Accepted — **soft-pool guard DISCHARGED for coding by [ADR-026](./ADR-026-codex-third-model-family.md) (2026-06-22):** Codex (separate OpenAI pool) replaces Opus/Sonnet as the coding ceiling, so a build no longer starves the planning pool. Claude coding mode remains a valid mechanism but is no longer the coder-ceiling routing target; the only residual Max-pool draw is Opus reviewing Codex-built tasks (light, advisory).
+**Status:** Superseded — Claude coding mode (indeed the whole mode split) was abolished by [ADR-038](./ADR-038-single-session.md) (one session, no modes, 2026-07-14), which names this ADR in its Supersedes line. Earlier: **soft-pool guard DISCHARGED for coding by [ADR-026](./ADR-026-codex-third-model-family.md) (2026-06-22):** Codex (separate OpenAI pool) replaced Opus/Sonnet as the coding ceiling. Decision text below is a dated record.
 **Extends:** ADR-009 (session-start + write-guard), ADR-024 (complexity-routed multi-model coding).
 **Aligns with:** ADR-016 (`APEX_MODE`/URL-prefix mode detection earmarked for the backend rewire).
 

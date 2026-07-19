@@ -1,7 +1,7 @@
 # ADR-009: Harden session-start orchestration and the planning write-guard
 
 **Date:** 2026-06-02
-**Status:** Accepted
+**Status:** Partially superseded — the planning write-guard half was removed by [ADR-038](./ADR-038-single-session.md) (one session, no modes, 2026-07-14). The session-start orchestration hardening survives. Decision text below is a dated record.
 
 ## Context
 

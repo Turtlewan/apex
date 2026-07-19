@@ -1,5 +1,12 @@
 # Live-Test Protocol — apex-code session-start reads `stack_skills` + loads the bound recipe
 
+> **⛔ OBSOLETE (2026-07-19) — do not run.** Every precondition of this protocol is gone:
+> DeepSeek is archived (ADR-027, recovery-only) so there is no DeepSeek backend to run on; the
+> planning/coding mode split and the PreToolUse write-guard were removed (ADR-038); and the
+> stack-skill family (apex-nextjs and the ADR-005/006 Verification Recipe binding it exercises) was
+> deleted with the knowledge layer (ADR-036/037). Verify commands now live in each repo's
+> `AGENTS.md`. Kept only as a dated record of the gap-#2 investigation.
+
 Closes **gap #2** from handoff `docs/handoff/2026-05-31.md` (Cluster-5 pilot): the `stack_skills`
 binding read + recipe load assumed by **ADR-005 / ADR-006** was never exercised by a real
 `apex-code` session (the pilot read it manually). This protocol is the runnable DeepSeek test.

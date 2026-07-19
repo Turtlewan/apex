@@ -1,7 +1,7 @@
 # ADR-005: Stack best-practice skills — a global skill family, a coverage gate, and project binding
 
 **Date:** 2026-05-31
-**Status:** Accepted
+**Status:** Superseded — the stack-skill family and its per-project binding were removed with the knowledge layer by [ADR-036](./ADR-036-remove-knowledge-layer.md); the Verification Recipe now lives in each repo's `AGENTS.md` ([ADR-037](./ADR-037-three-context-files.md)). Decision text below is a dated record.
 **Extends:** [ADR-004](./ADR-004-skill-system-structure.md) (skill-system structure)
 
 ## Context

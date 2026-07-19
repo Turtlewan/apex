@@ -1,5 +1,9 @@
 # Deep Dive (Council): Instinct / Continuous-Learning Loop — build-here vs defer
 
+> **Context note (2026-07-19):** the "Windows=planning / Mac=DeepSeek-coding split" this dive
+> assumes is gone — modes removed (ADR-038), DeepSeek archived (ADR-027). The ADR-011
+> build-here-vs-defer decision it fed is unaffected; only the backend framing is dated.
+
 **Date:** 2026-06-02 (session 26) · **Mode:** apex-deep-dive Council (ADR-010) · **Gates:** ECC absorption Phase 6
 **Question:** Should APEX build the ECC instinct / continuous-learning loop, or defer it — and if built, what design given the Windows=planning / Mac=DeepSeek-coding split (storage format, capture trigger, promotion → apex-skill-author)?
 

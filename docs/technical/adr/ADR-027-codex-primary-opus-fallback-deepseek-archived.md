@@ -3,6 +3,11 @@
 > **Model updated by [ADR-034](./ADR-034-sol-default-coder.md) (2026-07-13):** the default coder is now
 > **`gpt-5.6-sol`**, not `gpt-5.6-terra`. This ADR's *shape* is intact — one frontier coder, one effort dial,
 > Opus as the manual quota-out fallback, DeepSeek archived — only the model string changed.
+>
+> **Mode framing superseded by [ADR-038](./ADR-038-single-session.md) (2026-07-14):** this ADR's
+> mode-detection half (the `APEX_MODE=coding` host framing below) is gone — there is one session, no
+> modes, and Codex is dispatched per task as a subprocess. The Codex-primary / Opus-fallback economics
+> are unchanged; only the "coding-mode host" framing is dated.
 
 Status: **Accepted** — rolled out. **Mechanic A proven live 2026-06-22** (session 61): the Opus
 `APEX_MODE=coding` host dispatched `codex exec -p apex-coder` per task end-to-end — Codex built files

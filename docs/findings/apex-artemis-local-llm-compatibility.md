@@ -1,5 +1,12 @@
 # Finding — Can APEX work on Artemis under the local-LLM expansion plan?
 
+> **Superseded context (2026-07-19).** The mechanism this finding turns on — APEX detecting
+> planning↔coding mode from the substring `deepseek` in `ANTHROPIC_BASE_URL`, with a write-guard
+> that lifts in coding mode — no longer exists. Modes, `APEX_MODE`, and the write-guard were all
+> removed (ADR-038); DeepSeek is archived (ADR-027, recovery-only); the coder is now Codex
+> `gpt-5.6-sol` dispatched per task. The standing recommendation below ("keep 'deepseek' in the
+> route", explicit `APEX_MODE` detection) is therefore moot. Kept as a dated record.
+
 _Date: 2026-06-13 (session 37). Planning-mode analysis (no spec, no code)._
 
 **Source plan analysed:** `~/artemis/docs/research/2026-06-13-local-llm-expansion/_SYNTHESIS-PLAN.md`

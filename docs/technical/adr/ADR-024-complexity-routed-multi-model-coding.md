@@ -1,7 +1,7 @@
 # ADR-024: Complexity-routed multi-model coding (4-model, 2-backend)
 
 **Date:** 2026-06-21
-**Status:** Accepted — **coder set amended by [ADR-026](./ADR-026-codex-third-model-family.md) (2026-06-22):** the menu collapses 4→3 `{flash, pro, codex}`; Sonnet/Opus are retired as coders (Opus → planner + reviewer-of-Codex-tasks); GPT-5.5/Codex becomes the image tier + text ceiling, and the `pro`→ceiling escalation now targets `codex`. Routing rubric here still applies; substitute Codex for the retired Claude coder tiers.
+**Status:** Superseded — **coder set amended by [ADR-026](./ADR-026-codex-third-model-family.md) (2026-06-22):** the menu collapses 4→3 `{flash, pro, codex}`; Sonnet/Opus are retired as coders (Opus → planner + reviewer-of-Codex-tasks); GPT-5.5/Codex becomes the image tier + text ceiling, and the `pro`→ceiling escalation now targets `codex`. **The DeepSeek flash/pro half was then archived by [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md) (2026-06-22):** the coder is now a single frontier model (Codex `gpt-5.6-sol`) on one effort dial, not a routed menu. Routing rubric here is a dated record.
 **Supersedes/extends:** ADR-019 (coder_tier flash/pro/split) — generalises the 2-tier DeepSeek dial to a 4-model, 2-backend routing layer.
 **Related:** ADR-016 (LiteLLM as eventual backend rewire), ADR-015 (one-retry escalation cap), ADR-020 (capability-routed UI escalation), ADR-023 (pre-authorise before dispatch).
 **Research:** `docs/research/model-routing/` (WS-A capability/cost · WS-B mechanism · WS-C routing literature · WS-D billing/rate-limit + README synthesis).

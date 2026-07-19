@@ -1,5 +1,11 @@
 # Finding — DeepSeek-V4 technical report vs APEX's Flash/Pro coding assumptions
 
+> **Superseded context (2026-07-19).** DeepSeek is archived (ADR-027, recovery-only) and there is
+> no coding mode (ADR-038), so the claim that "APEX coding mode runs at Flash-Max / Pro-Max today"
+> and the "now"-tagged action rows (targeting `model-specific-skill-authoring.md` and
+> `BACKEND-ROUTING.md`, both since deleted) are moot. The coder is now Codex `gpt-5.6-sol`. Kept as
+> a dated record.
+
 _Date: 2026-06-13 (session 39). Planning-mode analysis. No code, no spec — proposed changes only._
 
 **Source read in full:** `DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence`

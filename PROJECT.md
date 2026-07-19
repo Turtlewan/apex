@@ -8,6 +8,6 @@ Just me — a solo developer using Claude Code as a primary development partner.
 
 ## Success looks like
 - Every session starts with full context in under 30 seconds
-- Planning sessions produce actionable specs that coding sessions can execute without clarification
+- Planning produces actionable specs the build can execute without clarification
 - No work is lost between sessions
 - The skill set is self-improving: gaps get specced, built, and shipped through the same system it governs

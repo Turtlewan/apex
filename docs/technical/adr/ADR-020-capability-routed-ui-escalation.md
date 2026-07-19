@@ -2,8 +2,9 @@
 
 **Status:** **Superseded / moot** by [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md)
 (2026-06-23). This ADR's entire premise — "DeepSeek V4 is image-blind; Claude is multimodal" — no
-longer holds: under ADR-027 the coder is **Codex (`gpt-5.5`, native vision)** or **Opus (multimodal)**
-on fallback. A sighted coder fixes a visual divergence as a **normal coding task**; the bounded
+longer holds: under ADR-027 the coder is **Codex (`gpt-5.6-sol`, native vision)** (superseded: coder was
+`gpt-5.5` at the time of this banner, then `gpt-5.6-terra`, now `gpt-5.6-sol`; see ADR-034) or **Opus
+(multimodal)** on fallback. A sighted coder fixes a visual divergence as a **normal coding task**; the bounded
 planning-mode UI-code-edit carve-out below is no longer needed and is retired in apex-governance. The
 live-preview design loop (design lane → build → visual gate) survives in apex-ui-ux-design — only the
 *image-blindness* escalation rationale is gone. Original text retained below for history.

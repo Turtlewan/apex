@@ -1,7 +1,7 @@
 # ADR-002: Dual-backend, two-mode workflow (planning on Claude, coding on DeepSeek)
 
 **Date:** 2026-05-31 _(back-filled — the decision predates the ADR practice; documented as part of the ADR-001 dogfood pass)_
-**Status:** Accepted
+**Status:** Superseded — the dual-backend, two-mode mechanism was removed by [ADR-038](./ADR-038-single-session.md) (one session, no modes, 2026-07-14); DeepSeek was archived by [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md) (2026-06-22). Decision text below is a dated record.
 
 ## Context
 

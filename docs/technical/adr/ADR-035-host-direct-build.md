@@ -1,6 +1,6 @@
 # ADR-035 — Host-direct build: when the planning host may build the queue itself
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, recording the 2026-07-16 role split): the host no longer builds the queue itself — it reasons/plans/challenges only and dispatches all mechanical edits and code to workers. Decision text below is a dated record of the host-direct-build reasoning. Note: the write-guard exemption this ADR relies on is also gone (write-guard removed, [ADR-038](./ADR-038-single-session.md)).
 **Date:** 2026-07-13 (session 69)
 **Extends:** ADR-027 (Codex-primary, one coder + one dial) · ADR-028/029 (parallel Codex waves) · ADR-033 (AFK mode-independence)
 **Evidence:** RED baseline, 2 bare-Opus probes, session 69 (§ Why there is no skill)

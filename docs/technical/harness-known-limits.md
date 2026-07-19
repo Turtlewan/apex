@@ -87,6 +87,20 @@ is absent). What remains:
 | **`-ScopeUnlocked` builds have no written set** | Post-hoc classification is unavailable; `critical_violation` is recorded ABSENT (not false). Pre-flight already required attended `-CriticalFilesConfirmed` for these. |
 | **pre-completed adopts have no written set** | An adopt that reuses a recorded scope verdict cannot classify; `critical_violation` absent + loud WARN. Host adjudication covers it. |
 | **post-hoc classifier inherits the broad matchers** | Lock / hooks / secret-substring / auth-stem matchers can false-positive on the written set; recovery is attended `-CriticalFilesConfirmed` or host adjudication. |
+
+## Post-wave hardening (2026-07-19, c4/c5)
+
+The c2 coverage debt is closed (the pin-first read path and the adopt exit-77 rung now have real
+test cases; the two deliberate duplications carry lockstep comments). The scope check now excludes
+untracked session churn under the nine runtime dirs on the runtime root (`-Check` only), using an
+index-or-HEAD host-curated discriminator — live-smoked: 138 session paths excluded, check clean on
+the running tree. What remains:
+
+| Limit | Why it is accepted |
+|---|---|
+| **runtime mask: a brand-NEW coder file under a runtime dir is masked** | In neither the index nor HEAD — indistinguishable from session churn by construction. Point-in-time inventories add a narrow same-run staging race to the same class. Defenses: `--sandbox`, the review gate, the human diff. The mask is root-scoped, ref-gated, dir-list-scoped, fail-closed on inventory failure, and LOUD (per-run excluded count). `-RuntimeExclusionRoot` is a test seam — a caller abusing it is out of the careless-coder threat model. |
+| **wave-final reviews digest-bind only the final task's build** | Sequential same-worktree tasks record per-task `end_tree_digest` (intermediate trees); one wave-final review can honestly bind only the last. Earlier tasks' review rows omit the digest (the gate's documented not-digest-bound path) with an explanatory note. Per-task binding would need per-task reviews — undesigned, revisit if it matters. |
+| **tree-pin runtime exclusions omit `tasks/`** | The session's task-tool storage under `~/.claude\tasks/` churns during a session and voids live-tree pins (bit two plan-check rounds). Workaround: `-NoTreePin -NoTreePinReason` for spec-text reviews. A list addition is a tree-pin + scope-check lockstep change — queue it with the next harness spec. |
 | **Codex nested-sandbox suite observation is non-deterministic** (new, 2026-07-18) | A Codex coder running a test suite that itself launches the dispatcher (nested sandbox) can observe the suite's failure set incorrectly — two consecutive b1 task-4 dispatches reported contradictory, independently-falsified states of `dispatch-scopelock-test.ps1`. Treatment: delegate such suites' runtime verification to HOST runs (evaluator independence prefers this anyway); never route on a coder's claim about a dispatcher-launching suite without a host re-run. |
 
 ## Open findings from round 7 (fixed, but worth re-testing)

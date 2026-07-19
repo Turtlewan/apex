@@ -1,7 +1,7 @@
 # ADR-016: APEX fully-local on DeepSeek — defer behind an eval gate; prepare-and-gate plan
 
 **Date:** 2026-06-12
-**Status:** Accepted
+**Status:** Moot — DeepSeek was archived by [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md) (2026-06-22, recovery-only), so the gated fully-local plan will not run. Decision text below is a dated record.
 **Research:** [`docs/research/local-inference-migration.md`](../../research/local-inference-migration.md) (+ `docs/research/local-inference/ws-a…f.md`, 6-agent pass, 2026-06-12)
 
 ## Context

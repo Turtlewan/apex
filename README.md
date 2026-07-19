@@ -4,7 +4,6 @@ A system of AI-assisted development skills for Claude Code that structures every
 
 ## Skill locations
 - Skills: `~/.claude/skills/apex-*/`
-- Registry: `~/.claude/registry/`
 - Templates: `~/.claude/skills/apex-orchestrate/templates/`
 
 ## Project docs
@@ -12,5 +11,5 @@ A system of AI-assisted development skills for Claude Code that structures every
 - `REQUIREMENTS.md` — scope
 - `ROADMAP.md` — phase plan
 - `docs/status.md` — live state (specs, in-flight work, open questions)
-- `docs/changes/` — pending specs for coding mode to execute
+- `docs/changes/` — pending specs for the build to execute
 - `docs/handoff/` — session summaries

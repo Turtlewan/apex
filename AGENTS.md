@@ -7,7 +7,7 @@ demand at build time).
 ## What this repo is
 
 **APEX** — the Claude Code skill system that builds every other project here. It is **pure
-Markdown**: 14 skills (`~/.claude/skills/apex-*/`), a registry, templates, and planning docs. There
+Markdown**: 14 skills (`~/.claude/skills/apex-*/`), templates, and planning docs. There
 is **no package.json, no test suite, no build step, and no linter** — do not add one, do not look
 for one, do not try to run one.
 
@@ -62,7 +62,7 @@ failed build, not a nit.
 ## Conventions
 
 - Markdown only. Match the surrounding file's voice and structure.
-- Skill frontmatter is a contract: `skill`, `backend`, `version`, `last_updated`, `sources`,
+- Skill frontmatter is a contract: `skill`, `version`, `last_updated`, `sources`,
   `staleness_threshold`, `description`. The `description` is what routes the skill — it is loaded
   into every session, so keep it tight.
 - `SKILL.md` ≤ 500 lines, hard. Overflow goes to `references/`, loaded on demand — never a fatter
