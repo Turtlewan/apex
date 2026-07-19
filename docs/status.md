@@ -32,11 +32,9 @@ _Last updated:_ 2026-07-19
   executable family gate, all suites green, 3 wave reviews + apex-reviewer + Opus review, no BLOCK.
   **#10 (round 8) DONE 2026-07-17** — all audit steps closed; only the 6 deferred design items remain (below).
 
-- **★ USER RATIFICATION QUEUE (2026-07-19 "do all" run — see session-79b handoff):**
-  **A1** Sonnet 5 as the Claude CODING fallback (recommend ADOPT; edits global CLAUDE.md + apex-code
-  SKILL.md) · **A2** `max_parallel_codex` 3→2, guardrail half closed as moot (recommend ADOPT) ·
-  **ADR-045** four-role split (drafted, supersedes ADR-035 — ratify or amend) · manual deletion of
-  `%TEMP%\apex-wt-c45` + branch `wave-c45` (fully integrated).
+- **A1 + A2 + ADR-045 RATIFIED 2026-07-19** (user "yes and go"; live `baa5b51`, apex `a326607`,
+  apex-code 2.12.0): coding fallback is Sonnet 5, `max_parallel_codex` default 2, ADR-045 accepted.
+  Remaining manual step: delete `%TEMP%\apex-wt-c45` + branch `wave-c45` (fully integrated; `!` one-liners).
 
 - **2026-07-19 "do all" run SHIPPED** (live ~/.claude `1035192` `5cd10e9`, full battery + live smoke
   green): c4 closed c2's coverage debt (pin-first + adopt-77 cases, lockstep comments); c5 shipped the
