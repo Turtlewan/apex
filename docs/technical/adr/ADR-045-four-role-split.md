@@ -30,7 +30,7 @@ recorded only in `~/.claude/CLAUDE.md` and memory — the strongest current role
 | **Host** | this session (Fable) | Reasons, plans, challenges. Dispatches every worker below. Makes **no mechanical edits and writes no code**. Owns the project's state-keeping. |
 | **Spec author** | a `model: opus` worker | Drafts specs and ADRs from the host's plan. |
 | **Build orchestrator** | a `model: sonnet` worker | Runs build waves, dispatches coders, routes exit codes. |
-| **Coder** | Codex `gpt-5.6-sol`, per-task `codex exec` subprocess | Writes the code. Falls back to a fresh `model: opus` worker on Codex quota-out. |
+| **Coder** | Codex `gpt-5.6-sol`, per-task `codex exec` subprocess | Writes the code. Falls back to a fresh `model: sonnet` worker (Sonnet 5) on Codex quota-out — amended same-day by session-66 A1 (user-ratified 2026-07-19); as drafted this row said Opus. |
 
 **Review is cross-family, both directions** ([ADR-032](./ADR-032-gpt56-role-split.md) /
 [ADR-034](./ADR-034-sol-default-coder.md) lineage): Codex checks the host's plans and specs before
