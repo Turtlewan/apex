@@ -20,12 +20,12 @@ max_parallel_codex: 1
   - The orchestrator receives only bounded results (exit codes, `.final` fields, a bounded verify tail, porcelain status) — never a raw transcript or a whole log (ADR-015).
   - The host refuses any directive that crosses a hard block (integration-branch commit without the draft→show→approve exchange, push to main, teardown outside ADR-046 D8, an unconfirmed critical-path dispatch, an audit-directory write) or that fails the deterministic pre-launch structural validation (cap arithmetic, file-disjointness), and returns a refusal event instead of executing it.
   - No document in either tree describes the host as the build's in-force interim executor; a host takeover exists only as an attended, recorded D1-EXCEPTION.
-  - The ADR-029 high-risk carve-out (sequential, foreground, supervised) is preserved verbatim in meaning; nothing here widens it.
+  - The ADR-029 high-risk carve-out keeps its parallel-pool exclusion untouched — high-risk work never enters an unattended pool; only the process channel it runs on is restated, keyed on attendance (owner ruling, 2026-07-31), and nothing here widens the carve-out.
 - **Non-goals:** any wrapper, script, hook, or settings change · restating the ADR-046 D8 teardown algorithm anywhere (pointer only) · the retro P1(a) capacity lease and every other wrapper-side item (owned by `retro-wrapper-hygiene`) · the D6 docs-agent permissions follow-up · a Codex-dispatching `apex-build-wave` workflow variant · every `apex-plan/SKILL.md` section except § Wave plan and its frontmatter version.
 
 ## Assumptions
 - `retro-wrapper-hygiene` has already built and integrated, so `apex-code/SKILL.md`, `references/parallel-codex.md`, `ADR-046-doctrine-audit-resolutions.md`, `SKILLS.md`, and `SKILL-HISTORY.md` carry its edits; every anchor quoted in the task bodies is re-greped against the post-integration text before editing → impact: Stop
-- The eleven live D1-interim clauses listed in the grep-evidence block below — nine in `~/.claude`, one in this repo's architecture overview, plus the two ADR homes — are the complete set across BOTH trees; archived specs under `docs/changes/done/` and dated handoffs are historical records and are never edited → impact: Stop
+- The **thirteen** live D1-interim clauses listed in the grep-evidence block below — **ten in `~/.claude`** (eight exact `interim executor` hits, plus `apex-governance/levels/L3.md` and `apex-plan/SKILL.md`) and **three in this repo** (the architecture overview and the two ADR homes) — are the complete set across BOTH trees; archived specs under `docs/changes/done/` and dated handoffs are historical records and are never edited → impact: Stop
 - `retro-planning-gates` has already built and integrated, and none of its tasks touched `apex-plan/SKILL.md` § Wave plan (`:154-159`), so that clause is unowned and this spec takes it; its § Wave plan text and frontmatter `version` are re-read post-integration before Task 9 edits them → impact: Stop
 - The § Wave plan interim clause WRAPS across two source lines (`:156-157`), so every check for its removal is multi-line-aware; a single-line grep for the full sentence returns zero even when the clause is present → impact: Stop
 - `retro-validator-versioning` and `adr032-predraft-architecture-pass` also write `SKILLS.md` and `SKILL-HISTORY.md` (host's-pen registry writes), so the top rows of both files can move between this spec's dispatch and its integration; the host re-reads the top of both tables immediately before Task 7 integrates and re-anchors the new row if they have moved → impact: Caution
@@ -143,7 +143,7 @@ re-route, or adjudicate. The coder never adjudicates its own output.
 { "kind": "refusal", "task_id": "3|null", "repo": "<repo root>|null", "exit_code": 79,
   "rule": "<the rule or gate that fired>", "detail": "<=200 chars",
   "tail": "<stderr or dispatch-log tail, <=50 lines, or null>",
-  "run_id": null, "final": null }
+  "run_id": "<null for a pre-lease refusal; the live row's id for exit 75>", "final": null }
 ```
 
 ```json
@@ -165,8 +165,10 @@ re-route, or adjudicate. The coder never adjudicates its own output.
   "exit_code": 0, "detail": "0 pass | 12 same-family refusal | 13 unverifiable" }
 ```
 
-`refusal` is how every pre-lease and pre-dispatch gate reaches you: `run_id` and `final` are BOTH
-null there, because no ledger row and no `.final` exist. A `dispatch_result` always carries both.
+`refusal` is how every pre-lease and pre-dispatch gate reaches you, and also how a **live worker**
+does: `final` is ALWAYS null on this tag — there is no completion report to read. `run_id` is null
+for a pre-lease refusal (no row was ever reserved) and present for **exit 75**, where the row exists
+and the worker is still holding the worktree. A `dispatch_result` always carries both.
 
 `integration_verify` is the carrier for the authoritative post-integration pass — the second of the
 two verify cadences. Adjudicate it as its own event; a green per-task pass inside a worktree never
@@ -228,7 +230,7 @@ from one repo applies to the other.
     {
       "task_id": "3",
       "verdict": "pass|fail|blocked|void|out_of_scope",
-      "next_action": "integrate|redispatch|escalate_effort|fallback_sonnet|fork|park|request_verify|request_review|queue|adopt|request_abandon|request_confirmation|teardown|complete",
+      "next_action": "integrate|redispatch|escalate_effort|fallback_sonnet|fork|park|request_verify|request_review|run_docs_agents|run_family_gate|queue|adopt|request_abandon|request_confirmation|teardown|complete",
       "params": {
         "repo": "<repo root>",
         "worktree": "<absolute path for a redispatch, else null>",
@@ -267,6 +269,10 @@ Actions that hand work back to the host with a precondition:
 - `request_confirmation` — a critical-file, host-state, or owner gate needs a live human "yes"
   before the dispatch can proceed. Attended, the host asks; AFK, the host parks the task.
 - `request_review` — open the post-build review chain for a task or the spec.
+- `run_docs_agents` — dispatch the docs agents. Legal only once a `reviewer_result` for that scope
+  has come back.
+- `run_family_gate` — run the completion gate for a task or spec. Legal only after the reviews it
+  certifies exist.
 
 ## Close-out ordering
 
@@ -274,8 +280,13 @@ The chain is fixed by `apex-code/SKILL.md` § Post-build and you sequence it, yo
 the **reviewer runs first and always**; the **docs agents run after the reviewer has returned** (a
 docs write during an open review moves the tree and voids the verdict); the **family-gate
 certification must pass before the spec is archived**; the handoff and archival are the last step.
-Emit `request_review` before `complete`, and never emit `complete` for a spec whose
-`family_gate_result` is non-zero.
+So the directive order is `request_review` → `run_docs_agents` → `run_family_gate` → `complete`, and
+you never emit `complete` for a spec whose `family_gate_result` is non-zero.
+
+The build-state block's **`phase`** field persists exactly where in that chain the build stands —
+`build | review | docs | family_gate | archive` — so a resumed or fresh instance re-enters at the
+right rung instead of re-running or skipping one. Read `phase` before emitting any close-out
+directive, and never emit a directive for a rung earlier than the recorded `phase`.
 
 ## Exit code → verdict
 
@@ -296,7 +307,7 @@ carry neither, because the wrapper refused before it reserved a row.
 | 72 | fail | `preflight-red-baseline` | refusal |
 | 73 | fail | `mojibake-double-encoded` | dispatch_result |
 | 74 | fail | `refused-scope-lock-contract` | refusal |
-| 75 | fail | `call-died-coder-alive` | dispatch_result |
+| 75 | fail | `call-died-coder-alive` | refusal |
 | 76 | blocked | `critical-file-gate-refused` | refusal |
 | 77 | blocked | `post-hoc-critical-write` | dispatch_result |
 | 78 | void | `review-digest-binding-refused` | refusal |
@@ -330,6 +341,7 @@ carries, and nothing else: `spec_path` · `spec_digest` (the hash the plan was c
 `completed_waves[]`, each with per-task `verdict` and `integration_state`
 (`not_integrated|integrated|reverted`) · which task branches are integrated · `pending_waves[]` ·
 `base_sha` per worktree · `repo` per task · `run_ids[]` from the ledger, per task ·
+**`phase`** (`build|review|docs|family_gate|archive` — the close-out rung this build has reached) ·
 `refusal_history[]` · `nudge_count` · **`pending_event`** — the event that has not been adjudicated
 yet, carried **verbatim** (its `kind`, exit code, verify tail, refusal `rule` and `detail`). That
 last field is what makes a fresh instance lossless: without it, the resume would drop exactly the
@@ -386,17 +398,22 @@ On any refusal, re-plan within the rules; never re-issue the same directive.
 
 ## Channel and supervision
 
-**These are two different axes, and the precedence rule is explicit.** The ADR-029 supervision gate
-governs **attention**: a `risk: high` or auth/security/data spec runs one task at a time, with the
-host watching live and able to react. `channel` governs **process ownership**: which parent the
-`codex exec` subprocess hangs off.
+**Channel is keyed on ATTENDANCE, not on duration alone** (owner ruling, 2026-07-31).
 
-So, per task: a dispatch expected to exceed ~10 minutes uses `detached` — the detached-runner
-pattern in `references/parallel-codex.md` — **including a high-risk one**, which then runs detached
-*with mandatory live host monitoring* (log tail plus immediate reaction), the supervision the gate
-actually asks for. A **short** high-risk dispatch stays literal `foreground`. Routine dispatches use
-`background` when short, `detached` when long. The high-risk spec never joins the parallel pool
-either way; sequential and supervised is the gate, not foregroundness for its own sake.
+- **Attended + long → `detached`.** The owner at the machine supplies ADR-029's supervision, the
+  session stays interactive, and the detached runner is immune to the observed stop mechanism —
+  whose occurrences correlated with attended machine use, which is exactly when you would otherwise
+  be exposed.
+- **Unattended / AFK → the harness-owned channel**, a `foreground` wrapper call. Stated honestly:
+  on the current harness a foreground call past the ~10-minute tool ceiling **migrates to
+  background** rather than dying, and it stays harness-owned and synchronously collected either
+  way — which is what makes it the right unattended choice, not a fallback.
+- **Attended + short → `foreground`**, or `background` when the host wants its turn free.
+
+ADR-029's high-risk carve-out is unchanged in its other half: high-risk work **never enters an
+unattended parallel pool**. An attended high-risk long run is `detached` with the owner present; a
+short one is literal `foreground`. The attendance flag is in your inputs — read it before you set
+`channel`, and never infer it from duration.
 ````
 
 - [ ] **Task 2**: Switch the orchestrator skill's build route from interim execution to dispatching the agent: replace the `build · implement · execute · start build` route-table row with the row below, delete the `**Transitional (2026-07-29):**` paragraph entirely, leave the "Both dispatches are the ADR-045 role split" paragraph's mechanics sentence intact, and bump the frontmatter `version` minor — files: C:\Users\User\.claude\skills\apex-orchestrate\SKILL.md — done when: the file contains the new row verbatim, no `interim executor` string, and no `Transitional` paragraph.
@@ -411,7 +428,7 @@ either way; sequential and supervised is the gate, not foregroundness for its ow
 **Who does this (ADR-046 D1).** Wave grouping, dispatch sequencing, and completion routing are **orchestrator-owned** and are performed by the dispatched `apex-build-orchestrator` agent (`~/.claude/agents/apex-build-orchestrator.md`). The analysis below is what that agent applies; the host executes the resulting plan and returns bounded results. **"Raw results" throughout this skill means the bounded fixed result fields — exit code, `.final` fields, a bounded verify tail, porcelain output — unadjudicated; never a transcript or a whole log. The agent contract defines that set.**
 ```
 
-- [ ] **Task 4**: In the parallel-dispatch reference, (a) rewrite the opening paragraph so the dispatched orchestrator is named as the owner, (b) add a `## Dispatch channel` section directly after the `## Isolation = git-worktree-per-task` block, both exactly as below, and (c) delete the now-superseded paragraph that begins `Launch every task in the sub-wave with` — its wait-then-integrate rule, log-path rule, and observability pointer are all carried by the new section; leave `## Cap`, `## Integrate`, `## Teardown`, `## Failure / fallback`, and the whole cross-spec half unchanged — files: C:\Users\User\.claude\skills\apex-code\references\parallel-codex.md — done when: the file names the dispatched orchestrator in its opening paragraph, carries the `## Dispatch channel` section verbatim, contains no `interim` D1 wording, and mentions `run_in_background` exactly once (inside the `background` bullet).
+- [ ] **Task 4**: In the parallel-dispatch reference, (a) rewrite the opening paragraph so the dispatched orchestrator is named as the owner, (b) add a `## Dispatch channel` section directly after the `## Isolation = git-worktree-per-task` block, both exactly as below, (c) delete the now-superseded paragraph that begins `Launch every task in the sub-wave with` — its wait-then-integrate rule, log-path rule, and observability pointer are all carried by the new section — and (d) append to the EXISTING `## Supervision gate — parallel-safe is not parallel-eligible` section, as its final paragraph, the attendance-key paragraph given below; leave that section's existing text, `## Cap`, `## Integrate`, `## Teardown`, `## Failure / fallback`, and the rest of the cross-spec half unchanged — files: C:\Users\User\.claude\skills\apex-code\references\parallel-codex.md — done when: the file names the dispatched orchestrator in its opening paragraph, carries the `## Dispatch channel` section and the supervision-gate paragraph verbatim, contains no `interim` D1 wording, and mentions `run_in_background` exactly once (inside the `background` bullet).
 
 ```
 Load when a dependency (sub-)wave has **2+ independent `▸codex` tasks** and `max_parallel_codex > 1`.
@@ -427,33 +444,51 @@ session), and a foreground tool timeout **migrates** the call to background inst
 The old foreground-only constraint on attended waves is retired.
 
 **But the "was stopped" kill class is unresolved** (three occurrences, no consistent timing, one on a
-real 35-min workload whose wrapper died while its codex child kept writing). So the channel is chosen
-by expected duration, and the orchestrator sets it per task:
+real 35-min workload whose wrapper died while its codex child kept writing) — and its occurrences
+correlated with the owner being at the machine. So the channel is keyed on **ATTENDANCE**, not on
+duration alone (owner ruling, 2026-07-31), and the orchestrator sets it per task:
 
-- **`detached` — STANDARD for any dispatch expected to exceed ~10 minutes.** Launch the wrapper from
-  a runner script via `Start-Process` (detached from the harness process tree), have the runner write
-  a marker file on completion, and watch that marker with `Monitor`. Proven 2/2 on real builds; it is
-  invisible to whatever issues the stops.
-- **`background` — acceptable for short dispatches only** (host-native `run_in_background` on the
-  wrapper invocation). It survives turn end and session idle on this harness, but carries the
-  unresolved stop risk over a long run.
-- **`foreground` — short high-risk dispatches**, and anything the host wants to block on directly.
+- **`detached` — the ATTENDED long-run channel.** Launch the wrapper from a runner script via
+  `Start-Process` (detached from the harness process tree), have the runner write a marker file on
+  completion, and watch that marker with `Monitor`. Proven 2/2 on real builds; invisible to whatever
+  issues the stops — which matters precisely in an attended session, where the owner is present to
+  supervise and where the stop class was observed.
+- **`foreground` — the UNATTENDED / AFK channel, and the attended-short one.** A plain wrapper call
+  the harness owns. Honestly stated: past the ~10-minute tool ceiling the harness **migrates** the
+  call to background instead of killing it, and it remains harness-owned and synchronously collected
+  — so an unattended long run is safe here, and this is the right unattended choice rather than a
+  fallback.
+- **`background` — host-native `run_in_background`** on the wrapper invocation, for short attended
+  dispatches where the host wants its turn free.
 
-**Precedence — the two axes do not compete.** The ADR-029 supervision gate governs **attention**: a
-`risk: high` or auth/security/data spec runs one task at a time, watched live, never in the parallel
-pool. The channel governs **process ownership**. A high-risk dispatch expected to exceed ~10 minutes
-therefore runs **`detached` with mandatory live host monitoring** — log tail plus immediate reaction,
-which is the supervision the gate asks for, and is foreground-equivalent for that purpose. A short
-high-risk dispatch stays literal `foreground`. The gate is never satisfied by the channel alone, and
-never requires a long run to sit in a foreground call.
+**Attendance, not duration, decides.** Attended + long → `detached` (owner supervises live).
+Unattended → `foreground`, the harness-owned channel, at any duration. Attended + short →
+`foreground` or `background`. Read the attendance flag; never infer the channel from a stopwatch.
 
-**Version-pinned:** the probe results hold for the harness build they were run on. A harness upgrade
-re-opens the question — re-confirm with a ≥12-min real dispatch before relying on `background` again.
+**Version-pinned:** the probe results — including the foreground-migrates-to-background behaviour the
+unattended channel rests on — hold for the harness build they were run on. A harness upgrade re-opens
+the question: re-confirm with a ≥12-min real dispatch before relying on the harness-owned channel for
+a long unattended run again.
 Evidence: `~/apex/docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`.
 
 Either way, wait for every subprocess in the sub-wave to exit before integrating, and give the user
 each task's log path so they can tail them in parallel (the host reads only each `.final`). Full
 observability recipe + teardown → `references/codex-observability.md`.
+```
+
+The paragraph appended to `## Supervision gate — parallel-safe is not parallel-eligible`:
+
+```
+**Channel under this gate (owner ruling, 2026-07-31).** The gate's parallel-pool exclusion is
+unchanged: high-risk work never enters an unattended pool. What the gate does NOT dictate is the
+process channel, which is keyed on **attendance** (§ Dispatch channel): an ATTENDED long dispatch —
+high-risk included — runs **detached**, because the owner present at the machine is what supplies
+this gate's supervision, the session stays interactive, and the detached runner is immune to the
+observed stop class. An UNATTENDED run uses the **harness-owned foreground call** at any duration
+(past the ~10-min ceiling the harness migrates it to background, still harness-owned and
+synchronously collected). An attended SHORT high-risk dispatch stays literal foreground. So
+"foreground and sequential" above means supervised and sequential; it never requires a long run to
+sit inside a blocking call.
 ```
 
 - [ ] **Task 5**: Sweep the `~/.claude` consumers of the interim-executor clause — in each file replace the clause as listed below, changing nothing else; in the governance skill change only the frontmatter `version` (patch bump), leaving its body untouched. Only the ownership sentences change: `apex-coder`'s own fallback-path wave-grouping and worker-spawning behaviour is unaffected by this spec, and the `apex-plan` frontmatter `version` covering this file's `model-routing.md` edit is bumped once in Task 9, not here — files: C:\Users\User\.claude\skills\apex-code\references\dispatch-pack.md, C:\Users\User\.claude\skills\apex-code\references\workflow-dispatch.md, C:\Users\User\.claude\skills\apex-plan\references\model-routing.md, C:\Users\User\.claude\skills\apex-governance\levels\L3.md, C:\Users\User\.claude\skills\apex-governance\SKILL.md, C:\Users\User\.claude\agents\apex-coder.md, C:\Users\User\.claude\agents\apex-docs-technical-agent.md — done when: none of these files contains `interim executor` or `interim: the host`, and each replacement below is present verbatim.
@@ -490,15 +525,15 @@ FIND:    **the host, as interim executor (ADR-046 D1), assembles it from the wra
 REPLACE: **the host assembles it from the wrapper's `.final` completion reports as build mechanics (ADR-046 D1)**
 ````
 
-- [ ] **Task 6**: Amend both ADRs. (a) In ADR-046, append to § D1 immediately before `### D2` an `**Amendment — <build date>: interim executor retired**` paragraph recording that the build-orchestrator agent contract shipped at `~/.claude/agents/apex-build-orchestrator.md`; that D1's interim clause is fulfilled and retired; that the ownership assignment and the host's mechanics-only role are unchanged; that the host additionally runs a deterministic pre-launch structural validation (cap arithmetic, wave file-disjointness) and refuses a violating wave back to the orchestrator, which is mechanics, not adjudication; and that a host takeover of orchestrator duties now exists **only** as an attended, recorded **D1-EXCEPTION** — a ledger row `{row_kind:'exception', ts, reason, scope, operator}`, excluded from dispatch and family-gate selection by the `row_kind` rule, plus a handoff entry — while an AFK build parks and surfaces instead. Then mark the ORIGINAL interim paragraph (`Until the build-orchestrator agent contract ships…`, `:61-62`) with a leading `**Superseded — <build date>, see the amendment below:**` marker, following ADR-045's annotation precedent; leave its wording otherwise intact so the historical record survives, and do not delete it. (b) In ADR-045, edit the D1-amendment sentence at `:74-77` **in place** — the one beginning `Until the orchestrator's agent contract ships` — replacing it with a sentence in the past tense that marks it superseded, names the agent file, and cites this amendment; follow that ADR's own annotation precedent for superseded text rather than appending a second paragraph. (c) In ADR-041, add a one-line banner directly under the `**Deferred:**` bullet at `:72-77` reading `**Annotation (<build date>):** "the host adjudicates" here is the pre-D1 arrangement; build-result adjudication is now the dispatched `apex-build-orchestrator`'s (ADR-046 D1). Historical text retained.` — a banner only; the bullet's own wording is NOT rewritten. Use the session date supplied in the dispatch pack, or `2026-07-30` if none is supplied — files: C:\users\user\apex\docs\technical\adr\ADR-046-doctrine-audit-resolutions.md, C:\users\user\apex\docs\technical\adr\ADR-045-four-role-split.md, C:\users\user\apex\docs\technical\adr\ADR-041-wrapper-hardening-scope-cap-pin.md — done when: ADR-046 § D1 carries the amendment with the structural-validation and D1-EXCEPTION clauses AND the superseded marker on the original interim paragraph, ADR-045's sentence is rewritten in place with a supersession marker, ADR-041 carries the banner with its original bullet text unchanged, and no other decision text is reworded.
+- [ ] **Task 6**: Amend both ADRs. (a) In ADR-046, append to § D1 immediately before `### D2` an `**Amendment — <build date>: interim executor retired**` paragraph recording that the build-orchestrator agent contract shipped at `~/.claude/agents/apex-build-orchestrator.md`; that D1's interim clause is fulfilled and retired; that the ownership assignment and the host's mechanics-only role are unchanged; that the host additionally runs a deterministic pre-launch structural validation (cap arithmetic, wave file-disjointness) and refuses a violating wave back to the orchestrator, which is mechanics, not adjudication; that **dispatch channel is keyed on attendance** (owner ruling, 2026-07-31) — attended long dispatches run detached with the owner supplying ADR-029's supervision, unattended runs use the harness-owned foreground call at any duration, and ADR-029's parallel-pool exclusion for high-risk work is unchanged; and that a host takeover of orchestrator duties now exists **only** as an attended, recorded **D1-EXCEPTION** — a ledger row `{row_kind:'exception', ts, reason, scope, operator}`, excluded from dispatch and family-gate selection by the `row_kind` rule, plus a handoff entry — while an AFK build parks and surfaces instead. Then mark the ORIGINAL interim paragraph (`Until the build-orchestrator agent contract ships…`, `:61-62`) with a leading `**Superseded — <build date>, see the amendment below:**` marker, following ADR-045's annotation precedent; leave its wording otherwise intact so the historical record survives, and do not delete it. (b) In ADR-045, edit the D1-amendment sentence at `:74-77` **in place** — the one beginning `Until the orchestrator's agent contract ships` — replacing it with a sentence in the past tense that marks it superseded, names the agent file, and cites this amendment; follow that ADR's own annotation precedent for superseded text rather than appending a second paragraph. (c) In ADR-041, add a one-line banner directly under the `**Deferred:**` bullet at `:72-77` reading `**Annotation (<build date>):** "the host adjudicates" here is the pre-D1 arrangement; build-result adjudication is now the dispatched `apex-build-orchestrator`'s (ADR-046 D1). Historical text retained.` — a banner only; the bullet's own wording is NOT rewritten. Use the session date supplied in the dispatch pack, or `2026-07-30` if none is supplied — files: C:\users\user\apex\docs\technical\adr\ADR-046-doctrine-audit-resolutions.md, C:\users\user\apex\docs\technical\adr\ADR-045-four-role-split.md, C:\users\user\apex\docs\technical\adr\ADR-041-wrapper-hardening-scope-cap-pin.md — done when: ADR-046 § D1 carries the amendment with the structural-validation and D1-EXCEPTION clauses AND the superseded marker on the original interim paragraph, ADR-045's sentence is rewritten in place with a supersession marker, ADR-041 carries the banner with its original bullet text unchanged, and no other decision text is reworded.
 
-- [ ] **Task 7**: Double-write the registry. This task is coder-dispatched against the `apex` worktree directly — it is ordinary repository bookkeeping in the spec's own scope lock, not one of the three host's-pen artifacts (handoff, live status file, spec archival) that D6 reserves, so the sibling specs' host-pen convention does not apply to it. In `SKILLS.md` change the `## Agents (5)` heading to `## Agents (6)` and add the row below as the first row of the agents table. In `SKILL-HISTORY.md` add one row at the top of the table, dated the build date, listing skills `apex-code, apex-orchestrate, apex-governance, apex-plan`, every file this spec changed under `~/.claude`, event `updated`, a What-Changed summary naming the agent creation, the interim-executor retirement, and the dispatch-channel doctrine, and sources `docs/technical/adr/ADR-046-doctrine-audit-resolutions.md · docs/technical/adr/ADR-045-four-role-split.md · docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`. **RECORD the version numbers Tasks 2, 3, 5, and 9 already wrote — read each SKILL.md frontmatter and copy the value. Bump nothing here.** **Integration directive for this task, executed by the host as mechanics in this order:** (1) `git -C <apex> log -1 --format=%H -- SKILLS.md SKILL-HISTORY.md` and read the first five lines of each table; (2) if either top row differs from what this task's worktree branched onto, rebase the worktree onto the current tip and re-anchor the new row directly beneath whatever row is now newest — never above a newer row and never as a second copy; (3) only then the path-scoped `git checkout` integration. `retro-validator-versioning` and `adr032-predraft-architecture-pass` write these same two files, so step (2) is not optional — files: C:\users\user\apex\SKILLS.md, C:\users\user\apex\SKILL-HISTORY.md — done when: the agents table has six data rows and a matching count in its heading, the history table's newest row is the one described, and its version numbers equal the live frontmatter values.
+- [ ] **Task 7**: Double-write the registry. This task is coder-dispatched against the `apex` worktree directly — it is ordinary repository bookkeeping in the spec's own scope lock, not one of the three host's-pen artifacts (handoff, live status file, spec archival) that D6 reserves, so the sibling specs' host-pen convention does not apply to it. In `SKILLS.md` change the `## Agents (5)` heading to `## Agents (6)` and add the row below as the first row of the agents table. In `SKILL-HISTORY.md` add one row at the top of the table, dated the build date, listing skills `apex-code, apex-orchestrate, apex-governance, apex-plan`, every file this spec changed under `~/.claude`, event `updated`, a What-Changed summary naming the agent creation, the interim-executor retirement, and the dispatch-channel doctrine, and sources `docs/technical/adr/ADR-046-doctrine-audit-resolutions.md · docs/technical/adr/ADR-045-four-role-split.md · docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`. **RECORD the version numbers Tasks 2, 3, 5, and 9 already wrote — read each SKILL.md frontmatter and copy the value. Bump nothing here.** **Integration directive for this task, executed by the host as mechanics in this order:** (1) `git -C <apex> log -1 --format=%H -- SKILLS.md SKILL-HISTORY.md` and read the first five lines of each table; (2) if either top row differs from what this task's worktree branched onto, rebase the worktree onto the current tip and **RE-APPEND this spec's row as the newest row** — a move of the one existing row within the rewrite, never a second copy, and never left buried under a row that landed later; (3) only then the path-scoped `git checkout` integration. Step (2) is what keeps the done-condition below true after a race: this spec's row is the newest row, and the versions it records are read from it as the newest row. `retro-validator-versioning` and `adr032-predraft-architecture-pass` write these same two files, so step (2) is not optional — files: C:\users\user\apex\SKILLS.md, C:\users\user\apex\SKILL-HISTORY.md — done when: the agents table has six data rows and a matching count in its heading, the history table's newest row is the one described, and its version numbers equal the live frontmatter values.
 
 ```
 | **apex-build-orchestrator** | apex-code (host dispatch) | Wave scheduling, dispatch parameters, exit-code routing, verify adjudication, integration order — reasoning only |
 ```
 
-- [ ] **Task 8**: **Host-executed, attended — never dispatched to a coder** (it launches a real `codex exec`, and a nested dispatch inside a sandboxed coder is not a supported path). Run ONE real dummy dispatch through `codex-dispatch.ps1` in a throwaway scratch worktree, via the detached-runner channel with live monitoring: runner script launched with `Start-Process`, completion marker file, `Monitor` on the marker, host tailing the dispatch log throughout. **The dummy is deterministic, not open-ended:** a fixed prompt instructing the coder to emit one timestamped progress line every 30 seconds for at least 25 iterations and then finish with no file writes, so the run is bounded below at **≥12 minutes wall clock** (the issue-13 doc's stated threshold, which the heartbeat probes could not exercise because they never filled a 64-KB stdout pipe). If the prompt finishes early, re-run with a larger iteration count; a short run proves nothing. Then append to § Caveats of the issue-13 research doc a `**Real-codex confirmation (<date>)**` bullet whose seven fields are: harness build · run id · wall-clock duration in minutes, computed as `ended - started` from that ledger row's own timestamps (never estimated) · terminal ledger row status · whether the `--json` log's last line parses as a complete final event · whether the `.final` file exists · `verdict: confirmed` — files: C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md — done when: the run reached natural completion, all four mechanical checks pass (terminal ledger status, complete final log event, `.final` present, computed duration ≥ 12 min), and the appended bullet carries all seven fields. **A `re-opened` outcome is NOT a completion of this task** — it means the kill class reproduced on a real dispatch, which invalidates the Task 4 channel doctrine as written: stop, record the evidence, and surface it as a spec-level blocker.
+- [ ] **Task 8**: **Host-executed, attended — never dispatched to a coder** (it launches a real `codex exec`, and a nested dispatch inside a sandboxed coder is not a supported path). Run ONE real dummy dispatch through `codex-dispatch.ps1` in a throwaway scratch worktree. The channel is `detached` **by the attendance rule, not as an exception**: this task is attended and long, which is exactly the case the rule assigns to the detached runner. So: runner script launched with `Start-Process`, completion marker file, `Monitor` on the marker, owner present and the host tailing the dispatch log throughout. **The dummy is deterministic, not open-ended:** a fixed prompt instructing the coder to emit one timestamped progress line every 30 seconds for at least 25 iterations and then finish with no file writes, so the run is bounded below at **≥12 minutes wall clock** (the issue-13 doc's stated threshold, which the heartbeat probes could not exercise because they never filled a 64-KB stdout pipe). If the prompt finishes early, re-run with a larger iteration count; a short run proves nothing. Then append to § Caveats of the issue-13 research doc a `**Real-codex confirmation (<date>)**` bullet whose seven fields are: harness build · run id · wall-clock duration in minutes, computed as `ended - started` from that ledger row's own timestamps (never estimated) · terminal ledger row status · whether the `--json` log's last line parses as a complete final event · whether the `.final` file exists · `verdict: confirmed` — files: C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md — done when: the run reached natural completion, all four mechanical checks pass (terminal ledger status, complete final log event, `.final` present, computed duration ≥ 12 min), and the appended bullet carries all seven fields. **A `re-opened` outcome is NOT a completion of this task** — it means the kill class reproduced on a real dispatch, which invalidates the Task 4 channel doctrine as written: stop, record the evidence, and surface it as a spec-level blocker.
 
 - [ ] **Task 9**: Retire the § Wave plan interim clause in the planning skill and bump its version once. Replace the sentence that currently spans two lines — `Final task selection and sequencing are **orchestrator-owned** (ADR-046 D1; interim: the` / `host performs them as executor until that agent contract ships).` — with: `Final task selection and sequencing are **orchestrator-owned** — the dispatched `apex-build-orchestrator` (ADR-046 D1).` Leave the surrounding proposal/binding-dependency sentences and every other section of the file untouched, and bump the frontmatter `version` PATCH exactly once, covering both this edit and Task 5's `model-routing.md` edit — files: C:\Users\User\.claude\skills\apex-plan\SKILL.md — done when: the wrapped clause is gone (checked across line breaks), the orchestrator phrasing is present, and the diff contains exactly one changed `version` line plus the § Wave plan sentence.
 
@@ -509,7 +544,7 @@ REPLACE: **the host assembles it from the wrapper's `.final` completion reports 
 ## Wave plan
 Wave 1: [Task 1] | Wave 2: [Task 2, Task 3, Task 4, Task 5] | Wave 3: [Task 6, Task 8, Task 9, Task 10, Task 11] | Wave 4: [Task 7]
 
-Dependencies are binding: Tasks 2–6 and 9–11 name the agent or its ownership, so Task 1 lands first; Task 7 records the versions Tasks 2, 3, 5, and 9 wrote, so it lands last; Task 8 confirms the channel Task 4 documents, so it follows Task 4. Tree split: Tasks 1–5 and 9 build in `~/.claude`; Tasks 6, 7, 8, 10, and 11 build in `apex` — two trees, so integration runs per repo, each against its own verify recipe. `max_parallel_codex: 1` plus the ADR-029 supervision gate (`risk: high`) means one task at a time under live host monitoring; per the channel precedence rule that supervision is satisfied by a detached run with live log tailing for any dispatch expected to exceed ~10 minutes, and by a literal foreground call for short ones.
+Dependencies are binding: Tasks 2–6 and 9–11 name the agent or its ownership, so Task 1 lands first; Task 7 records the versions Tasks 2, 3, 5, and 9 wrote, so it lands last; Task 8 confirms the channel Task 4 documents, so it follows Task 4. Tree split: Tasks 1–5 and 9 build in `~/.claude`; Tasks 6, 7, 8, 10, and 11 build in `apex` — two trees, so integration runs per repo, each against its own verify recipe. `max_parallel_codex: 1` plus the ADR-029 supervision gate (`risk: high`) means one task at a time, never in a parallel pool. This spec builds **attended**, so by the attendance rule (owner ruling, 2026-07-31) its long dispatches run `detached` with the owner present and the host tailing the log, and its short ones run literal `foreground`. Were it ever run unattended, every dispatch would instead use the harness-owned foreground call.
 
 ## Permissions
 
@@ -520,9 +555,9 @@ The `docs/audit/` directory is different and stricter: TIER-1, refused outright 
 ### File Operations
 | Action | Paths |
 |--------|-------|
-| Create | C:\Users\User\.claude\agents\apex-build-orchestrator.md · Task 8's transient detached-runner artifacts under the scratch directory: the runner script, its completion marker file, and the throwaway scratch worktree — all outside both repos, none committed |
+| Create | C:\Users\User\.claude\agents\apex-build-orchestrator.md · transient artifacts under the out-of-repo scratch root, none committed: Task 8's detached runner script, its completion marker file, and the throwaway scratch worktree; the reachability probe's synthetic toy spec and its probe transcript; the D1-exception fixture row file and its fixture ledger |
 | Modify | C:\Users\User\.claude\skills\apex-orchestrate\SKILL.md, C:\Users\User\.claude\skills\apex-code\SKILL.md, C:\Users\User\.claude\skills\apex-code\references\parallel-codex.md, C:\Users\User\.claude\skills\apex-code\references\dispatch-pack.md, C:\Users\User\.claude\skills\apex-code\references\workflow-dispatch.md, C:\Users\User\.claude\skills\apex-plan\references\model-routing.md, C:\Users\User\.claude\skills\apex-plan\SKILL.md, C:\Users\User\.claude\skills\apex-governance\levels\L3.md, C:\Users\User\.claude\skills\apex-governance\SKILL.md, C:\Users\User\.claude\agents\apex-coder.md, C:\Users\User\.claude\agents\apex-docs-technical-agent.md, C:\users\user\apex\docs\technical\adr\ADR-046-doctrine-audit-resolutions.md, C:\users\user\apex\docs\technical\adr\ADR-045-four-role-split.md, C:\users\user\apex\docs\technical\adr\ADR-041-wrapper-hardening-scope-cap-pin.md, C:\users\user\apex\docs\technical\harness-known-limits.md, C:\users\user\apex\SKILLS.md, C:\users\user\apex\SKILL-HISTORY.md, C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md, C:\users\user\apex\docs\technical\architecture\overview.md |
-| Delete | Task 8's runner script, marker file, and scratch worktree at teardown — transient artifacts this spec created, outside both repos. No tracked file is deleted by this spec. |
+| Delete | At teardown, only artifacts this spec created under the out-of-repo scratch root: Task 8's runner script, marker file, and scratch worktree; the reachability toy spec and probe transcript; the D1-exception fixture row and fixture ledger. No tracked file in either repo is deleted by this spec. |
 
 ### Commands
 | Command | Purpose |
@@ -537,6 +572,8 @@ The `docs/audit/` directory is different and stricter: TIER-1, refused outright 
 |-----------|-------|
 | `git add -f` | Only the name-listed authorized files of each task, worktree-relative |
 | `git commit` | Per-task: `build(build-orchestrator-contract): task <n>` on the transient task branch; per-spec: drafted, shown, and approved before it executes |
+| `git rebase` | Task 7 race-recovery only: rebase that task's worktree onto the registry files' current tip before re-appending its row |
+| `git checkout <branch> -- <paths>` | Path-scoped integration of each task's authorized files, and the Task 7 race-recovery re-integration. Never `git merge` |
 
 ### Environment Access
 | Variable | Purpose |
@@ -614,7 +651,15 @@ cd ~/.claude/agents && grep -c 'reviewed_run_id' apex-build-orchestrator.md     
 cd ~/.claude/agents && grep -c '## Close-out ordering' apex-build-orchestrator.md      # 1
 cd ~/.claude/agents && grep -ci 'reviewer runs first' apex-build-orchestrator.md       # >=1
 cd ~/.claude/agents && grep -ci 'before the spec is archived' apex-build-orchestrator.md   # >=1
-cd ~/.claude/agents && grep -c 'request_review' apex-build-orchestrator.md             # >=2
+cd ~/.claude/agents && for a in request_review run_docs_agents run_family_gate; do grep -c "$a" apex-build-orchestrator.md; done   # each >=2
+cd ~/.claude/agents && grep -c 'request_review` → `run_docs_agents` → `run_family_gate` → `complete' apex-build-orchestrator.md   # 1
+```
+
+- [ ] **Task 1** — close-out progress is persisted so a resumed instance re-enters at the right rung → verify:
+
+```
+cd ~/.claude/agents && grep -c 'build|review|docs|family_gate|archive' apex-build-orchestrator.md   # 2 (state field + phase paragraph)
+cd ~/.claude/agents && grep -ci 'never emit a directive for a rung earlier' apex-build-orchestrator.md   # 1
 ```
 
 - [ ] **Task 1** — the two-tree fields are present and per-repo integration is stated → verify:
@@ -636,6 +681,27 @@ cd ~/.claude/agents && grep -c '`-Attended`' apex-build-orchestrator.md         
 cd ~/.claude/agents && grep -czoi 'host executes it \*\*only when[[:space:]]*attended\*\*' apex-build-orchestrator.md   # matches (wrap-tolerant)
 cd ~/.claude/agents && grep -c 'params.run_id' apex-build-orchestrator.md             # >=2 (adopt and request_abandon both require it)
 cd ~/.claude/agents && grep -c '"run_id": "<required for adopt and request_abandon' apex-build-orchestrator.md   # 1
+```
+
+- [ ] **Task 1** — exit 75 is carried as a refusal, and the refusal tag's nullability is stated per field → verify:
+
+```
+cd ~/.claude/agents && grep -cE '^\| 75 \| fail \| `call-died-coder-alive` \| refusal \|$' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -cE '^\| 75 \|.*dispatch_result' apex-build-orchestrator.md   # 0
+cd ~/.claude/agents && grep -ci 'final. is ALWAYS null on this tag' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'present for \*\*exit 75\*\*' apex-build-orchestrator.md        # 1
+```
+
+- [ ] **Task 1** — the channel rule is keyed on attendance, with no surviving duration-only rule → verify:
+
+```
+cd ~/.claude/agents && grep -c 'keyed on ATTENDANCE' apex-build-orchestrator.md              # 1
+cd ~/.claude/agents && grep -ci 'attended + long' apex-build-orchestrator.md                 # >=1
+cd ~/.claude/agents && grep -ci 'harness-owned channel' apex-build-orchestrator.md           # >=1
+cd ~/.claude/agents && grep -ci 'migrates to' apex-build-orchestrator.md                     # >=1 (the honest AFK note)
+cd ~/.claude/agents && grep -ci 'never enters an' apex-build-orchestrator.md                 # 1 (ADR-029 other half)
+cd ~/.claude/agents && grep -ci 'never infer it from duration' apex-build-orchestrator.md    # 1
+cd ~/.claude/agents && grep -ci 'foreground-equivalent' apex-build-orchestrator.md           # 0
 ```
 
 - [ ] **Task 1** — the D6 close-out exception is stated on the off-list refusal rule → verify:
@@ -665,7 +731,7 @@ cd ~/.claude && grep -ci 'never a transcript or a whole log' skills/apex-code/SK
 - [ ] **Task 1** — the build-state block is enumerated field by field, including the verbatim pending event → verify:
 
 ```
-cd ~/.claude/agents && for f in spec_digest completed_waves integration_state pending_waves base_sha run_ids refusal_history nudge_count pending_event; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1
+cd ~/.claude/agents && for f in spec_digest completed_waves integration_state pending_waves base_sha run_ids phase refusal_history nudge_count pending_event; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1
 cd ~/.claude/agents && grep -ci 'carried \*\*verbatim\*\*' apex-build-orchestrator.md   # 1
 ```
 
@@ -724,14 +790,17 @@ cd ~/.claude && grep -c 'Interim mechanics' skills/apex-code/SKILL.md        # 1
 cd ~/.claude && git diff -U0 -- skills/apex-code/SKILL.md | grep -c '^+version:'   # 1
 ```
 
-- [ ] **Task 4** — the channel doctrine is in place, the opening paragraph names the dispatched orchestrator, and the ADR-029 supervision gate survives untouched → verify:
+- [ ] **Task 4** — the channel doctrine is in place, the opening paragraph names the dispatched orchestrator, and the ADR-029 supervision gate keeps its own text with the attendance paragraph appended → verify:
 
 ```
 cd ~/.claude/skills/apex-code/references && grep -c '## Dispatch channel' parallel-codex.md  # 1
 cd ~/.claude/skills/apex-code/references && for p in Start-Process marker Monitor detached Version-pinned apex-build-orchestrator; do grep -c "$p" parallel-codex.md; done   # each >=1
-cd ~/.claude/skills/apex-code/references && grep -c '## Supervision gate — parallel-safe is not parallel-eligible' parallel-codex.md   # 1 (ADR-029 section intact)
-cd ~/.claude/skills/apex-code/references && grep -ci 'foreground-equivalent' parallel-codex.md   # >=1 (the precedence rule)
-cd ~/.claude/skills/apex-code/references && grep -ci 'governs \*\*attention\*\*' parallel-codex.md   # 1
+cd ~/.claude/skills/apex-code/references && grep -c '## Supervision gate — parallel-safe is not parallel-eligible' parallel-codex.md   # 1 (ADR-029 section still present)
+cd ~/.claude/skills/apex-code/references && grep -c 'Channel under this gate (owner ruling, 2026-07-31)' parallel-codex.md   # 1 (appended paragraph)
+cd ~/.claude/skills/apex-code/references && grep -ci 'keyed on \*\*attendance\*\*' parallel-codex.md   # >=1
+cd ~/.claude/skills/apex-code/references && grep -ci 'never enters an unattended pool' parallel-codex.md   # 1 (gate's other half intact)
+cd ~/.claude/skills/apex-code/references && grep -ci 'harness-owned' parallel-codex.md              # >=2 (unattended channel, both sections)
+cd ~/.claude/skills/apex-code/references && grep -ci 'foreground-equivalent' parallel-codex.md      # 0 (superseded precedence wording is gone)
 cd ~/.claude/skills/apex-code/references && grep -c 'run_in_background' parallel-codex.md    # 1
 cd ~/.claude/skills/apex-code/references && grep -c 'Launch every task in the sub-wave' parallel-codex.md   # 0
 ```
@@ -761,6 +830,8 @@ cd ~/apex/docs/technical/adr && grep -ci 'interim executor retired' ADR-046-doct
 cd ~/apex/docs/technical/adr && grep -c 'D1-EXCEPTION' ADR-046-doctrine-audit-resolutions.md                # >=1
 cd ~/apex/docs/technical/adr && grep -c "row_kind:'exception'" ADR-046-doctrine-audit-resolutions.md        # >=1
 cd ~/apex/docs/technical/adr && grep -ci 'structural validation' ADR-046-doctrine-audit-resolutions.md      # >=1
+cd ~/apex/docs/technical/adr && grep -ci 'keyed on attendance' ADR-046-doctrine-audit-resolutions.md        # 1
+cd ~/apex/docs/technical/adr && grep -c '2026-07-31' ADR-046-doctrine-audit-resolutions.md                  # >=1 (the owner ruling is dated)
 cd ~/apex/docs/technical/adr && grep -c 'apex-build-orchestrator' ADR-045-four-role-split.md                # >=1
 cd ~/apex/docs/technical/adr && grep -ci 'until the orchestrator' ADR-045-four-role-split.md                # 0
 cd ~/apex/docs/technical/adr && grep -ciE 'superseded|no longer in force' ADR-045-four-role-split.md        # >=1
@@ -794,9 +865,9 @@ cd ~/apex && grep -c 'apex-build-orchestrator' SKILL-HISTORY.md   # >=1
 cd ~/apex && awk '/^## Agents \(6\)/{f=1;next} /^## /{f=0} f&&/^\|/{n++} END{print n-2}' SKILLS.md   # 6
 ```
 
-- [ ] **Task 7** — the recorded versions match the live frontmatter (no second bump) → verify: for each of `apex-code`, `apex-orchestrate`, `apex-governance`, and `apex-plan`, the version string in the newest history row equals that skill's live frontmatter `version`.
-
-- [ ] **Task 8** — the real-codex confirmation ran to natural completion and is recorded: a `.final` was written, the ledger row is terminal (not `running`, `stalled`, or `killed`), wall-clock duration ≥ 10 minutes, the `--json` log ends on a complete final event rather than truncating mid-event, and the appended § Caveats bullet carries all seven recorded fields → verify:
+- [ ] **Task 7** — the recorded versions match the live frontmatter (no second bump), read from THIS spec's row as the newest row → verify: for each of `apex-code`, `apex-orchestrate`, `apex-governance`, and `apex-plan`, the version string in the newest history row equals that skill's live frontmatter `version`.
+- [ ] **Task 7** — the race branch, if it fired, moved the row rather than duplicating it → verify: `grep -c 'apex-build-orchestrator' SKILL-HISTORY.md` is 1 across the whole file, that row is the first data row of the table, and no row from `retro-validator-versioning` or `adr032-predraft-architecture-pass` sits above it.
+- [ ] **Task 8** — the real-codex confirmation ran to natural completion and is recorded: a `.final` was written, the ledger row is terminal (not `running`, `stalled`, or `killed`), the `--json` log ends on a complete final event rather than truncating mid-event, and the appended § Caveats bullet carries all seven recorded fields → verify:
 
 ```
 # scope every field check to the APPENDED bullet, not the whole document
@@ -804,11 +875,15 @@ B="$SCRATCH/apex-t8-bullet.txt"   # session scratch dir, never the repo
 cd ~/apex/docs/research && awk '/\*\*Real-codex confirmation/{f=1} f' issue13-kill-ceiling-rootcause-2026-07-30.md > "$B"
 grep -c 'Real-codex confirmation' "$B"                                    # 1
 for f in 'harness build' 'run id' 'duration' 'ledger status' 'final event' '.final' 'verdict'; do grep -ci -- "$f" "$B"; done   # each >=1
-grep -cE 'duration: *[0-9]+(\.[0-9]+)? *min' "$B"                          # 1, and the number is >= 12
 grep -c 'verdict: confirmed' "$B"                                          # 1 (re-opened is a blocker, not a pass)
+# duration is a NUMERIC comparison against the ledger-derived value, not a presence test:
+# D = (ended - started) in minutes, computed from that run_id's own ledger timestamps
+awk 'match($0,/duration: *[0-9]+(\.[0-9]+)?/){d=substr($0,RSTART+10,RLENGTH-10)+0; print (d>=12) ? "PASS " d : "FAIL " d}' "$B"   # PASS
+# and the recorded number must equal the ledger-derived D (bullet must not be hand-rounded upward)
 ```
 
-- [ ] **Task 8** — the run itself passed its four mechanical checks → verify: the ledger row for that `run_id` has a terminal status (not `running`, `adopting`, `stalled`, or `killed`); `ended - started` on that row is ≥ 12 minutes; the `.final` file exists at the wrapper's reported path; and the last line of the `--json` log parses as a complete final agent event (not a truncated object).
+- [ ] **Task 8** — the run itself passed its four mechanical checks → verify: the ledger row for that `run_id` has a terminal status (not `running`, `adopting`, `stalled`, or `killed`); the numeric difference `ended - started` on that row is **≥ 12.0 minutes** (computed, then compared — never eyeballed from the log); the `.final` file exists at the wrapper's reported path; and the last line of the `--json` log parses as a complete final agent event (not a truncated object).
+- [ ] **Task 8** — the channel used matches the attendance rule → verify: the run was launched via the detached runner (a runner script, a marker file, and a `Monitor` wait exist for it) with the owner attended, which is what the rule assigns to an attended long dispatch — not a foreground call, and not an exception recorded anywhere.
 - [ ] **Task 11** — the two limit cells name the orchestrator and no other row moved → verify:
 
 ```

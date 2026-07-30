@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-30 (late evening)
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| build-orchestrator-contract | PARKED at pass-or-park (Sol r2: 24 of 30 cumulative findings resolved; 8-item closed remainder in handoff `2026-07-30-evening.md` § Wave-2 addendum — 7 mechanical + ONE OWNER ARBITRATION: high-risk channel doctrine, ADR-029 literal sequential-foreground vs the >10-min detached kill-mitigation; churn zone's third form) | `docs/drafts/build-orchestrator-contract.md` | owner arbitrates the channel conflict → one dictated round, or park to wave 3. Builds NOT blocked: interim-executor path governs until this ships |
+| build-orchestrator-contract | PARKED to wave 3 (Sol r3: 31 of 38 cumulative resolved; channel doctrine owner-ratified and IN the spec). 5-item closed remainder, all mechanical: (1) refusal-shape nullability sentence + AC literal contradict the exit-75 live-run_id contract; (2) phase-token AC expects count 2, spec has 1 unspaced + 1 spaced; (3) exit-124 needs a no-final carrier (watchdog leaves child alive); (4) exit-80's request_abandon lacks a structured run_id source; (5) `apex-t8-bullet.txt` missing from scratch Create/Delete | `docs/drafts/build-orchestrator-contract.md` | wave-3 planning reopens with this list (or owner says "one more round" to finish now). Builds NOT blocked: interim-executor governs until this ships |
 
 <!-- CODING:END -->
 
@@ -32,11 +32,9 @@ _Last updated:_ 2026-07-30 (late evening)
 
 ## Open Questions
 
-- **Owner queue:** (1) audit host doctrine calls — `docs/handoff/2026-07-30.md` Decisions +
-  `2026-07-30-evening.md` Decisions (incl. the D1-exception host-takeover ruling); (2) paste the D6
-  allow-list into `~/.claude/settings.json` (7 lines, in chat — classifier blocks the host's write);
-  (3) arbitrate the high-risk channel conflict (In-Flight row); (4) approve the wave-2 sweep commit
-  (drafted in chat).
+- **Owner queue: CLEAR.** Done 2026-07-30/31: doctrine audit ratified (all 11 calls, both handoffs
+  stamped) · channel conflict arbitrated (attendance-keyed: attended=detached, AFK=harness-owned;
+  in the orchestrator spec's final round) · wave-2 sweep committed `f28c038` · D6 allow-list applied.
 - **Wave-3 queue** (all behind the wrapper-hygiene build): sandbox-TEMP fix (research:
   `docs/research/sandbox-temp-research-2026-07-30.md` — wrapper per-run out-of-repo TEMP + artemis
   AGENTS.md redirect deletion + gitignore seeding) · P2(b/c) AGENTS.md verify contracts + per-worktree
