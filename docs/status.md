@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-30
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| issue-13 probes | SUSPENDED — E4 (12.0-min) and E5a (0.9-min) both ended with the manual-stop signature ("was stopped"); no timer fits both. Probing stopped in case the stops were human | `docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md` | owner answers: did you stop those two background tasks? yes → E1–E3 verdict stands (no ceiling while session active); no → harness reap policy, needs one more controlled probe |
+| retro-wrapper-hygiene | PARKED at the Sol gate per pass-or-park: re-verify 20/22 RESOLVED, BLOCK on 5 narrow remainders (closed fix list in handoff `2026-07-30-evening.md`) | `docs/drafts/retro-wrapper-hygiene.md` | owner picks: one more dictated round (recommended) · park to wave 2 · override |
 
 <!-- CODING:END -->
 
@@ -24,6 +24,10 @@ _Last updated:_ 2026-07-30
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
+| retro-wrapper-hygiene *(draft — PARKED, see In-Flight)* | P1(a) capacity lease · P5 orphan/adopt/teardown · ledger telemetry · dwc empty-list refusal · declared_runtime_paths pre-flight. risk:high — 5-item closed fix list pending owner branch decision |
+| retro-planning-gates | P3 reachability · P4(a/e) review-round cap + digest-bound reviews (two-phase sidecar) · template contract-pointer + Permissions-boilerplate fix · P7(a) plan-check max→xhigh. Owns spec-template.md |
+| retro-scope-check-narrowing | P2(a) exact-list scope-check exclusions (presence-split ignored-only predicate, statuses-map snapshot) · `.codex-scratch/` sole sanctioned scratch prescription · lockstep generated per-entry tests |
+| retro-validator-versioning | validator contract version + 11-fixture corpus + report-only migration sweep (-CorpusManifestPath, ERROR rows) · zero semantics change. Prereq: retro-planning-gates (template line) |
 
 ## Open Questions
 
@@ -34,10 +38,13 @@ _Last updated:_ 2026-07-30
   — now carries FOUR pointed dependencies from the sweep: build-orchestrator agent contract ·
   integrated-tree digest binding (first live reproduction: family gate exit-12s on tasks 1–21) ·
   D8 teardown hook allowance P5(c) · D5 docs/audit content-aware classifier change. Plus the D6
-  docs-agent permissions follow-up. **Issue-13 (2026-07-30): historic mechanisms root-caused** (600-s foreground cap + subagent
-  turn-end reap on the mid-July harness; wrapper exonerated — zero kill paths). Current-harness
-  status UNRESOLVED pending one owner answer (see In-Flight row); P1(b) stays gated meanwhile.
-  `docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`.
+  docs-agent permissions follow-up. **Issue-13 CLOSED (2026-07-30):** historic kills = harness-era process-tree deaths (wrapper
+  exonerated); current harness kills nothing (six probes ~100 min incl. a 40-min idle run; E4/E5a
+  classified manual stops). **P1(b) UNBLOCKED** — version-pinned caveat + real-codex ~12-min
+  confirmation goes into P1(b) ACs. `docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`.
+- **Owner decisions (2026-07-30 evening):** P4(b) pre-draft Sol architecture pass = ALL
+  Deep-Details specs (ADR-032 amendment queued, applies from wave 2) · D6 docs-agent allow-list
+  drafted THIS session for owner approval · sandbox-TEMP researched now, spec in wave 2.
 - Cohort + Atlas stratifications DONE (`docs/research/ledger-stratification-2026-07-30.md`):
   ~85% of dwc + 87.5% of critical_violation are two env signatures (sandbox TEMP-in-repo, scratch
   cleanup); Atlas 72%-blocked = denominator artifact (one iterative review spec; AGENTS.md

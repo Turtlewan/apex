@@ -1,10 +1,15 @@
 # Issue-13 root cause: the background kill ceiling (2026-07-30)
 
-**Status: historic mechanisms root-caused (below, solid). Current-harness behavior UNRESOLVED —
-two probe terminations of unknown origin (E4/E5a), indistinguishable from manual task-stops;
-owner asked. Do not treat any current-harness claim here as settled until that answer is in.**
-Evidence dossier: `issue13-evidence-2026-07-30.md` (verbatim ledger rows, file:line cites,
-incident timeline). Investigation run per apex-debug forensic mode.
+**Status: CLOSED 2026-07-30 evening — no kill mechanism exists on the current harness.**
+Final probe E6a ran 40 min to natural completion (480/480 heartbeats), including ~29 min of fully
+idle session — refuting the idle-reap hypothesis; across E1–E6, six probes totaling ~100 min
+survived every launch pattern. The two terminated probes (E4, E5a) coincide exactly with the
+owner's active window at the machine, carry the harness's manual-stop signature, fit no systematic
+timing (12.0 vs 0.9 min), and the owner does not recall stopping them ("don't think so") — verdict:
+almost certainly manual stops, treated as non-mechanistic. **P1(b) is UNBLOCKED** — caveats:
+behavior is harness-version-pinned, and one real-codex ~12-min backgrounded confirmation run goes
+into P1(b)'s acceptance criteria (heartbeats don't exercise the 64-KB stdout-pipe path).
+Evidence dossier: `issue13-evidence-2026-07-30.md`. Investigation per apex-debug forensic mode.
 
 ## Root cause statement
 
@@ -40,18 +45,26 @@ Neither mechanism reproduces today. Lightweight heartbeat probes (file-writing P
 | E4 | host-backgrounded, 71-min probe | terminated at 12.0 min runtime (~10.5 min after last host turn); harness status `killed` / "was stopped" |
 | E5a | host-backgrounded, 40-min probe, session idle | terminated at **0.9 min** runtime; same `killed` / "was stopped" signature |
 | E5b | detached control | unaffected; host killed it during stand-down |
+| E6a | host-backgrounded, 40 min, ~29 min of it fully idle session | **completed exit 0, 480/480 heartbeats, zero gaps** — idle-reap refuted |
+| E6b | detached control, 40 min | completed naturally, 480/480 |
 
-**E4/E5a interpretation — unresolved, two competing explanations:**
-1. **Manual stops.** The "was stopped" phrasing matches deliberate task-stops (natural death reads
-   "completed (exit code N)"), a concurrent session is active on this machine, and no timer fits
-   both data points (12.0 min vs 0.9 min runtime; ~10.5 min vs ~1–2 min post-idle). If the owner
-   stopped them, E4's near-match to the historic band is coincidence, and the E1–E3 conclusion
-   ("no start-anchored ceiling up to at least 16.6 min while the session stays active") stands as
-   the current-harness picture.
-2. **A harness reap policy with non-fixed timing** (idle-triggered but event-based, not a timer).
-   Cannot be excluded from inside the session.
-Owner has been asked which it is; further probing suspended — repeated stops may themselves be a
-human "stop" signal, which is respected.
+**E4/E5a interpretation: manual stops** (owner active at the machine in exactly that window;
+"was stopped" signature vs natural completion's "completed (exit code N)"; no systematic timing
+fits 12.0 and 0.9 min; never reproduced across six surviving probes before or after, including a
+40-min idle-session run). The owner does not recall stopping them; classified non-mechanistic on
+the weight of evidence.
+
+**2026-07-30 20:18 — THIRD occurrence, classification weakened.** A real workload (the
+retro-wrapper-hygiene max-effort Sol plan-check, harness background task) was "was stopped"-killed
+~35+ min into its run — while three sibling xhigh plan-checks (15–25 min) and re-checks completed
+normally as identical background tasks the same evening. The kill took the WRAPPER process; the
+codex child survived and kept writing its log (the 8c shape) and the run was salvaged by
+log-monitoring + adopt-path closure. Three "was stopped" events with no user recollection and no
+consistent timing now look less like manual stops; an intermittent harness/task-manager stop
+mechanism cannot be ruled out. Operational mitigation (proven, doctrine-sweep + tonight): dispatch
+long codex runs via the DETACHED-RUNNER pattern (Start-Process + marker files + Monitor), which is
+invisible to whatever issues the stops. Root cause of the stop events themselves: UNRESOLVED —
+parked; the mitigation makes it non-blocking.
 
 **Facts that stand regardless (current harness, 2026-07-30):** foreground tool-timeout migrates
 the call to background instead of killing it (E1); an owning subagent's turn end alone does not
