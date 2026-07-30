@@ -16,7 +16,7 @@ _Last updated:_ 2026-07-30
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| doctrine-sweep close-out | built 23/23 · verified · reviewed (FLAG→fixed) · archived — **awaiting the two commit approvals** | `docs/changes/done/doctrine-sweep.md` | owner approves the two drafted commits (handoff § Build addendum); on approval, host commits path-scoped + appends the ADR-042 human-review gate rows |
+| issue-13 probes | SUSPENDED — E4 (12.0-min) and E5a (0.9-min) both ended with the manual-stop signature ("was stopped"); no timer fits both. Probing stopped in case the stops were human | `docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md` | owner answers: did you stop those two background tasks? yes → E1–E3 verdict stands (no ceiling while session active); no → harness reap policy, needs one more controlled probe |
 
 <!-- CODING:END -->
 
@@ -27,18 +27,23 @@ _Last updated:_ 2026-07-30
 
 ## Open Questions
 
-- **Owner queue (2026-07-30, handoff `docs/handoff/2026-07-30.md` + its Build addendum):**
-  (1) approve the two doctrine-sweep commits (drafts in the handoff); (2) apply staged CLAUDE.md:
-  `! cp ~/CLAUDE.md.new ~/.claude/CLAUDE.md && rm ~/CLAUDE.md.new`; (3) audit the host's
-  autonomous doctrine calls (handoff Decisions list).
+- **Owner queue (2026-07-30):** staged CLAUDE.md applied 18:2x ✔ (D1 worktree-branch carve-out now
+  live). Remaining: audit the host's autonomous doctrine calls (handoff `docs/handoff/2026-07-30.md`
+  Decisions list). Doctrine-sweep is COMMITTED: apex `9e3deb1` · ~/.claude `2c9f1f5`.
 - **Next planning target: the retro P1–P7 spec set** (`docs/research/artemis-retro-2026-07-29.md`)
   — now carries FOUR pointed dependencies from the sweep: build-orchestrator agent contract ·
   integrated-tree digest binding (first live reproduction: family gate exit-12s on tasks 1–21) ·
   D8 teardown hook allowance P5(c) · D5 docs/audit content-aware classifier change. Plus the D6
-  docs-agent permissions follow-up. Prerequisite task: issue-13 kill-ceiling root-cause.
-- Queued analyses: done_with_concerns/critical_violation/retry cohort stratification; Atlas
-  blocked-row stratification; `attended` telemetry definition; effort-policy bakeoff evidence
-  (this build ran all-medium: 23/23 green, 2 concerns, 1 sandbox crash).
+  docs-agent permissions follow-up. **Issue-13 (2026-07-30): historic mechanisms root-caused** (600-s foreground cap + subagent
+  turn-end reap on the mid-July harness; wrapper exonerated — zero kill paths). Current-harness
+  status UNRESOLVED pending one owner answer (see In-Flight row); P1(b) stays gated meanwhile.
+  `docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`.
+- Cohort + Atlas stratifications DONE (`docs/research/ledger-stratification-2026-07-30.md`):
+  ~85% of dwc + 87.5% of critical_violation are two env signatures (sandbox TEMP-in-repo, scratch
+  cleanup); Atlas 72%-blocked = denominator artifact (one iterative review spec; AGENTS.md
+  hypothesis refuted); 60% of retry churn = sandbox-verify gap. **New retro lever not in P1–P7:
+  writable out-of-repo TEMP in the sandbox profile.** Still queued: `attended` telemetry
+  definition; effort-policy bakeoff evidence (last build all-medium: 23/23 green).
 - Remaining catalogued debt: scopelock's 2 pre-existing failures · verdict-test try-placement ·
   `tasks/` runtime-exclusion (retro P5(d)). Manual cleanups owed: `%TEMP%\apex-wt-c45` + branch
   `wave-c45`; bulk `artemis-wt-*` (P5(c) mechanism).
