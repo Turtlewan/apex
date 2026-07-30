@@ -10,13 +10,13 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/hooks/apex-session-context.md` (hook-injected), not here. See ADR-037.
 
-_Last updated:_ 2026-07-30
+_Last updated:_ 2026-07-30 (late evening)
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| retro-wrapper-hygiene | PARKED at the Sol gate per pass-or-park: re-verify 20/22 RESOLVED, BLOCK on 5 narrow remainders (closed fix list in handoff `2026-07-30-evening.md`) | `docs/drafts/retro-wrapper-hygiene.md` | owner picks: one more dictated round (recommended) · park to wave 2 · override |
+| build-orchestrator-contract | PARKED at pass-or-park (Sol r2: 24 of 30 cumulative findings resolved; 8-item closed remainder in handoff `2026-07-30-evening.md` § Wave-2 addendum — 7 mechanical + ONE OWNER ARBITRATION: high-risk channel doctrine, ADR-029 literal sequential-foreground vs the >10-min detached kill-mitigation; churn zone's third form) | `docs/drafts/build-orchestrator-contract.md` | owner arbitrates the channel conflict → one dictated round, or park to wave 3. Builds NOT blocked: interim-executor path governs until this ships |
 
 <!-- CODING:END -->
 
@@ -24,36 +24,31 @@ _Last updated:_ 2026-07-30
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| retro-wrapper-hygiene *(draft — PARKED, see In-Flight)* | P1(a) capacity lease · P5 orphan/adopt/teardown · ledger telemetry · dwc empty-list refusal · declared_runtime_paths pre-flight. risk:high — 5-item closed fix list pending owner branch decision |
+| retro-wrapper-hygiene | P1(a) capacity lease · P5 orphan/adopt/teardown (Exit-Dispatch, obligation events, abandon CAS) · ledger telemetry · dwc empty-list refusal · declared_runtime_paths pre-flight. risk:high, Sol CLEAN r7. **Builds FIRST** (wrapper file gates wave 3) |
 | retro-planning-gates | P3 reachability · P4(a/e) review-round cap + digest-bound reviews (two-phase sidecar) · template contract-pointer + Permissions-boilerplate fix · P7(a) plan-check max→xhigh. Owns spec-template.md |
-| retro-scope-check-narrowing | P2(a) exact-list scope-check exclusions (presence-split ignored-only predicate, statuses-map snapshot) · `.codex-scratch/` sole sanctioned scratch prescription · lockstep generated per-entry tests |
-| retro-validator-versioning | validator contract version + 11-fixture corpus + report-only migration sweep (-CorpusManifestPath, ERROR rows) · zero semantics change. Prereq: retro-planning-gates (template line) |
+| retro-scope-check-narrowing | P2(a) exact-list scope-check exclusions (presence-split predicate, statuses-map snapshot) · `.codex-scratch/` sole sanctioned scratch · lockstep generated tests. Shared-file edge w/ orchestrator spec declared |
+| retro-validator-versioning | validator contract version + 11-fixture corpus + report-only sweep (-CorpusManifestPath, ERROR rows) · zero semantics change. Prereq: retro-planning-gates |
+| adr032-predraft-architecture-pass | pre-draft Sol architecture pass, mandatory all Deep-Details (owner 2026-07-30) · approval-gate enforcement for risk:high · always-recorded sidecar row (`— (pre-draft)` sentinel no-op) · cold-read sidecar exclusion. Prereq: retro-planning-gates |
 
 ## Open Questions
 
-- **Owner queue (2026-07-30):** staged CLAUDE.md applied 18:2x ✔ (D1 worktree-branch carve-out now
-  live). Remaining: audit the host's autonomous doctrine calls (handoff `docs/handoff/2026-07-30.md`
-  Decisions list). Doctrine-sweep is COMMITTED: apex `9e3deb1` · ~/.claude `2c9f1f5`.
-- **Next planning target: the retro P1–P7 spec set** (`docs/research/artemis-retro-2026-07-29.md`)
-  — now carries FOUR pointed dependencies from the sweep: build-orchestrator agent contract ·
-  integrated-tree digest binding (first live reproduction: family gate exit-12s on tasks 1–21) ·
-  D8 teardown hook allowance P5(c) · D5 docs/audit content-aware classifier change. Plus the D6
-  docs-agent permissions follow-up. **Issue-13 CLOSED (2026-07-30):** historic kills = harness-era process-tree deaths (wrapper
-  exonerated); current harness kills nothing (six probes ~100 min incl. a 40-min idle run; E4/E5a
-  classified manual stops). **P1(b) UNBLOCKED** — version-pinned caveat + real-codex ~12-min
-  confirmation goes into P1(b) ACs. `docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`.
-- **Owner decisions (2026-07-30 evening):** P4(b) pre-draft Sol architecture pass = ALL
-  Deep-Details specs (ADR-032 amendment queued, applies from wave 2) · D6 docs-agent allow-list
-  drafted THIS session for owner approval · sandbox-TEMP researched now, spec in wave 2.
-- Cohort + Atlas stratifications DONE (`docs/research/ledger-stratification-2026-07-30.md`):
-  ~85% of dwc + 87.5% of critical_violation are two env signatures (sandbox TEMP-in-repo, scratch
-  cleanup); Atlas 72%-blocked = denominator artifact (one iterative review spec; AGENTS.md
-  hypothesis refuted); 60% of retry churn = sandbox-verify gap. **New retro lever not in P1–P7:
-  writable out-of-repo TEMP in the sandbox profile.** Still queued: `attended` telemetry
-  definition; effort-policy bakeoff evidence (last build all-medium: 23/23 green).
+- **Owner queue:** (1) audit host doctrine calls — `docs/handoff/2026-07-30.md` Decisions +
+  `2026-07-30-evening.md` Decisions (incl. the D1-exception host-takeover ruling); (2) paste the D6
+  allow-list into `~/.claude/settings.json` (7 lines, in chat — classifier blocks the host's write);
+  (3) arbitrate the high-risk channel conflict (In-Flight row); (4) approve the wave-2 sweep commit
+  (drafted in chat).
+- **Wave-3 queue** (all behind the wrapper-hygiene build): sandbox-TEMP fix (research:
+  `docs/research/sandbox-temp-research-2026-07-30.md` — wrapper per-run out-of-repo TEMP + artemis
+  AGENTS.md redirect deletion + gitignore seeding) · P2(b/c) AGENTS.md verify contracts + per-worktree
+  venv · family-gate integrated-tree digest binding (first repro exists) · apex-plan:156 residual is
+  now owned by the parked orchestrator spec.
+- Queued analyses: `attended` telemetry definition (ships in wrapper spec) · effort-policy bakeoff
+  evidence (P7 a3) · post-ship scope-check re-census (~10 build days after wave 2).
 - Remaining catalogued debt: scopelock's 2 pre-existing failures · verdict-test try-placement ·
-  `tasks/` runtime-exclusion (retro P5(d)). Manual cleanups owed: `%TEMP%\apex-wt-c45` + branch
-  `wave-c45`; bulk `artemis-wt-*` (P5(c) mechanism).
+  `tasks/` runtime-exclusion (P5(d), ships in wrapper spec). Manual cleanups owed: `%TEMP%\apex-wt-c45`
+  + branch `wave-c45` · bulk `artemis-wt-*` · `%TEMP%\codex-*-plan-check*` Sol report files (~15) ·
+  ledger orphan `3b651688` (dead plan-check row, adopt/abandon when P5 ships).
 - A concurrent session is active in this repo and ~/.claude (its `docs/drafts/gpt-5.6-family-adoption.md`
-  edit and new `hooks/apex-ledger-append.ps1` are theirs — do not touch).
+  edit and `hooks/apex-ledger-append.ps1` are theirs — do not touch). It ran builds this evening
+  (`newsletter-daily-synthesis`, `dismissal-vocabulary-widening`).
 <!-- PLANNING:END -->

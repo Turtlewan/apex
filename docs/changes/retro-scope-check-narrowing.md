@@ -39,6 +39,7 @@ Simplicity check: yes — a blanket "exclude any ignored cache-shaped directory"
 
 ## Prerequisites
 - Specs that must be complete first: none
+- Shared-file edge (declared both sides): `build-orchestrator-contract` also modifies `skills/apex-code/references/dispatch-pack.md` — disjoint regions (this spec's Task 5 at `:22-25` and after `:43`; that spec at `:98`), so the two never co-edit a line. Ordering edge nonetheless: `build-orchestrator-contract` builds AFTER this spec, and its integration must rebase onto this spec's dispatch-pack changes. The two are therefore NOT eligible for cross-spec parallel build (ADR-029 file-disjointness)
 - Environment setup: an isolated git worktree copy of `~/.claude` for Tasks 1, 2, 3 and 5 (host-provisioned), with worktree-root-relative paths. Task 4 is host-executed in the `~/apex` repo at close-out and never enters a dispatch.
 
 ## Files to Change

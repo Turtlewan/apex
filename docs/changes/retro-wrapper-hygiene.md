@@ -24,7 +24,9 @@ docs/research/ledger-stratification-2026-07-30.md.
   - Every refusal AFTER lease acquisition leaves **no dispatch record** and **no dispatch log** on
     disk (ADR-040 as amended by Task 10): only the lease row and its appended `refused-preflight`
     close event, which are lease artifacts, not dispatch records. Refusals BEFORE lease acquisition
-    (exit 74 caller-contract, exit 79 at-capacity) leave nothing at all.
+    (exit 74 caller-contract, exit 79 at-capacity) leave **no lease or dispatch record**; the only
+    artifact they may leave is a `row_kind:'obligation'` event, and only when `-OwnedWorktree`
+    teardown must record one.
   - The refusal-recording path is append-only; the ONLY rewrite this spec adds is Task 3's orphan
     batch pass, which is idempotent and touches only rows it transitions.
   - A dead `running`/`adopting`/`stalled` row, and a `leasing` row with no matching `lease_close`
@@ -33,8 +35,11 @@ docs/research/ledger-stratification-2026-07-30.md.
   - Worktree teardown never runs `git worktree remove --force`, never runs with a non-empty
     `git status --porcelain`, never runs while an unresolved sibling row holds the tree, and never
     deletes a branch (ADR-046 D8).
-  - Every wrapper-written ledger row carries `log_path`, `effort`, and an `attended` property that is
-    ALWAYS present, valued `true`, `false`, or `null` (`null` = not reported by the caller).
+  - Every DISPATCH row this wrapper creates at dispatch time carries `log_path`, `effort`, and an
+    `attended` property that is ALWAYS present, valued `true`, `false`, or `null` (`null` = not
+    reported by the caller) — this exempts `lease_close` and `obligation` event rows, whose schemas
+    stand as defined in Tasks 1 and 5, and adopted legacy rows, which are preserved and never
+    synthesized (Task 6).
 - **Scope limit (Task 9):** the declared-path check proves visibility **in this worktree at this
   commit only**; cross-worktree and integration-branch divergence is out of scope.
 - **Scope limit (cap):** the cap is enforced **per state root** — the `APEX_STATE_DIR` →
@@ -162,23 +167,32 @@ must be merged by hand anyway.
   coerce (`[int]` for `max_parallel_codex`, `@()` for list keys) only after the sentinel test. On a
   breach,
   print a `[dispatch] AT CAPACITY (exit 79)` line naming which bound was hit, both counter values,
-  and each occupying row's `spec/task/pid/effort`, then `Exit-Dispatch 79` **without appending
-  anything** (no lease was taken, so the outer finally has nothing to close).
+  and each occupying row's `spec/task/pid/effort`, then `Exit-Dispatch 79` — routed like every other
+  guarded-region exit, since Task 1's hoist has already produced `$runId` and the outer `try` now
+  covers this check. It appends no `lease_close` row all the same, because the backstop rule below is
+  keyed on an OPEN LEASE, not on reaching the finally.
   Otherwise append this run's row with `status = 'leasing'`, `row_kind = 'lease'`, and fields
   `run_id`, `launcher_pid`, `launcher_start`, `worktree`, `worktree_key`, `spec`, `task`, `phase`,
   `sandbox`, `started`, `log_path`, `effort`, using the same trailing-newline repair as :1327-1341.
-  Register the lease as open, and make the outer `finally` at :2077 the **single** closer: when the
-  lease is still registered open, it calls
+  Register the lease as open, and make the outer `finally` at :2077 the **single** closer. State its
+  backstop rule ONCE, here, as the only place that decides whether a close row is written:
+  `Add-LeaseCloseRow` fires **if and only if an OPEN LEASE exists for this `run_id`** — i.e. the
+  ledger holds a `row_kind:'lease'` row for it with no prior `row_kind:'lease_close'` row (the
+  `Get-OpenLeaseRunIds` join). When it fires it calls
   `Add-LeaseCloseRow -RunId $runId -Status 'refused-preflight' -RefusalExit $script:pendingExitCode`
   exactly once (the sentinel `'unknown'` is written verbatim when an uninstrumented throw unwound the
-  guarded region). No other site in the script may call `Add-LeaseCloseRow`. Clear the registration
-  once the reservation at :1313-1342 completes, so a launched run's lease is never closed as a
-  refusal. Change that reservation from
+  guarded region). A pre-lease refusal therefore appends nothing even though it now passes through
+  the same finally, and a double close is structurally impossible. No other site in the script may
+  call `Add-LeaseCloseRow`. Clear the registration once the reservation at :1313-1342 completes, so a
+  launched run's lease is never closed as a refusal. Change that reservation from
   an append to an in-place `Update-LedgerRow -RowKind 'lease'` that sets the remaining `$ledgerRow`
   fields, flips `row_kind` to `'dispatch'`, and sets `status = 'running'`. Record in a comment at the
-  lease which exits are LEASE-SCOPED (71, 72, 76, 78, 80, 81 — taken after the lease, each closing it
-  through the finally) and which are PRE-LEASE (74 caller-contract at :77-123 and :979, and 79
-  at-capacity — taken before a lease or a `run_id` exists, so they legitimately leave no row at all).
+  lease which exits are LEASE-SCOPED (71, 72, 76, 78, 80, 81 — taken while an open lease exists, each
+  closing it through the finally) and which are PRE-LEASE (74 caller-contract at :77-123 and :979,
+  and 79 at-capacity — taken before any `row_kind:'lease'` row exists, so the backstop finds no open
+  lease and they leave no lease or dispatch record; the only permitted artifact is the
+  `row_kind:'obligation'` event of Task 5, and only for an `-OwnedWorktree` exit 79. At 79 a `$runId`
+  DOES exist; it is only the lease row that does not.).
   Add `leasing` to the status set in
   `Get-LiveDispatches` (:465) so the one-coder-per-tree seatbelt covers the pre-flight window.
   — files: C:\Users\User\.claude\skills\apex-code\scripts\codex-dispatch.ps1,
@@ -194,9 +208,11 @@ must be merged by hand anyway.
   and the LEASE-SCOPED exits 72 and 76 each leave **no** `row_kind: dispatch` row for that `run_id`,
   exactly one `row_kind: lease` row, and exactly one appended `row_kind: lease_close` row whose
   `status` is `refused-preflight` and whose `refusal_exit` equals the returned exit code; while the
-  PRE-LEASE exits 74 and 79 leave the ledger with no row of any kind for that dispatch. Aside from
-  rows transitioned by Task 3's orphan pass, every pre-existing ledger line is byte-identical before
-  and after a refusal.
+  PRE-LEASE exits 74 and 79 leave the ledger with no `lease` and no `dispatch` row for that
+  dispatch — their only permitted artifact is a `row_kind: 'obligation'` event, and only when
+  `-OwnedWorktree` teardown had to record one (Task 5), so a plain exit-74 or exit-79 run leaves zero
+  rows. Aside from rows transitioned by Task 3's orphan pass, every pre-existing ledger line is
+  byte-identical before and after a refusal.
 
 - [ ] **Task 2A: Route every exit site in the guarded region through `Exit-Dispatch`.** The guarded
   region runs from the lease append (Task 2) to the reservation upgrade at :1313-1342. Replace the
@@ -207,19 +223,24 @@ must be merged by hand anyway.
   (pre-flight helper/pin/baseline refusals); :1089, :1091, :1102, :1104, :1107, :1109, :1114, :1116,
   :1124, :1126, :1133, :1135 (spec-validation and cross-tree spec refusals); :1287-1289 (exit 78,
   reviewed-build lookup); :1349 and :1364 (exit 71, malformed line and live sibling). Also route the
-  new exits added by Tasks 4 and 9 through it. Exit sites OUTSIDE the guarded region — the
-  caller-contract block at :77-123, the authorized-list gate at :979-982, the at-capacity exit 79
-  (no lease exists yet), and every exit after the reservation upgrade (:1583, :1683, :2010, :2016,
-  :2026, :2032, :2040, :2049, :2053, :2063, :2065) — keep their bare `exit` and MUST NOT be
-  converted, because no lease is open across them.
+  new exits added by Tasks 4 and 9 through it — **and the at-capacity exit 79 from Task 2, which IS
+  inside the relocated try and does have a `$runId`; it routes through `Exit-Dispatch` like the rest
+  and writes no close row purely because the finally's backstop finds no open lease.** Exit sites
+  genuinely OUTSIDE the guarded region — the caller-contract block at :77-123, the authorized-list
+  gate at :979-982, and every exit after the reservation upgrade (:1583, :1683, :2010, :2016, :2026,
+  :2032, :2040, :2049, :2053, :2063, :2065) — keep their bare `exit` and MUST NOT be converted,
+  because the try does not cover them.
   — files: C:\Users\User\.claude\skills\apex-code\scripts\codex-dispatch.ps1,
   C:\Users\User\.claude\skills\apex-code\scripts\dispatch-preflight-test.ps1
   — done when: every listed guarded-region site calls `Exit-Dispatch`; a forced refusal at each of
   exits 71, 72, 76, and 78 produces exactly ONE `lease_close` row whose `refusal_exit` equals the
   wrapper's actual exit code — 76 included, asserted explicitly; the wrapper still returns that
-  contractual code (not an exception and not 1); a forced exit 74 and a forced exit 79 produce no row
-  at all; and an uninstrumented throw inside the guarded region produces exactly one `lease_close`
-  row with `refusal_exit: "unknown"`.
+  contractual code (not an exception and not 1); a forced exit 79 calls `Exit-Dispatch` yet still
+  writes neither a `lease` nor a `dispatch` row — its sole permitted artifact is the Task-5
+  `row_kind:'obligation'` event, and only under `-OwnedWorktree`; a forced exit 74 likewise writes
+  neither, and takes no obligation path at all (pre-identity, outside the try); and an uninstrumented
+  throw inside the guarded region produces exactly one `lease_close` row with
+  `refusal_exit: "unknown"`.
 
 - [ ] **Task 3: Dead rows transition to `orphaned`, never to terminal (P5a).** In the same
   `Invoke-WithLedgerLock` hold that Task 2 uses for the capacity scan, collect every row that is
@@ -285,8 +306,10 @@ must be merged by hand anyway.
   :1322). Add parameters `[string]$AbandonRunId` and `[string]$AbandonReason`. When `-AbandonRunId`
   is supplied, refuse with exit 74 in the contract block at :77-123 if
   `[string]::IsNullOrWhiteSpace($AbandonReason)` — a whitespace-only reason is not a reason — and
-  refuse with **exit 83** if `-Attended` is not bound: the attended-only rule is a MECHANISM, not a
-  printed warning, so an AFK caller cannot waive five gates. Then run a standalone mode that takes
+  refuse with **exit 83** unless `-Attended` is BOTH bound AND `$true` — test the VALUE, not merely
+  the binding, because `-Attended:$false` binds the parameter while reporting unattended and would
+  otherwise sail through: the attended-only rule is a MECHANISM, not a printed warning, so an AFK
+  caller cannot waive five gates. Then run a standalone mode that takes
   ONE `Invoke-WithLedgerLock` hold and, inside it, re-reads that row (selected by `run_id` +
   `row_kind`) and applies two preconditions before mutating anything. **(a) Recoverable-status
   guard:** proceed only when the row's current status is `orphaned`, or is one of
@@ -318,8 +341,8 @@ must be merged by hand anyway.
   `-AbandonRunId <id> -AbandonReason "<text>"` succeeds and the same dispatch then reserves and
   launches against a clean snapshot; abandoning a `row_kind: lease` row whose tree is dirty ALSO
   exits 82 (no lease exemption); abandoning a row whose status is terminal, is `adopting`, or whose
-  `Test-LedgerRowLive` is `$true`, exits 82 and mutates nothing; omitting `-Attended` exits 83 and
-  mutates nothing; a concurrent `-Adopt` and `-AbandonRunId` against one orphaned row leave exactly
+  `Test-LedgerRowLive` is `$true`, exits 82 and mutates nothing; BOTH omitting `-Attended` **and**
+  passing `-Attended:$false` exit 83 and mutate nothing; a concurrent `-Adopt` and `-AbandonRunId` against one orphaned row leave exactly
   one winner and the loser exits with its refusal code; the abandoned row parses with
   `waived_gates` equal to the five-element list `scope,critical,digest,pin,encoding` and a non-empty
   `abandon_reason`; and `-AbandonRunId` with a missing, empty, or whitespace-only `-AbandonReason`
@@ -332,8 +355,11 @@ must be merged by hand anyway.
   line of the FIRST record of `git -C <worktree> worktree list --porcelain`), the commit
   (`git -C <worktree> rev-parse HEAD`), and the branch via
   `git -C <worktree> symbolic-ref --quiet --short HEAD`. If that symbolic-ref fails, HEAD is DETACHED
-  — remove nothing, and record a `cleanup_obligation` naming the worktree path, the main repo path,
-  and the sha, with the guidance that the operator must identify and remove the tree by hand. Then
+  — remove nothing, and record the obligation with `teardown_branch = '(detached)'`. Define ONE
+  structured obligation record used by EVERY outcome below, so no path is free-text-only:
+  `teardown_main_repo`, `teardown_sha`, `teardown_branch` (branch name or the `(detached)` marker),
+  `teardown_worktree` (the path), and a `cleanup_obligation` / `branch_teardown_obligation` string
+  that is a human summary ONLY — never the sole carrier of a value `-ListObligations` needs. Then
   take a `Invoke-WithLedgerLock` hold **on its own freshly constructed
   `[System.Threading.Mutex]::new($false, 'ApexCodexRunLedger')` handle**, never on the script-level
   `$ledgerMutex`, which the inner finally at :2075 has already disposed by the time the outer finally
@@ -343,31 +369,43 @@ must be merged by hand anyway.
   unresolved adds `orphaned` and `adopting` rows and open `leasing` rows: an orphan still needs that
   tree for its adoption, and removing it destroys the only copy. `-AllowSharedWorktree` does **not**
   override (b): it permits a concurrent coder, it does not permit deleting the tree out from under
-  one. If either precondition fails, remove nothing — `Update-LedgerRow -RowKind 'dispatch'` (or
-  `'lease'` when this run never reserved, so the obligation lands on exactly one row) with
+  one. If either precondition fails, remove nothing and write the FULL structured record —
+  `Update-LedgerRow -RowKind 'dispatch'` (or `'lease'` when this run never reserved, so it lands on
+  exactly one row) setting all five fields plus
   `cleanup_obligation = "worktree <path> retained: <dirty|live sibling <run_id>|unresolved sibling <run_id>|detached HEAD>: <first 200 chars of porcelain output or the git error>"`
-  and print the exact removal command for the user. With both satisfied, run
+  — and print the exact removal command. The dirty-tree refusal, the live/unresolved-sibling refusal,
+  the detached-HEAD refusal, and the catch-path failure below ALL write that same field set; a
+  refusal row must be exactly as actionable as a success row. With both preconditions satisfied, run
   `git -C <mainRepo> worktree remove "<worktree path>"` with **no** `--force` — `-C`'d to the MAIN
   repo, never to the worktree being removed, which git refuses as self-referential — and on success
-  set `cleanup_obligation = ''`, on non-zero exit set it to the git error text. Never invoke
-  `git branch -d`, `git branch -D`, or `git worktree prune`; instead, when removal succeeded, record
-  the obligation as a SELF-CONTAINED record — `branch_teardown_obligation` set to the branch name,
-  plus `teardown_main_repo` (the main repo path) and `teardown_sha` (the captured commit) — because
-  the worktree path no longer exists afterwards and a later parameterless `-ListObligations` must be
-  able to print a runnable command from the record alone (D8(b) keeps the deletion with the user).
+  set `cleanup_obligation = ''` while KEEPING the structured fields, on non-zero exit set
+  `cleanup_obligation` to the git error text. Never invoke `git branch -d`, `git branch -D`, or
+  `git worktree prune`; instead, when removal succeeded, set `branch_teardown_obligation` to the
+  branch name atop the same structured fields — the worktree path no longer exists afterwards, so a
+  later parameterless `-ListObligations` must be able to build a runnable command from the record
+  alone (D8(b) keeps the deletion with the user). **If this run has NO row to update** — a
+  post-identity refusal under `-OwnedWorktree` where no `lease` or `dispatch` row was ever written —
+  APPEND a standalone event row `row_kind: 'obligation'` carrying `run_id`, all five structured
+  fields, `refusal_exit`, and `ended`, rather than dropping the obligation on the floor. This applies
+  to exits **79, 80, and 81 only**; exit 74 is excluded because both its sites (:77-123 and :979-982)
+  run before Task 1's hoisted identity block and outside the relocated try, so no `$runId` and no
+  teardown call exist there at all (Task 2A).
   Call `Invoke-CreatorTeardown` only from the outer `finally` at :2077-2088, only when
   `$OwnedWorktree` is set **and** this run has reached a terminal state — which includes a run closed
   by the Task 2 finally as `refused-preflight` (a lease that never dispatched leaves a clean,
   never-built tree, and that tree is exactly what should be removed). Wrap the call in
   `try { } catch { }` so a teardown failure cannot mask the wrapper's exit code (the reason
   `$process.Dispose()` is guarded at :2074), but the catch MUST NOT swallow silently: it prints the
-  exception and records it as a `cleanup_obligation` on this run's row. Add a standalone
-  `[switch]$ListObligations` mode that requires no other parameter: under the ledger lock it reads
-  the ledger once and prints, per row carrying a non-empty `cleanup_obligation` or
+  exception and records it as a `cleanup_obligation` with the same structured fields. Add a
+  standalone `[switch]$ListObligations` mode that requires no other parameter: under the ledger lock
+  it reads the ledger once and scans rows of EVERY kind — `dispatch`, `lease`, and the new
+  `obligation` event rows — printing, per row carrying a non-empty `cleanup_obligation` or
   `branch_teardown_obligation`, the `run_id`, `spec/task`, the obligation text, and the exact
-  runnable command built from the record's own fields — `git -C "<teardown_main_repo>" branch -d "<branch>"`
-  for a branch obligation, `git -C "<teardown_main_repo>" worktree remove "<worktree>"` for a
-  retained tree — then exits 0 without dispatching.
+  runnable command built ONLY from the structured fields, never parsed back out of the summary
+  string: `git -C "<teardown_main_repo>" branch -d "<teardown_branch>"` for a branch obligation, and
+  `git -C "<teardown_main_repo>" worktree remove "<teardown_worktree>"` for a retained tree. A
+  `teardown_branch` of `(detached)` prints the removal command plus the `teardown_sha` and no branch
+  command. Then exit 0 without dispatching.
   — files: C:\Users\User\.claude\skills\apex-code\scripts\codex-dispatch.ps1,
   C:\Users\User\.claude\skills\apex-code\scripts\dispatch-test.ps1
   — done when, verified against REAL `git worktree add` trees on this Windows machine (not a mocked
@@ -378,34 +416,46 @@ must be merged by hand anyway.
   naming it; a run with `-OwnedWorktree` **and** `-AllowSharedWorktree` and a seeded LIVE sibling row
   on the same `worktree_key` removes nothing and records a `cleanup_obligation` naming that sibling's
   `run_id`; the same holds for a seeded ORPHANED sibling row; a worktree checked out at a detached
-  HEAD is never removed and records the detached-HEAD obligation with its sha; a `-OwnedWorktree` run
-  refused at exit 81 over a clean never-built tree still removes that tree; a run whose ledger
-  carries both a `lease` and a `lease_close` row for one `run_id` has the obligation on exactly ONE
-  of them; the parameterless `-ListObligations` output is copy-pasteable AS-IS (each printed command
-  runs successfully against the recorded main repo without further editing) and exits 0; and
-  exits 0; and `Select-String -Pattern 'worktree remove.*--force|branch -[dD]' codex-dispatch.ps1`
-  returns no matches.
+  HEAD is never removed and records `teardown_branch: "(detached)"` with its sha; **every one of
+  those four refusal rows, and the success row, carries the complete
+  `teardown_main_repo`/`teardown_sha`/`teardown_branch`/`teardown_worktree` set**; a `-OwnedWorktree`
+  run refused at exit 81 over a clean never-built tree still removes that tree; a `-OwnedWorktree`
+  run refused PRE-LEASE at exit 79 with a retained tree appends a `row_kind: 'obligation'` row
+  carrying those fields and `refusal_exit: 79`; a run whose ledger carries both a `lease` and a
+  `lease_close` row for one `run_id` has the obligation on exactly ONE of them; the parameterless
+  `-ListObligations` output is copy-pasteable AS-IS — asserted specifically against a
+  SIBLING-REFUSAL row and an `obligation` row, whose printed commands each run successfully against
+  the recorded main repo without further editing — and exits 0; and
+  `Select-String -Pattern 'worktree remove.*--force|branch -[dD]' codex-dispatch.ps1` returns no
+  matches.
 
 - [ ] **Task 6: `effort`, `attended`, and `log_path` on every wrapper-written row (P6, P7a2).** Add
   `[switch]$Attended` to the param block at :9-70. In `$ledgerRow` (:1216-1258) add
   `effort = $Effort` and `attended = $(if ($PSBoundParameters.ContainsKey('Attended')) { [bool]$Attended } else { $null })`.
-  The contract is ONE shape: the `attended` property is ALWAYS present on a wrapper-written row and
-  carries `true`, `false`, or JSON `null` — `null` meaning the caller reported nothing, which is what
-  keeps absence-of-telemetry distinguishable from a reported `false`. Never omit the property. Add the same three fields to
-  the lease row written in Task 2, to the `lease_close` row written by `Add-LeaseCloseRow` (Task 1) —
-  a refusal record with no `log_path`/`effort`/`attended` is not analysable — and to
-  `Invoke-Adopt`'s adopting/terminal `Update-LedgerRow` calls
-  (:771-777, :902-914) by carrying the values already present on the selected row and back-filling
-  `log_path` from `$match.log_path` when present. In `Invoke-Adopt`, print the log location as
-  `$match.log_path` instead of leaving it unmentioned (:659-663). The matching documentation edits
+  The contract is ONE shape, and it is scoped to rows THIS WRAPPER CREATES AT DISPATCH TIME: on such
+  a row the `attended` property is ALWAYS present, carrying `true`, `false`, or JSON `null` — `null`
+  meaning the caller reported nothing, which is what keeps absence-of-telemetry distinguishable from
+  a reported `false`. Never omit the property on a row the wrapper creates. It does NOT extend to
+  rows the wrapper merely updates: adoption PRESERVES whatever fields a row already has and never
+  synthesizes a missing one, so a legacy or hook-appended row lacking `effort`/`log_path`/`attended`
+  still lacks them after adoption — the same "treat missing as absent, never as a default" rule this
+  spec's Specialist Context states for `apex-ledger-append.ps1` rows, and the two passages must
+  agree. Add the three fields to the lease row written in Task 2 and to the `lease_close` row written
+  by `Add-LeaseCloseRow` (Task 1) — a refusal record with no `log_path`/`effort`/`attended` is not
+  analysable — and, in `Invoke-Adopt`'s adopting/terminal `Update-LedgerRow` calls
+  (:771-777, :902-914), carry forward ONLY the values already present on the selected row — never add
+  a field the row did not have. In `Invoke-Adopt`, print the log location as `$match.log_path` when
+  the row has one, and say so plainly when it does not (:659-663). The matching documentation edits
   belong to Task 11, which owns all three doc files.
   — files: C:\Users\User\.claude\skills\apex-code\scripts\codex-dispatch.ps1,
   C:\Users\User\.claude\skills\apex-code\scripts\dispatch-test.ps1
-  — done when: every row a wrapper run writes (lease, lease_close, running, terminal, adopted) parses
-  to an object carrying non-empty `log_path`, a non-empty `effort`, and an `attended` PROPERTY that is
+  — done when: every row THIS WRAPPER CREATES (lease, lease_close, running, terminal) parses to an
+  object carrying non-empty `log_path`, a non-empty `effort`, and an `attended` PROPERTY that is
   always present — `true`/`false` when `-Attended` was bound, JSON `null` when it was not — asserted
-  explicitly against a `lease_close` row produced by a refused dispatch; and `-Adopt` prints the
-  selected row's `log_path`.
+  explicitly against a `lease_close` row produced by a refused dispatch; adopting a FIXTURE legacy row
+  that lacks all three leaves the adopted row still lacking all three (no synthesis); adopting a
+  wrapper-created row preserves all three unchanged; and `-Adopt` prints the selected row's
+  `log_path` when present.
 
 - [ ] **Task 7: Byte-safe write helpers at the wrapper's own call sites (P6).** Add three functions
   beside `Get-UtcTimestamp` (:125): `Write-Utf8NoBomText -Path -Text`, `Add-Utf8NoBomText -Path -Text`,
@@ -505,13 +555,16 @@ must be merged by hand anyway.
   it later becomes — becomes "the newest build" and invalidates an older, genuinely reviewed build.
   Narrow that filter to admit only rows with `row_kind -ceq 'dispatch'` (treating a missing
   `row_kind` as `'dispatch'`, so pre-existing and hook-appended rows are unaffected) AND whose status
-  is not one of `leasing`, `orphaned`, or `abandoned-unadopted`. Change nothing else in the gate's
-  trust-marker or terminal-status logic.
+  is not one of `leasing`, `orphaned`, or `abandoned-unadopted`. That exclusion covers every non-
+  dispatch kind this spec introduces — `lease`, `lease_close`, and the `obligation` event rows of
+  Task 5 — since none of them is `'dispatch'`. Change nothing else in the gate's trust-marker or
+  terminal-status logic.
   — files: C:\Users\User\.claude\skills\apex-code\scripts\apex-family-gate.ps1,
   C:\Users\User\.claude\skills\apex-code\scripts\family-gate-test.ps1
   — done when: a ledger holding a terminal-success reviewed build plus a NEWER refused lease
   (`row_kind: lease`, `status: leasing`, with its `lease_close`) still vouches for that build; the
-  same holds when the newer row is `orphaned` or `abandoned-unadopted`; a genuinely newer
+  same holds when the newer row is `orphaned`, `abandoned-unadopted`, or a `row_kind: obligation`
+  event row; a genuinely newer
   `row_kind: dispatch` build still masks the older one exactly as today; and the existing
   `family-gate-test.ps1` cases pass unchanged.
 
@@ -519,6 +572,8 @@ must be merged by hand anyway.
   In `ADR-040-preflight-gate-and-spec-validator.md`, reword the guarantee at its line 56 ("no ledger
   row or dispatch log is created") to read: **no dispatch record survives — a lease row closed
   `refused-*` is a lease artifact, not a dispatch record, and is excluded from dispatch analytics.**
+  Extend that exclusion by name to every non-dispatch `row_kind` this spec introduces — `lease`,
+  `lease_close`, and `obligation` — so a later consumer has one rule, not three.
   State in the same paragraph, narrowly: the **pre-flight refusal-recording path** is append-only —
   a refusal is recorded by APPENDING a `lease_close` event, never by removing or rewriting a line,
   because `~/.claude/hooks/apex-ledger-append.ps1` writes to the same file concurrently. Say
@@ -560,7 +615,9 @@ must be merged by hand anyway.
   close-out line telling the host to run `-ListObligations` and discharge every obligation before
   archiving. In `references/codex-observability.md`: same `log_path` resolution at :26-27, :73-74,
   :95-97, :132, plus the new ledger fields (`row_kind`, `effort`, `attended`, `refusal_exit`,
-  `cleanup_obligation`, `branch_teardown_obligation`, `teardown_main_repo`, `teardown_sha`). In
+  `cleanup_obligation`, `branch_teardown_obligation`, `teardown_main_repo`, `teardown_sha`,
+  `teardown_branch`, `teardown_worktree`) and the `row_kind` vocabulary
+  `dispatch`/`lease`/`lease_close`/`obligation`. In
   `references/parallel-codex.md`: add the lease/capacity semantics and the exit-79 queueing contract
   only — its log-path text at :30-34 is ALREADY correct ("the log path it prints") and must not be
   touched. Then add one newest-first row to `C:\users\user\apex\SKILL-HISTORY.md` with columns
@@ -676,7 +733,7 @@ docs/audit/ is different and stricter: TIER-1, refused outright on a path match.
 |----------|------|--------|
 | Inline | codex-dispatch.ps1 | Comment each new exit code (79/80/81/82/83) at its refusal site and in the contract enumeration at :2058; the lease-scoped vs pre-lease exit list; the mutex-hold budget note at the orphan scan; the Task 9 guarantee-scope note |
 | Skill | C:\Users\User\.claude\skills\apex-code\SKILL.md | Version 2.13.0 → 2.14.0; `log_path` resolution; exits 79/80/81/82/83; `-Attended`/`-OwnedWorktree`/`-MachineCeiling`/`-AbandonRunId`/`-ListObligations`/`-Adopt -RunId`; lease + `orphaned` lifecycle; `-ListObligations` close-out line (Task 11) |
-| Skill | references\codex-observability.md | `log_path` resolution and the new ledger fields (Task 11) |
+| Skill | references\codex-observability.md | `log_path` resolution; the `row_kind` vocabulary (`dispatch`/`lease`/`lease_close`/`obligation`) and the new ledger fields (Task 11) |
 | Skill | references\parallel-codex.md | Lease/capacity semantics and exit-79 queueing only — its log-path text is already correct (Task 11) |
 | ADR | C:\users\user\apex\docs\technical\adr\ADR-046-doctrine-audit-resolutions.md | Amend D8 (Task 10) |
 | ADR | C:\users\user\apex\docs\technical\adr\ADR-040-preflight-gate-and-spec-validator.md | Reword the pre-flight no-row guarantee (Task 10) |
@@ -693,7 +750,9 @@ docs/audit/ is different and stricter: TIER-1, refused outright on a path match.
   and — after each LEASE-SCOPED exit 71/72/76/78/81 — no `row_kind: dispatch` row for that `run_id`,
   no dispatch log file created, plus EXACTLY ONE appended `lease_close` row carrying
   `status: refused-preflight`, a `refusal_exit` equal to the wrapper's actual exit code, and present
-  `log_path`/`effort`/`attended` fields; while the PRE-LEASE exits 74 and 79 leave no row at all.
+  `log_path`/`effort`/`attended` fields; while a PLAIN exit-74 and a PLAIN exit-79 run (no
+  `-OwnedWorktree`) leave ZERO rows, and an `-OwnedWorktree` exit-79 run whose teardown was deferred
+  or failed leaves EXACTLY ONE `row_kind: obligation` row and no other.
   Apart from rows transitioned by the orphan pass, every pre-existing ledger line is byte-identical
   before and after, and the wrapper returns that contractual code rather than an exception; plus one
   uninstrumented-throw case yielding `refusal_exit: "unknown"`. (Task 2, Task 2A, Task 9)
@@ -706,16 +765,20 @@ docs/audit/ is different and stricter: TIER-1, refused outright on a path match.
   unresolved worktree_key, and `-AbandonRunId`+`-AbandonReason` clearing it; the abandoned row must
   parse with `waived_gates` equal to `scope,critical,digest,pin,encoding` and a non-empty
   `abandon_reason`; abandoning a dirty-worktree row (lease rows included), a terminal row, an
-  `adopting` row, or a live row must exit 82 having mutated nothing; omitting `-Attended` must exit
-  83; a concurrent adopt+abandon on one orphaned row must leave exactly one winner; and a
+  `adopting` row, or a live row must exit 82 having mutated nothing; BOTH omitting `-Attended` and
+  passing `-Attended:$false` must exit 83 with zero mutation; a concurrent adopt+abandon on one orphaned row must leave exactly one winner; and a
   whitespace-only `-AbandonReason` must exit 74 having mutated no row. (Task 3, Task 3A, Task 4)
 - [ ] Run `powershell.exe -NoProfile -File skills/apex-code/scripts/dispatch-test.ps1` → verify:
   exit 0, and every ledger row it produces — `lease`, `lease_close`, `running`, terminal, adopted —
-  parses with non-empty `log_path` and `effort` and an ALWAYS-PRESENT `attended` property valued
-  true/false/null; and the `-OwnedWorktree` teardown cases pass against REAL `git worktree add`
+  that the WRAPPER CREATED parses with non-empty `log_path` and `effort` and an ALWAYS-PRESENT
+  `attended` property valued true/false/null, while an adopted LEGACY fixture row lacking all three
+  still lacks all three; and the `-OwnedWorktree` teardown cases pass against REAL `git worktree add`
   trees, including removal issued from the main repo, the live-sibling AND orphaned-sibling refusals
-  under `-AllowSharedWorktree`, the detached-HEAD refusal, teardown after an exit-81 refusal, and a
-  parameterless `-ListObligations` whose printed commands run as-is. (Task 5, Task 6)
+  under `-AllowSharedWorktree`, the detached-HEAD refusal, the complete structured obligation field
+  set on all four refusal outcomes AND the success outcome, the `row_kind: obligation` row appended
+  on a pre-lease exit-79 refusal, teardown after an exit-81 refusal, and a parameterless
+  `-ListObligations` whose printed commands — including those built from a sibling-refusal row and
+  from an `obligation` row — run as-is. (Task 5, Task 6)
 - [ ] Run `powershell.exe -NoProfile -File skills/apex-code/scripts/verdict-test.ps1` → verify:
   exit 0, including cases where `done_with_concerns` with `unresolved` of `[]`, `[" "]`, and
   `["", " "]` each exits 67 on both the main path and the `-Adopt` path; a review-schema FLAG
@@ -733,6 +796,7 @@ docs/audit/ is different and stricter: TIER-1, refused outright on a path match.
   verify: exactly three matches (the three write helpers). (Task 7)
 - [ ] Run `git -C C:\Users\User\.claude status --porcelain -- hooks` → verify: empty output — no
   hook was touched, `apex-ledger-append.ps1` included (spec-wide constraint).
+- [ ] Whole-spec consistency, mechanical: run `Select-String -Path retro-wrapper-hygiene.md -Pattern 'produces? no row(?! of)|leaves? no row|no row at all|leave nothing'` against this spec file → verify: it returns EXACTLY ONE line, this criterion's own. Any other hit is an unqualified pre-lease/refusal claim that contradicts the qualified invariant (pre-lease refusals leave no lease or dispatch record; the sole permitted artifact is the Task-5 `row_kind:'obligation'` event under `-OwnedWorktree` exit 79) and must be reworded before this spec is executable.
 - [ ] Run `Select-String -SimpleMatch 'D8 amendment' docs/technical/adr/ADR-046-doctrine-audit-resolutions.md`
   in the apex repo → verify: one match, and the surrounding text still forbids `--force` and
   wrapper-side branch deletion. (Task 10)
