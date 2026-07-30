@@ -19,13 +19,13 @@ usually touches both trees.
 
 When asked to implement `docs/changes/<name>.md`:
 
-1. **Read the whole spec first.** Implement `## Exact changes` precisely.
-2. **Surgical scope:** create or modify only files in the spec's `## Files to change`.
+1. **Read the whole spec first.** Implement each `## Tasks` item precisely â€” the task text names its exact files and mechanism.
+2. **Surgical scope:** create or modify only files in the spec's `## Files to Change`.
    `git diff --stat` must show only those.
-3. **Run the spec's `## Commands to run`** and make every `## Acceptance criteria` item pass.
+3. **Run this file's `## Verify commands`** (below â€” the recipe's single home, ADR-037) and make every `## Acceptance Criteria` item pass.
 4. **Stop and ask** if a criterion cannot be met as written — that is a planning question. Note it;
    do not improvise around the spec.
-5. **After a spec passes, move it to `docs/changes/done/`** (a file move, not a commit).
+5. **Never move or archive a spec.** Spec archival into `docs/changes/done/` is the `apex-docs-technical-agent`'s host's-pen write, or the host's directly (D6, ADR-046). Report that the spec passed; the close-out does the move.
 
 ## Verify commands
 

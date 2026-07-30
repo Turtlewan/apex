@@ -38,7 +38,7 @@ machine ceiling; exit-72 refusals still create no row (ADR-040).
 host runs concurrent `codex exec` subprocesses via harness-native `run_in_background`, one worktree
 per task) — this survives turns for the HOST (unlike subagent backgrounding) and needs no new
 workflow. The orchestrator keeps verify/close-out. NOT routed through `apex-build-wave` (that
-workflow is Opus-fallback-only by design — its workers implement directly and never dispatch
+workflow is Claude-fallback-only by design (the fallback coder is Sonnet 5 — A1/ADR-045; it was Opus when this note was written) — its workers implement directly and never dispatch
 Codex; Sol BLOCK verified against apex-build-wave.js:18-21). A Codex-dispatching workflow variant
 stays out of scope until the 8–10-min background-kill ceiling (issue 13) is root-caused —
 foreground workflow workers at p90=27-min task durations would manufacture orphans.
@@ -169,7 +169,7 @@ P1(b)'s future workflow variant).
 ## Appendix C — Sol finding resolutions (21)
 BLOCK P1a race/lease → accepted, P1 rewritten (atomic lease, reservation before pre-flight).
 FLAG P1a semantics → accepted (cap-counting rules defined). BLOCK P1b workflow misuse → accepted,
-verified vs apex-build-wave.js (Opus-fallback-only); host-native background path instead. BLOCK
+verified vs apex-build-wave.js (Claude-fallback-only — Sonnet 5 per A1/ADR-045); host-native background path instead. BLOCK
 P1b kill ceiling → accepted (workflow variant deferred behind issue-13 root-cause). BLOCK P1b
 supervision → accepted (ADR-029 carve-out restored). FLAG P2a exclusions → accepted (ADR-044
 narrow guards). FLAG P2b AGENTS.md → accepted (fence mechanics, drop perf claims). FLAG P2c venv →

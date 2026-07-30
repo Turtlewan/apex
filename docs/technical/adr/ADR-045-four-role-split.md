@@ -2,6 +2,7 @@
 
 **Date:** 2026-07-19 _(records a decision made 2026-07-16; back-filled — the split had lived only in `~/.claude/CLAUDE.md` and memory)_
 **Status:** Accepted
+**Amended:** 2026-07-29 — see [ADR-046](./ADR-046-doctrine-audit-resolutions.md) (D1)
 **Supersedes:** [ADR-035](./ADR-035-host-direct-build.md) (host-direct build)
 **Related:** [ADR-038](./ADR-038-single-session.md) (one session, no modes), [ADR-032](./ADR-032-gpt56-role-split.md) / [ADR-034](./ADR-034-sol-default-coder.md) (GPT-5.6 role split + cross-family review), [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md) (Codex-primary)
 
@@ -29,8 +30,8 @@ recorded only in `~/.claude/CLAUDE.md` and memory — the strongest current role
 |------|-----|------|
 | **Host** | this session (Fable) | Reasons, plans, challenges. Dispatches every worker below. Makes **no mechanical edits and writes no code**. Owns the project's state-keeping. |
 | **Spec author** | a `model: opus` worker | Drafts specs and ADRs from the host's plan. |
-| **Build orchestrator** | a `model: sonnet` worker | Runs build waves, dispatches coders, routes exit codes. |
-| **Coder** | Codex `gpt-5.6-sol`, per-task `codex exec` subprocess | Writes the code. Falls back to a fresh `model: sonnet` worker (Sonnet 5) on Codex quota-out — amended same-day by session-66 A1 (user-ratified 2026-07-19); as drafted this row said Opus. |
+| **Build orchestrator** | a `model: opus` worker (Opus 5) | Runs build waves, dispatches coders, routes exit codes. Owner amendment 2026-07-29; as drafted this row said Sonnet. |
+| **Coder** | Codex `gpt-5.6-sol`, per-task `codex exec` subprocess | Writes the code. Falls back to a fresh `model: sonnet` worker (Sonnet 5 — see [ADR-046](./ADR-046-doctrine-audit-resolutions.md)) on Codex quota-out — amended same-day by session-66 A1 (user-ratified 2026-07-19); as drafted this row said Opus. |
 
 **Review is cross-family, both directions** ([ADR-032](./ADR-032-gpt56-role-split.md) /
 [ADR-034](./ADR-034-sol-default-coder.md) lineage): Codex checks the host's plans and specs before
@@ -60,3 +61,33 @@ must not write to a tree while a pinned read-only gate is open on it — a separ
 **Neutral**
 - ADR-035 is superseded, not deleted — its analysis of context decay and the self-serving bias is
   the *why* behind this ADR and remains worth reading.
+
+## Amendment — 2026-07-29: build-dispatch ownership (D1)
+
+The **Build orchestrator** row owns task selection, sequencing, routing, verification adjudication,
+retries, and close-out, exclusively. The **host's** role in a build is *mechanics only*: launching
+and monitoring background subprocesses **strictly from the orchestrator's wave plan**; **executing
+the verify recipe, the per-task worktree commits, the path-scoped integration, and the
+user-approved per-spec commit exactly as directed**; and returning status and exit codes. The host
+never chooses which task runs, never re-routes a failure, and never adjudicates a verify result.
+
+Until the orchestrator's agent contract ships (queued retro P1–P7 set), the host performs those
+ownership duties as **interim executor** — a recorded transition, not doctrine.
+`references/parallel-codex.md`'s "the host runs them as concurrent subprocesses" describes exactly
+that mechanic and is not a competing dispatcher.
+
+*Ratified 2026-07-29; Sol deliberation run `0e7d2938` (option A accepted, with this tightening).
+Recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).*
+
+## Amendment — 2026-07-29: build orchestrator model (owner decision)
+
+The **Build orchestrator** row changes from a `model: sonnet` worker to **Opus 5** — a
+`model: opus` worker — decided by the owner in a live attended exchange on 2026-07-29. This applies
+**across the board**, not risk-gated: every build wave is orchestrated by Opus 5, not only high-risk
+ones.
+
+**Acknowledged trade-off, accepted by the owner:** orchestration now spends the capped Anthropic
+weekly pool at Opus rates rather than Sonnet rates; the pool-economics argument that originally put
+a Sonnet worker in this role is knowingly set aside in favour of stronger wave-level judgment.
+**The fallback CODER is unaffected** — it remains Sonnet 5 (A1, session-79b); this amendment
+touches the orchestrator role only.

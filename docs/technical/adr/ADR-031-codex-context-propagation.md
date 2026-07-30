@@ -4,6 +4,8 @@
 **Extends:** ADR-026 (Codex third model family), ADR-027 (Codex-primary), ADR-030 (effort dial)
 **Evidence:** `docs/research/gpt56-apex-integration/README.md` §3–§3b (6 Sol cluster reviews over the full skill set, 3 Claude-side reviews, 3 web research passes, live CLI probes incl. the PROVEN headless `.agents/skills` pickup)
 
+> **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+
 ## Context
 
 APEX's enforcement layer never reaches the coder that does the work. apex-code has the *host*

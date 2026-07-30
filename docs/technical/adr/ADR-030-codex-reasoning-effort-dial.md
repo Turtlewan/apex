@@ -4,6 +4,8 @@
 **Date:** 2026-06-27
 **Extends:** ADR-027 (Codex-primary / Opus-fallback) · supersedes the per-task model-routing intent of ADR-024/025
 
+> **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+
 ## Context
 
 The Codex CLI exposes a **reasoning-effort dial** — `model_reasoning_effort ∈ {none, low, medium,

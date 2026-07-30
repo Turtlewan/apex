@@ -5,6 +5,8 @@ and ADR-026 (Codex as an in-session `codex exec` subprocess). Narrows ADR-027's 
 so Codex-primary loses DeepSeek's parallel-wave default" consequence: parallelism is re-introduced for
 the Codex path via concurrent subprocesses (not Workflow fan-out).
 
+> **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+
 ## Context
 Under ADR-027 the Opus `APEX_MODE=coding` host dispatches one `codex exec -p apex-coder` subprocess per
 task, **sequentially**, and the workflow/`apex-build-wave.js` fan-out path (which spawns Claude-Code
@@ -29,9 +31,13 @@ is much lower than the Workflow's `min(16, cores−2)`.
    dependency-wave model already guarantees within-wave independence).
 2. **Concurrency cap — machine protection, not a quota device.**
    `max_parallel_codex = max(1, min(4, floor(physical_cores / 2) − 1))` → **3** on this host
-   (8 physical / 16 logical cores). Auto-sized from cores; default to **3** when core detection is
-   unavailable. Overridable per spec (`max_parallel_codex: <n>`, `1` = sequential = ADR-027 behaviour).
+   (8 physical / 16 logical cores). Auto-sized from cores; defaulted to **3** at ship time when core
+   detection was unavailable; live default **2** — see the A2 amendment below. Overridable per spec
+   (`max_parallel_codex: <n>`, `1` = sequential = ADR-027 behaviour).
    Waves wider than the cap split into sequential sub-waves of ≤cap (mirrors the existing `worker_cap`).
+
+> **Amended (A2, session-79b, 2026-07-19; recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md)):** the live default is **2**, not 3. Two full waves ran sequentially with zero wall-clock pressure. The formula `max(1, min(4, floor(cores/2) − 1))` (= 3 on this host) stays documented for reference; the shipped default is 2.
+
 3. **Isolation = git-worktree-per-task.** Each parallel Codex task runs in its own managed git worktree
    on a throwaway branch (`codex exec -C <worktree>`), so concurrent recipes never collide. Integration
    back to the main tree is by **`git checkout <branch> -- <task's files>`** (disjoint files → no

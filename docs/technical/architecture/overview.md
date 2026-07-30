@@ -17,7 +17,8 @@ APEX sits between the developer and Claude Code and gives every session a known 
 1. **Orient** — at session start an orchestrator reads the project's live state, surfaces any
    in-flight work, sets the autonomy level, and routes to the right skill.
 2. **Plan** — judgment work (turning a request into a complete, unambiguous spec; writing
-   ADRs; design and research) is done by the host.
+   ADRs; design and research) is done by the host. The host reasons and decides; a `model: opus`
+   spec-author worker drafts the spec and ADR text from that plan (ADR-045).
 3. **Build** — literal execution of a frozen spec is dispatched to a coder (see below).
 4. **Hand off** — the build leaves a handoff doc; planning leaves a spec. State that must
    survive lives in durable artifacts, not in the conversation.
@@ -35,12 +36,15 @@ the mode split and its hooks were all removed. Work is divided by **role**, not 
 
 - **Host (Fable)** — reasons, plans, and challenges. Dispatches every worker below; makes no
   mechanical edits and writes no code, but owns the project's state-keeping (status.md,
-  handoff, memory).
+  handoff, memory). Build-time mechanics — launching and monitoring subprocesses from the
+  orchestrator's wave plan, executing the git operations it directs, and returning status — are
+  the host's; scheduling, routing, and verify adjudication are orchestrator-owned, performed by
+  the host as **interim executor** until that agent contract ships (ADR-046 D1).
 - **Spec author (Opus)** — a `model: opus` worker drafts specs and ADRs from the host's plan.
-- **Build orchestrator (Sonnet)** — a `model: sonnet` worker runs waves and routes exit codes.
+- **Build orchestrator (Opus 5)** — a `model: opus` worker runs waves and routes exit codes (owner amendment 2026-07-29; was Sonnet).
 - **Coder (Codex `gpt-5.6-sol`)** — dispatched per task as a `codex exec` subprocess (own auth,
   own quota). Verify-fail escalation climbs the reasoning-effort dial (`…→max→ultra`), then
-  falls back to **Opus** (fresh `model: opus` worker) if Codex quota is exhausted.
+  falls back to **Sonnet 5** (fresh `model: sonnet` worker) if Codex quota is exhausted.
 - **Review is cross-family, both directions** — Codex checks the host's plans/specs; Claude
   reviews Codex's code. An agent never reviews its own output
   ([ADR-032](../adr/ADR-032-gpt56-role-split.md)/[ADR-034](../adr/ADR-034-sol-default-coder.md)/[ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md)).
@@ -69,12 +73,12 @@ The handful of decisions that define APEX's architecture — each links to its A
 
 | Decision | Why (→ ADR) |
 |----------|-------------|
-| One session, no modes — host plans/builds/verifies; role split replaces the backend split | [ADR-038](../adr/ADR-038-single-session.md) · [ADR-045](../adr/ADR-045-four-role-split.md) |
+| One session, no modes — host plans, executes verify mechanics from the orchestrator's plan, and reviews; the orchestrator adjudicates; workers build (ADR-046 D1); role split replaces the backend split | [ADR-038](../adr/ADR-038-single-session.md) · [ADR-045](../adr/ADR-045-four-role-split.md) |
 | One home per fact; thin handoff drained to inbox-zero; spec = execution script | [ADR-003](../adr/ADR-003-pipeline-artifact-model.md) |
 | Three-file doctrine — CLAUDE.md (prefs) · AGENTS.md (build contract) · status.md (live state) | [ADR-037](../adr/ADR-037-three-context-files.md) |
 | Knowledge layer removed — 14 workflow skills, no domain skills, no registry | [ADR-036](../adr/ADR-036-remove-knowledge-layer.md) |
 | Every APEX-built project maintains this Overview + an ADR log (enforced-capture) | [ADR-001](../adr/ADR-001-per-project-documentation-contract.md) |
-| Codex is the primary coder (per-task `codex exec` subprocess), Opus the inline fallback; DeepSeek archived | [ADR-027](../adr/ADR-027-codex-primary-opus-fallback-deepseek-archived.md) |
+| Codex is the primary coder (per-task `codex exec` subprocess), Sonnet 5 the fallback; DeepSeek archived | [ADR-027](../adr/ADR-027-codex-primary-opus-fallback-deepseek-archived.md) |
 | Codex context propagation — thin AGENTS.md + selective generated `.agents/skills/` cards + per-task dispatch pack with JSON completion contract | [ADR-031](../adr/ADR-031-codex-context-propagation.md) |
 | GPT-5.6 role split — Sol plan-checks + codes; cross-family review routing; Sol escalation rung | [ADR-032](../adr/ADR-032-gpt56-role-split.md) |
 | Two-tier critical-file confirmation and the executable cross-family completion gate reading recorded ledger facts | [ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md) |

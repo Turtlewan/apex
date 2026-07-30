@@ -15,8 +15,8 @@ in [`docs/status.md`](docs/status.md), and the history of how it got here lives 
 - **One session** plans, builds, and verifies ([ADR-038](docs/technical/adr/ADR-038-single-session.md)) —
   no modes, no `APEX_MODE`, no backend swap, no write-guard.
 - **Roles, not sessions** ([ADR-045](docs/technical/adr/ADR-045-four-role-split.md)): Fable host
-  reasons/plans, Opus drafts specs/ADRs, Sonnet orchestrates builds, Codex `gpt-5.6-sol` codes
-  per-task (Opus fallback), review is cross-family both directions.
+  reasons/plans, Opus drafts specs/ADRs, Opus 5 orchestrates builds, Codex `gpt-5.6-sol` codes
+  per-task (Sonnet 5 fallback), review is cross-family both directions.
 - **Harness gates** — pre-flight, baseline-green, wave dispatch, scope cap, critical-file
   confirmation, cross-family completion (ADR-039 through ADR-044).
 - **Three-file doctrine** ([ADR-037](docs/technical/adr/ADR-037-three-context-files.md)):

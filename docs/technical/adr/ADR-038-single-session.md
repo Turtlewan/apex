@@ -5,6 +5,8 @@
 **Supersedes:** ADR-025 (Claude coding mode), ADR-032 § build-host flip, and the mode-detection half of ADR-027
 **Related:** ADR-036 (knowledge layer removed), ADR-037 (three context files)
 
+> **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+
 ## Context
 
 APEX had three operating modes — planning, Claude-coding, DeepSeek-coding — detected from

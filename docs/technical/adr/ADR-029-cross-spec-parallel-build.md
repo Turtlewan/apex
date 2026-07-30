@@ -5,9 +5,11 @@ from "independent tasks within one spec's wave" to "independent tasks across mul
 at a batch **"build specs"**. Same one machine-protection cap; adds the file-disjointness invariant
 as the safety headline.
 
+> **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+
 ## Context
 ADR-028 fans out independent `▸codex` tasks *within a single spec's wave* into concurrent
-`codex exec` subprocesses bounded by `max_parallel_codex` (3 on this host). It does not widen the
+`codex exec` subprocesses bounded by `max_parallel_codex` (3 at ship time; live default 2 — see the A2 amendment). It does not widen the
 pool across specs: a batch build of N ready specs (the "build specs" trigger, e.g. Artemis's ~28
 cluster specs) still builds them one spec at a time, even when the specs touch disjoint subtrees and
 share no dependency. The host is idle while each spec's verify runs.
@@ -53,8 +55,11 @@ the same package both write its `__init__.py`.
    subtree → serialized against anything else under it.
 5. **One shared cap across both levels.** Cross-spec parallelism draws from the *same*
    `max_parallel_codex` pool as within-spec parallelism — it is **not** multiplied per spec. N specs ×
-   their tasks all contend for the one machine-protection budget (3 here); without this rule the host
+   their tasks all contend for the one machine-protection budget (3 at ship time; live default 2 — see the A2 amendment); without this rule the host
    melts.
+
+> **Amended (A2, session-79b, 2026-07-19; recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md)):** the live default is **2**, not 3. Two full waves ran sequentially with zero wall-clock pressure. The formula `max(1, min(4, floor(cores/2) − 1))` (= 3 on this host) stays documented for reference; the shipped default is 2.
+
 6. **Per-spec integrate → verify → commit, in dependency order.** Parallelism is the *build* phase
    only. As each spec's tasks complete, that spec integrates to the main tree, runs **its own**
    acceptance recipe, and commits under per-spec commit discipline — sequentially, in dep order. A

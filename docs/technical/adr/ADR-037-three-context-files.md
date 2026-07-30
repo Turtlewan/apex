@@ -57,7 +57,9 @@ to it.
 |---|---|---|---|
 | `~/.claude/CLAUDE.md` | Claude, always | Cross-project preferences only | **≤200 lines** |
 | `<repo>/AGENTS.md` | **Codex** natively every `codex exec` · Cursor · `apex-code` on demand | The coder's contract: **the Verification Recipe**, conventions, layout, hard rules, sandbox quirks | **<32 KiB** |
-| `<repo>/docs/status.md` | Both (provider-agnostic) | **Live state only** — in-flight, queued, undecided | **≤100 lines** |
+| `<repo>/docs/status.md` | **Claude only** — Codex never reads it | **Live state only** — in-flight, queued, undecided | **≤100 lines** |
+
+"Provider-agnostic" in earlier drafts meant the *format* is not Claude-specific, not that Codex reads it. Codex reads AGENTS.md and never status.md (§ Context). **As drafted this row said "Both (provider-agnostic)".** Clarified 2026-07-29 — [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
 
 History lives in `git log` (what changed), `docs/handoff/` (what the build learned),
 `docs/technical/adr/` (why), and memory (durable facts). **Never in status.md.**

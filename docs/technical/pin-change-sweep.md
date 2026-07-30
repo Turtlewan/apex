@@ -20,7 +20,11 @@ across ~25 files, mechanism rot outnumbering model rot ~21:8.
 4. **ADR banners and status headers** — for a model pin, update the banner of every ADR that states
    the old model as present-tense. For a doctrine change, back-write a supersession/status header
    into every ADR the change retires. **Never edit ADR decision prose** — a decision is correct at
-   its date; only the metadata header/banner is editable.
+   its date; only the metadata header/banner is editable. **Exception — the amendment convention
+   (ADR-046):** a Decision-table cell or decision-list line MAY be edited in place when an amendment
+   supersedes its value, provided the historical value stays adjacent (`as drafted this row said X`,
+   or `X at ship time; live value Y — see amendment`) and a dated amendment section records the
+   change. Everything else in the decision prose stays historical.
 5. **Memory files** — `~/.claude/projects/<project>/memory/*.md`. Durable facts that assert the old
    pin/mechanism.
 

@@ -20,6 +20,8 @@ cloud-only); **collapses** the ADR-024 multi-model router to a single proactive 
 ADR-025's Claude-coding mode as the Opus-quota fallback mechanism; **re-instates** the ADR-025 soft-pool
 guard, scoped to the fallback state.
 
+> **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+
 ## Context
 ADR-026 (same day) made Codex (`gpt-5.5`) the ceiling coder + independent reviewer, with DeepSeek
 Flash/Pro as the everyday coders and the soft-pool guard discharged (Codex spends a separate OpenAI

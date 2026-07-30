@@ -11,6 +11,8 @@ Sonnet build host … unchanged" claim is itself now dated.
 **Extends:** ADR-010 (multi-pass review / council), ADR-015 (bounded dispatch), ADR-027 (Codex-primary), ADR-030 (effort dial), ADR-031 (context propagation); honours apex-governance § Evaluator independence
 **Evidence:** `docs/research/gpt56-apex-integration/README.md` §2 (verdict + Amendments 1–2), user decisions 2026-07-10
 
+> **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+
 ## Context
 
 The user's target split — **Opus plans · Sol double-checks plans · Sonnet orchestrates builds ·

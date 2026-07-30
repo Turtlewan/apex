@@ -10,7 +10,7 @@ APEX carries **workflow, state, and gates**. It does **not** carry domain knowle
 
 The 36 domain skills — security, frontend, k8s, auth, python, aws, and the rest — were **deleted on
 2026-07-14** ([ADR-036](./docs/technical/adr/ADR-036-remove-knowledge-layer.md)). They were built for
-DeepSeek, a weak coder that needed rails. The coder is now Codex `gpt-5.6-sol` (Opus on fallback),
+DeepSeek, a weak coder that needed rails. The coder is now Codex `gpt-5.6-sol` (Sonnet 5 on fallback),
 which knows all of it cold. Along with them went the keyword registry, which duplicated Claude
 Code's own description-matching.
 
@@ -57,7 +57,7 @@ review* — never written down.
 
 | Agent | Spawned by | Job |
 |-------|-----------|-----|
-| **apex-coder** | apex-code | Dependency analysis, wave grouping, parallel dispatch |
+| **apex-coder** | apex-code | Dependency analysis, wave grouping, parallel dispatch — **Claude-fallback path only** |
 | **code-worker** | apex-coder | One isolated task from a spec |
 | **apex-reviewer** | apex-code | Post-build advisory review vs acceptance criteria |
 | **apex-spec-reviewer** | apex-plan | Adversarial spec review — BLOCK / FLAG, evidence-cited |
