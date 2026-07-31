@@ -143,7 +143,8 @@ re-route, or adjudicate. The coder never adjudicates its own output.
 { "kind": "refusal", "task_id": "3|null", "repo": "<repo root>|null", "exit_code": 79,
   "rule": "<the rule or gate that fired>", "detail": "<=200 chars",
   "tail": "<stderr or dispatch-log tail, <=50 lines, or null>",
-  "run_id": "<null for a pre-lease refusal; the live row's id for exit 75>", "final": null }
+  "run_id": "<the row's id for a post-identity code; null for a pre-identity refusal>",
+  "final": null }
 ```
 
 ```json
@@ -165,10 +166,18 @@ re-route, or adjudicate. The coder never adjudicates its own output.
   "exit_code": 0, "detail": "0 pass | 12 same-family refusal | 13 unverifiable" }
 ```
 
-`refusal` is how every pre-lease and pre-dispatch gate reaches you, and also how a **live worker**
-does: `final` is ALWAYS null on this tag — there is no completion report to read. `run_id` is null
-for a pre-lease refusal (no row was ever reserved) and present for **exit 75**, where the row exists
-and the worker is still holding the worktree. A `dispatch_result` always carries both.
+`refusal` is how every gate that produced no completion report reaches you — pre-dispatch refusals,
+live workers, and the watchdog alike. Two fields, one rule each:
+
+- **`final` is ALWAYS null on this tag.** There is no completion report to read, ever. Do not look
+  for `status`, `changed_files`, or `blocker` on a refusal.
+- **`run_id` follows the wrapper's identity hoist.** It is **PRESENT for every post-identity code —
+  75, 79, 80, 81, 82, 83, 124** — because run identity is allocated before those paths can fire. It
+  is **null only for the pre-identity refusals — 71, 72, 74, 76, 78** — where the wrapper refused
+  before any identity existed. Read the exit code, then decide whether `run_id` is available; never
+  assume from the tag alone.
+
+A `dispatch_result` always carries both.
 
 `integration_verify` is the carrier for the authoritative post-integration pass — the second of the
 two verify cadences. Adjudicate it as its own event; a green per-task pass inside a worktree never
@@ -238,7 +247,7 @@ from one repo applies to the other.
         "authorized": ["<worktree-relative path>", "..."],
         "effort": "low|medium|high|xhigh|max|ultra",
         "channel": "detached|background|foreground",
-        "run_id": "<required for adopt and request_abandon, else null>",
+        "run_id": "<required for adopt and request_abandon — copied from the triggering event's run_id; else null>",
         "reason": "<=200 chars>"
       }
     }
@@ -263,7 +272,9 @@ Actions that hand work back to the host with a precondition:
   `at-capacity-no-lease` and `call-died-coder-alive`.
 - `adopt` — recover an orphaned run's work through the wrapper's adoption path. `params.run_id`
   required.
-- `request_abandon` — release a stuck ledger row. `params.run_id` and `params.reason` required. The
+- `request_abandon` — release a stuck ledger row. `params.reason` required, and **`params.run_id` is
+  taken verbatim from the `run_id` of the triggering `refusal` event** — exit 80 is a post-identity
+  code, so that event always carries it. Never reconstruct the id from a log, a path, or memory. The
   wrapper gates abandonment behind its `-Attended` switch, so the host executes it **only when
   attended**; AFK, the host returns a `refusal` and you `park`.
 - `request_confirmation` — a critical-file, host-state, or owner gate needs a live human "yes"
@@ -292,8 +303,10 @@ directive, and never emit a directive for a rung earlier than the recorded `phas
 
 Translate mechanically; `apex-code/SKILL.md`'s exit-code table is the canonical semantics and this
 table does not restate it. `reason` is the fixed string in column three. Column four says which
-event tag carries that code: `dispatch_result` codes carry a `run_id` and a `final`; `refusal` codes
-carry neither, because the wrapper refused before it reserved a row.
+event tag carries that code: a `dispatch_result` carries both a `run_id` and a `final`; a `refusal`
+carries `final: null` always, and its `run_id` follows the identity partition stated above — present
+for the post-identity codes, null for the pre-identity ones. Read that partition, not this sentence,
+when you need to know whether an id is there.
 
 | Exit | Verdict | Fixed reason | Arrives as |
 |------|---------|--------------|------------|
@@ -316,11 +329,14 @@ carry neither, because the wrapper refused before it reserved a row.
 | 81 | fail | `declared-runtime-paths-refused` | refusal |
 | 82 | fail | `adopt-abandon-refused-no-mutation` | refusal |
 | 83 | fail | `attended-confirmation-required` | refusal |
-| 124 | fail | `watchdog-no-output` | dispatch_result |
+| 124 | fail | `watchdog-no-output` | refusal |
 
-Default action per code, where it is forced: 75 → `queue` · 79 → `queue` · 76 and 83 →
-`request_confirmation` attended, `park` AFK · 80 → `request_abandon` attended, `park` AFK · 69 and 78
-→ `request_verify` · 67 → `fork` or `park`, never `redispatch` unadjusted. Everything else is yours.
+Default action per code, where it is forced: 75 → `queue` · 79 → `queue` · **124 → `queue`** (the
+watchdog flags silence and deliberately leaves the child ALIVE, so the worker is still running —
+await it, or `adopt` its `run_id`; never `request_verify` against a tree it may still be writing) ·
+76 and 83 → `request_confirmation` attended, `park` AFK · 80 → `request_abandon` attended, `park`
+AFK · 69 and 78 → `request_verify` · 67 → `fork` or `park`, never `redispatch` unadjusted.
+Everything else is yours.
 
 Codes 79–83 exist only after the wrapper-hygiene changes ship; on a wrapper that predates them they
 are unreachable, not a different mapping. An exit code absent from this table is `fail` with reason
@@ -555,9 +571,9 @@ The `docs/audit/` directory is different and stricter: TIER-1, refused outright 
 ### File Operations
 | Action | Paths |
 |--------|-------|
-| Create | C:\Users\User\.claude\agents\apex-build-orchestrator.md · transient artifacts under the out-of-repo scratch root, none committed: Task 8's detached runner script, its completion marker file, and the throwaway scratch worktree; the reachability probe's synthetic toy spec and its probe transcript; the D1-exception fixture row file and its fixture ledger |
+| Create | C:\Users\User\.claude\agents\apex-build-orchestrator.md · transient artifacts under the out-of-repo scratch root, none committed: Task 8's detached runner script, its completion marker file, and the throwaway scratch worktree; the reachability probe's synthetic toy spec and its probe transcript; the D1-exception fixture row file and its fixture ledger; the acceptance-check extract `apex-t8-bullet.txt` |
 | Modify | C:\Users\User\.claude\skills\apex-orchestrate\SKILL.md, C:\Users\User\.claude\skills\apex-code\SKILL.md, C:\Users\User\.claude\skills\apex-code\references\parallel-codex.md, C:\Users\User\.claude\skills\apex-code\references\dispatch-pack.md, C:\Users\User\.claude\skills\apex-code\references\workflow-dispatch.md, C:\Users\User\.claude\skills\apex-plan\references\model-routing.md, C:\Users\User\.claude\skills\apex-plan\SKILL.md, C:\Users\User\.claude\skills\apex-governance\levels\L3.md, C:\Users\User\.claude\skills\apex-governance\SKILL.md, C:\Users\User\.claude\agents\apex-coder.md, C:\Users\User\.claude\agents\apex-docs-technical-agent.md, C:\users\user\apex\docs\technical\adr\ADR-046-doctrine-audit-resolutions.md, C:\users\user\apex\docs\technical\adr\ADR-045-four-role-split.md, C:\users\user\apex\docs\technical\adr\ADR-041-wrapper-hardening-scope-cap-pin.md, C:\users\user\apex\docs\technical\harness-known-limits.md, C:\users\user\apex\SKILLS.md, C:\users\user\apex\SKILL-HISTORY.md, C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md, C:\users\user\apex\docs\technical\architecture\overview.md |
-| Delete | At teardown, only artifacts this spec created under the out-of-repo scratch root: Task 8's runner script, marker file, and scratch worktree; the reachability toy spec and probe transcript; the D1-exception fixture row and fixture ledger. No tracked file in either repo is deleted by this spec. |
+| Delete | At teardown, only artifacts this spec created under the out-of-repo scratch root: Task 8's runner script, marker file, and scratch worktree; the reachability toy spec and probe transcript; the D1-exception fixture row and fixture ledger; `apex-t8-bullet.txt`. No tracked file in either repo is deleted by this spec. |
 
 ### Commands
 | Command | Purpose |
@@ -635,15 +651,20 @@ grep -ci 'nudge' ~/.claude/agents/apex-build-orchestrator.md                    
 grep -c 'refusal' ~/.claude/agents/apex-build-orchestrator.md                     # >=1
 ```
 
-- [ ] **Task 1** — the input events are a tagged union on `kind`, and the refusal tag guarantees neither `run_id` nor `final` → verify:
+- [ ] **Task 1** — the input events are a tagged union on `kind`, and the refusal tag carries the per-field identity rule, NOT a blanket "neither field" claim → verify:
 
 ```
 cd ~/.claude/agents && for p in '"kind": "dispatch_result"' '"kind": "refusal"' '"kind": "integration_verify"' '"kind": "reviewer_result"' '"kind": "family_gate_result"'; do grep -c "$p" apex-build-orchestrator.md; done   # each 1
-cd ~/.claude/agents && grep -c '"run_id": null, "final": null' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'neither run_id nor final' apex-build-orchestrator.md       # 0 (the superseded generalization)
+cd ~/.claude/agents && grep -c '`final` is ALWAYS null on this tag' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -c '75, 79, 80, 81, 82, 83, 124' apex-build-orchestrator.md     # 1 (post-identity: run_id PRESENT)
+cd ~/.claude/agents && grep -c '71, 72, 74, 76, 78' apex-build-orchestrator.md              # 1 (pre-identity: run_id null)
 cd ~/.claude/agents && grep -c '"event":' apex-build-orchestrator.md                        # 0 (no stale key)
 cd ~/.claude/agents && grep -c 'integration_branch' apex-build-orchestrator.md              # >=1
 cd ~/.claude/agents && grep -c 'reviewed_run_id' apex-build-orchestrator.md                 # >=1
 ```
+
+- [ ] **Task 1** — the identity rule partitions the refusal codes exactly as the exit table tags them → verify: every code the table marks `refusal` appears in exactly one of the two enumerations, their union is `{71,72,74,75,76,78,79,80,81,82,83,124}`, their intersection is empty, and no `dispatch_result` code appears in either.
 
 - [ ] **Task 1** — the close-out ordering matches apex-code's live contract → verify:
 
@@ -658,7 +679,10 @@ cd ~/.claude/agents && grep -c 'request_review` → `run_docs_agents` → `run_f
 - [ ] **Task 1** — close-out progress is persisted so a resumed instance re-enters at the right rung → verify:
 
 ```
-cd ~/.claude/agents && grep -c 'build|review|docs|family_gate|archive' apex-build-orchestrator.md   # 2 (state field + phase paragraph)
+# the FENCED build-state field is canonical and carries the unspaced token; the § Close-out prose
+# deliberately spaces its separators, so the unspaced form must appear exactly ONCE
+cd ~/.claude/agents && grep -c 'build|review|docs|family_gate|archive' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -c 'build | review | docs | family_gate | archive' apex-build-orchestrator.md   # 1 (the prose form)
 cd ~/.claude/agents && grep -ci 'never emit a directive for a rung earlier' apex-build-orchestrator.md   # 1
 ```
 
@@ -683,13 +707,26 @@ cd ~/.claude/agents && grep -c 'params.run_id' apex-build-orchestrator.md       
 cd ~/.claude/agents && grep -c '"run_id": "<required for adopt and request_abandon' apex-build-orchestrator.md   # 1
 ```
 
-- [ ] **Task 1** — exit 75 is carried as a refusal, and the refusal tag's nullability is stated per field → verify:
+- [ ] **Task 1** — both live-worker codes (75 and 124) are carried as refusals and route to `queue` → verify:
 
 ```
 cd ~/.claude/agents && grep -cE '^\| 75 \| fail \| `call-died-coder-alive` \| refusal \|$' apex-build-orchestrator.md   # 1
-cd ~/.claude/agents && grep -cE '^\| 75 \|.*dispatch_result' apex-build-orchestrator.md   # 0
-cd ~/.claude/agents && grep -ci 'final. is ALWAYS null on this tag' apex-build-orchestrator.md   # 1
-cd ~/.claude/agents && grep -ci 'present for \*\*exit 75\*\*' apex-build-orchestrator.md        # 1
+cd ~/.claude/agents && grep -cE '^\| 124 \| fail \| `watchdog-no-output` \| refusal \|$' apex-build-orchestrator.md     # 1
+cd ~/.claude/agents && grep -cE '^\| (75|124) \|.*dispatch_result' apex-build-orchestrator.md   # 0
+cd ~/.claude/agents && grep -c '124 → `queue`' apex-build-orchestrator.md                       # 1
+cd ~/.claude/agents && grep -ci 'leaves the child ALIVE' apex-build-orchestrator.md             # 1
+# tag partition: 8 dispatch_result rows (0,65,66,67,68,69,73,77) + 12 refusal rows = 20
+cd ~/.claude/agents && grep -cE '^\| [0-9]+ \|.*\| dispatch_result \|$' apex-build-orchestrator.md   # 8
+cd ~/.claude/agents && grep -cE '^\| [0-9]+ \|.*\| refusal \|$' apex-build-orchestrator.md           # 12
+```
+
+- [ ] **Task 1** — `request_abandon` names where its identifier comes from → verify:
+
+```
+cd ~/.claude/agents && grep -c "taken verbatim from the \`run_id\` of the triggering \`refusal\` event" apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'exit 80 is a post-identity code' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'never reconstruct the id' apex-build-orchestrator.md          # 1
+cd ~/.claude/agents && grep -c 'copied from the triggering event' apex-build-orchestrator.md   # 1
 ```
 
 - [ ] **Task 1** — the channel rule is keyed on attendance, with no surviving duration-only rule → verify:
@@ -922,6 +959,14 @@ cd ~/apex/docs/technical/architecture && grep -c 'Build orchestrator (Opus 5)' o
 
 ```
 cd ~/.claude && wc -l skills/apex-*/SKILL.md | sort -rn | head -3   # each <=500
+```
+
+- [ ] Whole spec — no surviving blanket claim about refusal field presence anywhere in the shipped surface; every prose statement defers to the identity partition → verify (widened derived sweep — run it, do not spot-check remembered sites; each hit must either BE the partition or point at it):
+
+```
+powershell -NoProfile -Command "Select-String -Path ~/.claude/agents/apex-build-orchestrator.md,~/.claude/skills/apex-code/SKILL.md,~/.claude/skills/apex-code/references/*.md -Pattern 'carr(y|ies) neither|neither run_id nor final|no run_id.*no final'"   # 0 matches
+cd ~/.claude/agents && grep -c 'follows the identity partition stated above' apex-build-orchestrator.md   # 1 (the exit table defers)
+cd ~/.claude/agents && grep -c "carries \`final: null\` always" apex-build-orchestrator.md                 # 1
 ```
 
 - [ ] Whole spec — the spec itself validates → verify: the validator `apex-spec-validate.ps1` exits 0 against this spec's promoted path.

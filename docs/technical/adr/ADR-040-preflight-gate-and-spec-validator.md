@@ -50,13 +50,22 @@ subset is a heuristic the harness cannot verify is sound, so the fast path is op
 
 **4. Pre-flight placement splits the two refusal moments (Sol BLOCKs 1–4).** In `codex-dispatch.ps1`
 the gate runs ONLY for `-Phase build` with `-Sandbox workspace-write` (review/read-only dispatches
-skip, logged). The baseline + spec checks run **before** the ledger row is reserved: a red /
-UNPARSEABLE / NO_RECIPE baseline, or a validator FAIL, is a new **exit 72 = "refused: red baseline"**,
-and because no row exists yet there is nothing to update — the wrapper prints a one-line refusal
-record with the failing evidence and no ledger row or dispatch log is created. The tree is **pinned**
-early (before reservation, with a per-invocation label) but the **pin is verified at the launch
-boundary** — the last moment before the child process starts, after the reservation and the scope
-snapshot — so "the tree the gate verified is the tree the coder receives" holds at the instant of
+skip, logged). The baseline + spec checks run **before** the lease row is upgraded to a dispatch row:
+a red / UNPARSEABLE / NO_RECIPE baseline, or a validator FAIL, is a new **exit 72 = "refused: red
+baseline"**, and **no dispatch record survives** — a lease row closed `refused-*` is a lease
+artifact, not a dispatch record, and is excluded from dispatch analytics; the same exclusion applies
+to every non-dispatch `row_kind`: `lease`, `lease_close`, and `obligation`. No dispatch log is
+created. Narrowly, the **pre-flight refusal-recording path** is append-only: a refusal is recorded by
+APPENDING a `lease_close` event, never by removing or rewriting a line, because
+`~/.claude/hooks/apex-ledger-append.ps1` writes to the same file concurrently. This does NOT
+re-characterise the rest of the ledger's lifecycle; the three mechanisms are distinct. (i)
+Pre-flight refusal recording is append-only (`lease_close` events). (ii) Orphan marking is a single
+batched temp-file + `[System.IO.File]::Replace` pass over all dead unresolved rows at once, not a
+per-row update. (iii) Every other status transition keeps `Update-LedgerRow`, now selecting on
+`run_id` and `row_kind`. The wrapper prints a one-line refusal record with the failing evidence. The
+tree is **pinned** early (before reservation, with a per-invocation label) but the **pin is verified
+at the launch boundary** — the last moment before the child process starts, after the reservation
+and the scope snapshot — so "the tree the gate verified is the tree the coder receives" holds at the
 launch, not merely at pre-flight time. A tree that moved by then is the standard moved-tree refusal
 (**exit 69**); the row exists at that point, so it is updated to `failed`/`tree-moved`. The pin's
 arm→launch span is wrapped in try/finally, so the pin file is deleted on every exit path (72, 69, the

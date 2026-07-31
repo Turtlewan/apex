@@ -227,7 +227,23 @@ Other documents carry one summary sentence and cite this subsection rather than 
 
 **Ancestry checks are NOT valid evidence** — integration is path-scoped `git checkout <branch> -- <files>`, never `git merge`, so `git branch --merged` and `git merge-base --is-ancestor` false-negative on correctly-integrated branches.
 
-**Also DOCTRINE-level, not a mechanical bypass:** `~/.claude/hooks/lib/destructive-detect.js` intercepts `git branch -d/-D` (denying or requiring confirmation per its rules), and intercepts the path-scoped `git checkout <branch> -- <files>` integration form as well. The scoped mechanical allowance is the **queued retro P5(c) hook change, which is out of this spec's scope**; until it ships, a permitted teardown executes via the user's `!` one-liner handback.
+**Also DOCTRINE-level, not a mechanical bypass:** `~/.claude/hooks/lib/destructive-detect.js`
+intercepts `git branch -d/-D` (denying or requiring confirmation per its rules), and intercepts the
+path-scoped `git checkout <branch> -- <files>` integration form as well. The
+`retro-wrapper-hygiene` spec ships the wrapper-side half of the scoped mechanical allowance; the
+`destructive-detect.js` hook change remains queued under retro P5(c).
+
+### D8 amendment (2026-07-30) — wrapper-owned teardown channel
+
+The creator-teardown allowance extends to `codex-dispatch.ps1`'s close-out finally-path as an
+authorised execution channel alongside the user's `!` one-liner handback. D8(a)'s empty-porcelain
+requirement and prohibition on `--force` apply unchanged. D8(b) branch deletion is explicitly
+**not** delegated to the wrapper: the wrapper records a `branch_teardown_obligation` instead.
+
+The sequencing split is exact and refines the post-integration wording above for worktree removal:
+**wrapper worktree removal is gated on empty porcelain plus no live-or-unresolved sibling row, and
+on nothing else — it does NOT wait for verified integration**. It is **branch deletion alone** that
+necessarily waits for the approved integration commit, exactly as clause (b) already sequences it.
 
 ## Consequences
 
@@ -243,8 +259,9 @@ Other documents carry one summary sentence and cite this subsection rather than 
 - D5's doctrine currently outruns its enforcement. The content-aware
   `apex-critical-files.ps1` change is a known, tracked follow-up rather than a silent
   inconsistency; until it ships, all audit-log appends route through the host.
-- D8 is doctrinally settled before its hook support ships. Until queued retro P5(c), permitted
-  teardown requires the user's `!` one-liner handback.
+- D8 is doctrinally settled before its hook support ships. The wrapper finally-path may remove an
+  eligible worktree; until the queued retro P5(c) hook change ships, branch deletion remains a
+  handback obligation and is never performed by the wrapper.
 - The build-orchestrator contract and permissions follow-ups remain queued; documented interim
   mechanics are necessary until they ship.
 
