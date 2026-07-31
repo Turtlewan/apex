@@ -13,6 +13,29 @@ Six of the round-8 findings could not be closed by a mechanical fix because each
 
 ## D1 — tree-pin adopts the in-process digest, then fingerprints ignored entries (round-8 item 3 / K10)
 
+> **Caveat (2026-07-31, retro-scope-check-narrowing build):** `codex-scope-check.ps1` now carries a
+> SECOND exclusion class distinct from D1(d)'s runtime class — repo-root-anchored, exact-name,
+> ignored-and-untracked derived caches (`$derivedCacheExclusions`), active in EVERY worktree rather
+> than gated on `-RuntimeExclusionRoot`. It is deliberately NOT a blanket cache-dir class, because an
+> ignored path can hide a hook. `.venv`, `node_modules/.cache`, `__pycache__` and `.coverage` are
+> excluded by `tree-pin.ps1` but deliberately NOT by scope-check, recorded as
+> `$derivedCacheDivergence` and enforced by the lockstep test. Three limits, plainly: (i)
+> **content-blindness** — `.codex-scratch/` is excluded by NAME and its contents, including
+> executable-class files, are unexamined by scope-check by design; NO current control inspects that
+> content — the destructive-command guard cannot see Codex subprocess writes at all
+> (`codex-scope-check.ps1:7-8`) and the review diff omits ignored files — and the gap covers EVERY
+> listed exclusion, accepted pending the wave-2 out-of-repo TEMP mechanism which supersedes in-repo
+> scratch entirely (primary source `docs/research/sandbox-temp-research-2026-07-30.md` § TL;DR — the
+> Windows restricted token denies the profile `%TEMP%`, `TMPDIR` is unset so workspace-write ships
+> with no writable temp, and the coder re-points TEMP/TMP into the worktree; corroborated by
+> `docs/research/ledger-stratification-2026-07-30.md` § Cross-cutting and the `docs/status.md`
+> retro-queue entry). (ii) The exclusion only bites where the repo's `.gitignore` already lists the
+> name; elsewhere the status guard keeps flagging — fail-closed. (iii) Task-suffixed scratch names
+> (`.codex-scratch-task2`, `.artemis-dur2-task3-tmp`) still flag. Provenance: `.codex-scratch` /
+> `.apex-tmp` / `.sandbox-cache` — `docs/research/ledger-stratification-2026-07-30.md` § A2;
+> `.scratch` — its § A1 cluster 2; the three tool caches — `tree-pin.ps1 $toolCacheExclusions`
+> parity, not the ledger.
+
 ### Context
 
 `tree-pin.ps1` `Get-PathDigest` (lines 93-117) spawns `git hash-object` per contained file when it fingerprints a dirty or untracked directory. Its enumeration is `git status --porcelain` **without** `--ignored` (line 144), so ignored files never enter the fingerprint. In `~/.claude` — a blanket `*` gitignore — most churn is ignored, so the pin is blind to nearly all of it. Adding `--ignored` naively would route `node_modules`-scale trees through per-file `git hash-object` — the exact process storm `codex-scope-check.ps1` already fixed (its lines 227-253) by switching to an in-process metadata digest.

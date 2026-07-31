@@ -13,6 +13,8 @@ Sonnet build host … unchanged" claim is itself now dated.
 
 > **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
 
+> **Amended 2026-07-30 (owner decision; Artemis-retro P4(b)):** every **Deep Details** spec also gets a **pre-draft architecture pass** — a cold Sol read of the HOST'S PLAN, dispatched BEFORE the spec author (§1b below). It is ADDITIONAL to the §1 post-readiness cold read, which is unchanged — still cold, still governed by §1's own rule. Procedure: `apex-plan/references/sol-plan-check.md` § Pre-draft architecture pass.
+
 ## Context
 
 The user's target split — **Opus plans · Sol double-checks plans · Sonnet orchestrates builds ·
@@ -48,6 +50,59 @@ codex exec -c approval_policy="never" --sandbox read-only -m gpt-5.6-sol \
   the planning host + human gate; planning applies accepted amendments itself.
 - Skip for Light / Bug Fix modes and for trivial single-domain specs (same economy rule as
   dispatched domain review).
+
+### 1b. Pre-draft architecture pass (amendment, 2026-07-30)
+
+For every **Deep Details** spec, before the `model: opus` spec author is dispatched (ADR-045),
+dispatch a cold Sol read of the plan itself — there is no spec yet, and that is the point.
+
+- **Mandatory for every Deep Details spec — no economy exemption** (owner decision, 2026-07-30).
+  The asymmetry with §1 is deliberate and stands: §1's post-readiness read KEEPS its existing
+  economy rule ("skip Light / Bug Fix modes and trivial single-domain specs") unchanged, and this
+  pass does not inherit it.
+- **Input = the plan brief ONLY:** a required **`risk:` field, assigned by the host at plan time**
+  (the approval gate below keys off it), the problem statement, the proposed structure, and the file
+  map (path + operation + one-line role), plus whatever repo evidence Sol reads for itself. Never
+  the host's self-review notes, never prior reviewer findings.
+- **Digest-bound, like every plan-check-family dispatch.** The prompt's FIRST line is
+  `SPEC-DIGEST: <value>` — the literal `— (pre-draft)` sentinel on an initial pass; on a re-plan
+  against a live draft, the real `git hash-object` of that draft, **and that draft is attached to
+  the prompt after the brief**, because the hash must bind what the reviewer actually reads.
+- **Output = schema'd BLOCK / FLAG / CLEAN findings scoped to ARCHITECTURE:** wrong decomposition,
+  a structure that cannot produce the stated outcome, a missing or misplaced boundary, a file map
+  that fights the repo's existing seams, a simpler structure that meets the same goal. Spec wording,
+  criteria phrasing and task mechanics belong to the §1 read, not this one.
+- **Effort `xhigh`.**
+- **Disposition: advisory for routine specs, blocking for `risk: high`** — read from the brief's
+  required `risk:` field. The blocking path is an **approval gate**, not an advisory review: on an
+  unresolved arch-pass BLOCK for a `risk: high` plan the host prints the **apex-governance § Approval gate** banner and requires the explicit
+  `Approve? [y / n / edit]` answer **BEFORE any spec-author dispatch**. No author is dispatched on
+  that plan until the gate is answered. The host adjudicates every finding into the PLAN before
+  drafting. **Sol never writes the plan and never edits the spec** (the §1 no-auto-amend rule,
+  unchanged).
+- **Independent of the §1 cold read; neither replaces the other.** The pre-draft pass is mandatory
+  for every Deep Details spec; the post-readiness read runs per §1's existing rule (mandatory except
+  its trivial-single-domain economy skip). They are separate dispatches. The §1 read **never receives this pass's findings, the
+  host's answers to them, or any note that it ran** — the post-readiness first read stays cold
+  (apex-governance § Evaluator independence). That extends to DISCOVERY, not just delivery: the §1
+  cold-read prompt carries an explicit instruction **not to open `docs/drafts/*.review.log`**,
+  because the sidecar carries prior findings — including this pass's.
+- **Round record — ALWAYS.** This pass is plan-check FAMILY and every run leaves a row. When it
+  dispatches, the host creates — or appends to — `docs/drafts/<short-name>.review.log` (the
+  short-name is fixed at plan time, before any draft exists) with a normal row on apex-plan
+  § Convergence control's terms: EXEMPT from the 3-round reviewer-family cap, bounded by the
+  announced pass-or-park rule. The `Spec digest` cell carries the literal `— (pre-draft)` when no
+  draft exists yet, or the real `git hash-object` digest when re-planning against a live draft.
+  That is a VALUE CONVENTION inside the existing row schema — not a schema change — and it moves
+  no counting rule. **While the cell holds the `— (pre-draft)` sentinel the digest-mismatch/VOID
+  check is a DEFINED NO-OP:** there is no file to re-hash, so the check is inapplicable, not
+  failed — and it reactivates the moment a real hash is recorded (a re-plan against a live draft).
+- **A sidecar with no matching draft is NORMAL, never "abandoned".** Between this pass and the
+  author's first draft, a sidecar without a `.md` sibling is the expected state; nothing
+  auto-classifies it as abandoned and nothing sweeps it. A later plan reusing the same short-name
+  APPENDS to the existing sidecar — lifetime records stay conservatively intact. Cleanup happens
+  only at promotion to `docs/changes/` (the deletion step in apex-plan § Closing the session) or by
+  explicit owner action.
 
 ### 2. Cross-model deliberation (two tiers, never auto-run)
 
@@ -118,3 +173,7 @@ default is wired but unproven.
   build, first Sol-rung escalation in a real build.
 - Watch: Sol plan-check spend lands on the same ChatGPT quota as Terra builds — if gate usage
   ever crowds build quota, revisit effort (`max` → `xhigh`) before dropping the gate.
+- Up to two Sol dispatches per Deep Details spec (the second subject to §1's economy rule): the
+  pre-draft architecture pass always, the post-readiness cold read per §1. Both draw the ChatGPT
+  quota; the plan-check effort drop `max` → `xhigh` (retro P7(a)) offsets part of the added spend.
+  Same watch item as §1: revisit effort before dropping a gate.
