@@ -16,7 +16,6 @@ _Last updated:_ 2026-08-01
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| **wrapper-hygiene build: CLOSED, awaiting owner sign-off** | 14 tasks + 6 repair rounds, full suite green in worktree AND integrated live `~/.claude`; Opus review BLOCK→fixed→delta FLAG (advisories → owner queue); family gate exit 0; worktree branch commit `c4249c1`; handoff `docs/handoff/2026-08-01.md` + spec archived to done/ | staged in both trees | owner: approve the TWO commit drafts (in chat) + 4 adjudication items (handoff § Owner adjudication) |
 | build-orchestrator-contract | PARKED (Sol r4: 36/43; ONE line — :306-307 "carry neither" contradicts the identity partition) | `docs/drafts/build-orchestrator-contract.md` | wave-3: one-line fix + widened sweep + single Sol re-check → promote |
 
 <!-- CODING:END -->
@@ -28,12 +27,13 @@ _Last updated:_ 2026-08-01
 
 ## Open Questions
 
-- **Owner queue:** (1) approve ~/.claude commit (14 wrapper files + SKILL.md 2.15.0) · (2) approve
-  apex commit (wave-2 sweep deletions + task-10 ADR-040/046 + SKILL-HISTORY + handoff + archival +
-  status; path-EXCLUDES concurrent session's `gpt-5.6-family-adoption.md`) · (3) adjudicate 4 items
-  in handoff § Owner adjudication: -AllowSharedWorktree/exit-80 spec amendment · spec's
-  `branch -[dD]` acceptance-grep narrowing · delta-review low advisories (gate row_kind skip breadth,
-  -Adopt stdout diff tail, lease fixture fidelity, exit-81 stream) · teardown mutex-across-git debt.
+- **Wrapper-hygiene build SHIPPED 2026-08-01** (commits `d5d872f` ~/.claude · `ecd4a25` apex; handoff
+  `docs/handoff/2026-08-01.md`). **Owner queue — 4 adjudication items** (details handoff § Owner
+  adjudication; recommended: fold all into one small wave-3 "wrapper-hygiene follow-ups" spec):
+  (1) -AllowSharedWorktree/exit-80 spec amendment (narrow live-sibling exclusion to running/stalled)
+  (2) spec's `branch -[dD]` acceptance-grep narrowing, then remove the ([char]45) evasion
+  (3) delta-review low advisories: gate row_kind skip breadth · -Adopt stdout diff tail · lease
+  fixture fidelity · exit-81 stream inconsistency (4) teardown mutex-across-git perf debt.
 - **Wave-3 queue** (unblocked now the wrapper build closed): preflight baseline digest→green cache
   + cheap-gates-first ordering (`docs/research/preflight-baseline-cache-plan-2026-07-31.md`) ·
   sandbox-TEMP fix (`docs/research/sandbox-temp-research-2026-07-30.md`) · P2(b/c) AGENTS.md verify
@@ -45,11 +45,12 @@ _Last updated:_ 2026-08-01
   tree; owner says not them; cause unknown); foreground 10-min timeout also kills the tree;
   schtasks/Start-Process detachment classifier-blocked. Mitigations in memory + handoff. Watch.
 - Remaining catalogued debt: scopelock's 2 pre-existing failures · `tasks/` runtime-exclusion
-  (P5(d) shipped — verify) · manual cleanups owed: `%TEMP%\apex-wt-wrapper` + `%TEMP%\apex-wt-adr032`
-  worktrees (tear down after commits land; branch deletion = owner, D8) · `%TEMP%\apex-wt-c45` +
-  branch `wave-c45` · bulk `artemis-wt-*` · `%TEMP%\codex-*-plan-check*` Sol reports (~15) · ledger
-  orphan `3b651688` (P5 shipped: adopt/abandon now possible) · scratchpad snapshots (post-r5kill,
-  post-r6kill) auto-expire with session.
+  (P5(d) shipped — verify). Cleanup DONE 2026-08-01: all 5 apex-wt-* worktrees removed (adr032's
+  transplanted ADR edits stashed on `codex/adr032`), 368 Sol plan-check temp files deleted;
+  c45/artemis worktrees were already gone. STILL OWED: ledger orphan `3b651688` abandon — exit-82
+  refused (live ~/.claude tree dirty with session memory edits; retry after a memory commit at a
+  clean moment) · owner branch deletions (D8): `codex/retro-wrapper-hygiene`, `codex/adr032`,
+  `codex/retro-planning-gates`, `codex/retro-scope-check`, `codex/retro-valver`, `wave-c45`.
 - A concurrent session is active in this repo and ~/.claude (its `docs/drafts/gpt-5.6-family-adoption.md`
   edit and `hooks/apex-ledger-append.ps1` are theirs — do not touch, do not commit).
 <!-- PLANNING:END -->
