@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-19 _(records a decision made 2026-07-16; back-filled — the split had lived only in `~/.claude/CLAUDE.md` and memory)_
 **Status:** Accepted
-**Amended:** 2026-07-29 — see [ADR-046](./ADR-046-doctrine-audit-resolutions.md) (D1)
+**Amended:** 2026-07-29 — see [ADR-046](./ADR-046-doctrine-audit-resolutions.md) (D1); 2026-08-02 -- v1 activation, close-out narrowed (ADR-046 D1 V1-PARTIAL)
 **Supersedes:** [ADR-035](./ADR-035-host-direct-build.md) (host-direct build)
 **Related:** [ADR-038](./ADR-038-single-session.md) (one session, no modes), [ADR-032](./ADR-032-gpt56-role-split.md) / [ADR-034](./ADR-034-sol-default-coder.md) (GPT-5.6 role split + cross-family review), [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md) (Codex-primary)
 
@@ -65,14 +65,22 @@ must not write to a tree while a pinned read-only gate is open on it — a separ
 ## Amendment — 2026-07-29: build-dispatch ownership (D1)
 
 The **Build orchestrator** row owns task selection, sequencing, routing, verification adjudication,
-retries, and close-out, exclusively. The **host's** role in a build is *mechanics only*: launching
+retries, and close-out, exclusively.
+
+**[CLOSE-OUT NARROWED (v1 activation), 2026-08-02: in v1 CLOSE-OUT -- reviewer chain, docs agents,
+family gate, spec archival -- is HOST-executed per `~/.claude/skills/apex-code/SKILL.md` § Post-build
+and is not in the agent's protocol; the word "close-out" in this clause is superseded to that
+extent, and v2 may restore it. See ADR-046 § D1 V1-PARTIAL.]**
+
+The **host's** role in a build is *mechanics only*: launching
 and monitoring background subprocesses **strictly from the orchestrator's wave plan**; **executing
 the verify recipe, the per-task worktree commits, the path-scoped integration, and the
 user-approved per-spec commit exactly as directed**; and returning status and exit codes. The host
 never chooses which task runs, never re-routes a failure, and never adjudicates a verify result.
 
-Until the orchestrator's agent contract ships (queued retro P1–P7 set), the host performs those
-ownership duties as **interim executor** — a recorded transition, not doctrine.
+The orchestrator's agent contract shipped as `~/.claude/agents/apex-build-orchestrator.md`: on an
+ATTENDED build it performs those ownership duties for the BUILD PHASE, and the host remains
+executor for CLOSE-OUT on every build and for UNATTENDED (AFK) builds (ADR-046 § D1 V1-PARTIAL).
 `references/parallel-codex.md`'s "the host runs them as concurrent subprocesses" describes exactly
 that mechanic and is not a competing dispatcher.
 

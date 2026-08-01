@@ -31,6 +31,12 @@ The audit catalogued no further alternatives.
 
 **Decided** — host mechanics = launching/monitoring background subprocesses STRICTLY from the orchestrator's wave plan + returning status/exit codes; task selection, sequencing, routing, verification, retries, and close-out are exclusively orchestrator-owned. Resolved by Sol deliberation run `0e7d2938` (ACCEPTED option A, with the above tightening). Amendment text lands in ADR-045.
 
+**[CLOSE-OUT NARROWED (v1 activation), 2026-08-02: in v1 CLOSE-OUT -- reviewer chain, docs
+agents, family gate, spec archival -- is HOST-executed per `~/.claude/skills/apex-code/SKILL.md`
+§ Post-build and is not in the agent's protocol; the word "close-out" in this clause is
+superseded to that extent, and v2 may restore it. See ADR-046 § D1
+V1-PARTIAL.]**
+
 The host EXECUTES the recipe as mechanics from the orchestrator's wave plan and returns the raw results; the ORCHESTRATOR owns the pass/fail adjudication and the routing that follows.
 
 The coder never adjudicates its own output (evaluator independence) and the host never adjudicates
@@ -42,7 +48,11 @@ either.
 worktree commit and the path-scoped integration, both taken from the orchestrator's wave plan, and
 the per-spec commit once the user has approved the drafted message. Those are **executions, not
 decisions**. The excluded set is unchanged: task selection, sequencing, routing, verify
-adjudication, retries, and close-out decisions are the orchestrator's. The draft → show → approve →
+adjudication, retries, and close-out decisions are the orchestrator's. **[CLOSE-OUT NARROWED (v1 activation), 2026-08-02: in v1 CLOSE-OUT -- reviewer chain, docs
+agents, family gate, spec archival -- is HOST-executed per `~/.claude/skills/apex-code/SKILL.md`
+§ Post-build and is not in the agent's protocol; the word "close-out" in this clause is
+superseded to that extent, and v2 may restore it. See ADR-046 § D1
+V1-PARTIAL.]** The draft → show → approve →
 commit exchange is host↔user by nature and stays host-side. **Builders still never commit** — the
 AGENTS contracts' no-commit rule binds the coder, not the host, and is consistent with this.
 
@@ -58,7 +68,7 @@ commits, not per-task worktree commits. This spec does not make that edit: the c
 every host and build write to that file. It is queued as an owner action, applied via the
 staged-file `!` one-liner at session close. This remains an open reconciliation.
 
-Until the build-orchestrator agent contract ships (the queued retro P1–P7 spec set), the HOST
+**Superseded in part — 2026-08-02, see the amendment below:** Until the build-orchestrator agent contract ships (the queued retro P1–P7 spec set), the HOST
 performs the scheduling, routing, and adjudication duties as interim executor. This is a recorded
 transition state, not doctrine: D1's ownership assignment is the target that the P1–P7 set
 implements. Every document that currently instructs the host to analyze dependencies, choose
@@ -66,6 +76,14 @@ waves, or route completions describes the interim state and must say so. The Cla
 is not a competing owner: when `apex-coder` groups waves and spawns workers it does so as a
 dispatched executor under this same interim arrangement. The scheduling doctrine is unchanged by
 which path executes it.
+
+**Amendment — 2026-08-02: D1 V1-PARTIAL — attended build phase shipped.** The agent contract shipped as `~/.claude/agents/apex-build-orchestrator.md` (digest `0b4ea056`), with its normative shape contract `~/.claude/skills/apex-code/references/orchestrator-protocol-schema.json` (digest `d87a0280`, five `$defs`). The agent owns the **BUILD PHASE of ATTENDED builds only** — task selection, wave sequencing, dispatch parameters, exit-code routing, verify adjudication, retry/escalation/fork, integration order. **CLOSE-OUT** (the reviewer chain, the docs agents, the family gate, spec archival) and **UNATTENDED/AFK builds** remain **HOST-executed**, so D1's interim clause is narrowed, not retired.
+
+Producer-side event emission is **IN v1, not deferred**: the wrapper writes the event file at every BUILD-PHASE terminal and the host passes it through unchanged rather than reconstructing it (`apex-code/SKILL.md` § Wave analysis). What remains for **v2** is the remaining event **KINDS** — review-phase results, the endgate, `agent_result`, and `integration_verify` — which have no producer yet, not emission itself.
+
+The host's build-time role stays mechanics only, adding event **pass-through** (read the emitted file, validate it against the `$def` its `kind` names, forward it unchanged), the deterministic pre-launch structural validation, and build-state persistence — none of which is adjudication. The structural checks the HOST owns are the ones JSON Schema cannot express: cap arithmetic, per-repo wave file-disjointness, `authorized` ⊆ `Files to Change`, executability minimums, task-repo membership in the plan's own `repos` map plus an absolute `verify_contract` path that exists on disk, and the at-most-one-`complete` rule — while branch SHAPE is schema-enforced and is therefore NOT a host check.
+
+A host takeover of orchestrator duties exists only as an attended **D1-EXCEPTION** recorded in the session handoff doc — v1 has no ledger-row carrier for it.
 
 The build-orchestrator **agent contract** (its prompt, its inputs/outputs, its resume/status loop) is
 carried by the **queued retro P1–P7 spec set, not by this sweep**. This spec only makes the existing

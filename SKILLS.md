@@ -53,10 +53,11 @@ review* — never written down.
 
 ---
 
-## Agents (5)
+## Agents (6)
 
 | Agent | Spawned by | Job |
 |-------|-----------|-----|
+| **apex-build-orchestrator** | apex-code (host dispatch, attended builds) | Build-phase wave scheduling, dispatch parameters, exit-code routing, verify adjudication, integration order — reasoning only; close-out and AFK stay host-executed |
 | **apex-coder** | apex-code | Dependency analysis, wave grouping, parallel dispatch — **Claude-fallback path only** |
 | **code-worker** | apex-coder | One isolated task from a spec |
 | **apex-reviewer** | apex-code | Post-build advisory review vs acceptance criteria |

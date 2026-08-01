@@ -16,7 +16,7 @@ _Last updated:_ 2026-08-01
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| orchestrator-activation | BUILD-READY (`docs/changes/orchestrator-activation.md` 42842c4f, plan-check 12→4→0, validator 0). Its prerequisite wrapper-follow-ups SHIPPED 2026-08-02 (build+review+gate 12/12 exit-0+integrated live; spec archived; handoff `docs/handoff/2026-08-02.md`). Probes both confirmed. | `docs/changes/orchestrator-activation.md` | NEXT ATTENDED SESSION: build it (hooks/apex-session-context.md task needs live owner confirmation) → smoke → ACTIVATED |
+| orchestrator-activation | BUILT 6/8 + SMOKE PASSED 2026-08-02 (T1 route row · T3 apex-code host-mechanics · T4 both-tree sweep incl. AGENTS-template pair (i) · T5 ADR amendments · T6 registry — all host-verified; T8 smoke: agent's first live round-trip, wave_plan + out_of_scope adjudication both schema-VALID, intelligent wave-hold). Integrated live ~/.claude (11 files blob-identical, worktree branch ba379b8). FUNCTIONALLY ACTIVE: the route row now dispatches the agent for attended builds. | `docs/changes/orchestrator-activation.md` (stays until parked tasks done) | OWNER: T2 hooks/apex-session-context.md edit (live confirmation) + T7 ~/.claude commit (approval; conflict-check first). Then reviewer+gate+archival close the spec. |
 
 <!-- CODING:END -->
 

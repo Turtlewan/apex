@@ -38,8 +38,10 @@ the mode split and its hooks were all removed. Work is divided by **role**, not 
   mechanical edits and writes no code, but owns the project's state-keeping (status.md,
   handoff, memory). Build-time mechanics — launching and monitoring subprocesses from the
   orchestrator's wave plan, executing the git operations it directs, and returning status — are
-  the host's; scheduling, routing, and verify adjudication are orchestrator-owned, performed by
-  the host as **interim executor** until that agent contract ships (ADR-046 D1).
+  the host's; scheduling, routing, and verify adjudication are orchestrator-owned — on an ATTENDED
+  build they are the dispatched `apex-build-orchestrator`'s (ADR-045 as amended;
+  ADR-046 D1); on an unattended build, and for close-out on every build, the host
+  executes them.
 - **Spec author (Opus)** — a `model: opus` worker drafts specs and ADRs from the host's plan.
 - **Build orchestrator (Opus 5)** — a `model: opus` worker runs waves and routes exit codes (owner amendment 2026-07-29; was Sonnet).
 - **Coder (Codex `gpt-5.6-sol`)** — dispatched per task as a `codex exec` subprocess (own auth,
