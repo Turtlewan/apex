@@ -381,3 +381,88 @@ Derived from the above; this is the checklist the spec's event shapes are graded
 | Completion schema | `skills/apex-code/scripts/codex-completion-schema.json` |
 | Close-out chain order | `skills/apex-code/SKILL.md:341-419` |
 | Ledger-append helper | `~/.claude/hooks/apex-ledger-append.ps1` |
+
+---
+
+## Addendum (r10): exit 1
+
+Exit **1 is the wrapper's child-failure remap, not a statement about the report.** When the codex
+child process exits non-zero the wrapper prints `[dispatch] child failed (exit N); reporting 1
+(child failure).` and exits 1 (`codex-dispatch.ps1:3224-3226`), because the wrapper's exit space is a
+contract and an arbitrary child code cannot be passed through it.
+
+**Exit 1 does NOT imply a missing `.final`.** The completion path parses an existing report *before*
+that remap runs: the `Test-Path` on `$finalPath` and the `ConvertFrom-Json` that fills
+`$reportStatus` / `$unresolved` / `$deviations` / `$blocker` sit at `codex-dispatch.ps1:2885` —
+roughly 340 lines ahead of the remap. So a complete, parsed report can exist alongside `exit 1`, and
+a consumer that treats exit 1 as "no report was written" discards work that is on disk. Read `final`,
+`status` and `report_status`; they, not the code, are the authority on whether a report exists.
+
+The `.final`-is-null cases are therefore the pre-launch tree-moved 69, an adoption that found no
+report, an abandon success — and only the *sub-case* of exit 1 in which the child died before writing
+anything.
+
+**Exit 1 also reaches the review phase.** The remap is on the shared dispatch path, so a `-Phase
+review` dispatch surfaces exit 1 exactly as a build one does. There it means the review call failed
+before a verdict existed — it is not a CLEAN — and it arrives on the `reviewer_result` carrier, not
+the `dispatch_result` carrier (§ A.5 lists the verdict-bearing review exits: 0, 67, 68, 69).
+
+---
+
+## Addendum (r12): measured caps, and two status facts the vocabulary missed
+
+The r11 review found the protocol schema's caps had been **invented rather than measured**. These are
+the measurements that now set them. Each is reproducible against the live tree and ledger.
+
+| # | Measured thing | Value | Cap set | Method |
+|---|---|---|---|---|
+| 1 | `~/apex/AGENTS.md` `## Verify commands` fenced block | **467 chars** (456 inner, fence-inclusive 467) | `wave_plan.repos[].verify_contract` stays the **path** cap 512 | read the file, sliced heading → closing fence |
+| 2 | `apex-family-gate.ps1` exit-12 line, 32-char run id | **241 chars** | `family_gate_result.detail` 200 → **512** (~2.1x) | the literal `Write-Output` at `:270`, interpolated with a 32-char id and `builder_family` `anthropic` |
+| 3 | Longest real `worktree_key` / `worktree` on the live ledger | **77 / 110 chars** (145 distinct keys) | `family_gate_result.worktree_key` 64 → **512** (~4.6x) | scan of `%LOCALAPPDATA%\apex\**\*.jsonl` |
+
+**Measurement 1 is the one that changes a field's meaning, not just its cap.** A verify block of 467
+characters against a 512-character cap means a `verify_contract` holding BLOCK CONTENT would sit one
+edit away from silent truncation. The field is therefore documented as unambiguously **a path to that
+repo's `AGENTS.md`**, never the recipe text.
+
+**Measurement 3 was a live defect, not headroom.** `worktree_key` is a lowercased forward-slashed
+worktree PATH, and it carried the 64-char *identifier* cap — so real keys of 77 characters already on
+the ledger would have been **rejected at the inbound-validation boundary**.
+
+### Two status-vocabulary corrections to § A.3
+
+Derived by extracting every `status = '...'` assignment from `codex-dispatch.ps1` and cross-reading
+the two consumers:
+
+- **`success` is a legal terminal-success status** and § A.3 omits it. It is never *assigned* by the
+  current wrapper, but it is *accepted* by both consumers as a legacy spelling —
+  `apex-family-gate.ps1:38-43` lists it in `$terminalSuccessStatuses`, and `codex-dispatch.ps1:2400`
+  in its terminal-success membership test. A status enum that excludes it would reject a real
+  vouchable row.
+- **`error` and `digest_mismatch` are NOT statuses.** They are sibling ledger *fields* written
+  alongside `status = 'failed'` (`:2545`, `:2609`, `:2638`, `:2645`, `:2711`). Admitting them into a
+  status enum would model a value the producer cannot emit.
+
+### `run_id` lengths are not uniform — and 32 is the wrong floor for exit 78
+
+Scan of every `run_id` on the ledger:
+
+| Length | Rows | Shape |
+|---|---|---|
+| 32 | 1326 | wrapper run id, bare hex |
+| 22 / 29 / 42 / 46 | 107 | host-appended **in-session** ids (`insession-…`), the fallback-build rows of § C.1 |
+
+Consequence for the refusal referent table (§ A): exits **75, 80, 82, 124** all name **wrapper ledger
+rows**, so a 32-character floor is correct there, as it is for `adopt` / `request_abandon` params.
+Exit **78** names *the REVIEWED build's run*, which per § C.1 may legitimately be an in-session
+fallback id of 22 characters — so the floor on 78's `run_id` is **22**, not 32. A uniform 32 would
+have refused a valid review-binding refusal for an anthropic-family build.
+
+### `report_status` is synthesized, so it cannot witness a report
+
+`codex-dispatch.ps1:2996` sets `report_status = 'blocked'` when the report is **missing** ("Codex
+exited 0 without writing a completion report") and `:2990` when it is **unparseable**. A populated
+`report_status` beside a null `final` is therefore the wrapper's synthesis, not evidence that a report
+existed. Only `final` witnesses a report — which is why the contract's null rule is now the single
+rule "`final` is null exactly when no parseable report was found", with no exit code implying it
+either way.
