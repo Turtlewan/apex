@@ -16,8 +16,7 @@ _Last updated:_ 2026-08-01
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| wrapper-follow-ups | **BUILD-READY, promoted 2026-08-02** (`docs/changes/wrapper-follow-ups.md` 0b2ab0ce; plan-check converged 11→4→0 FLAG-only in 3 disposition rounds; validator 0). 9 tasks: 6 owner items + producer-side emission via Exit-Dispatch + registry. Risk high, sequential. BUILD STARTING (host interim-executor; owner-gated ~/.claude AGENTS.md task will PARK — owner AFK). | `docs/changes/wrapper-follow-ups.md` | build now → integrate → per-spec commit |
-| orchestrator-activation | **BUILD-READY, promoted 2026-08-02** (`docs/changes/orchestrator-activation.md` 42842c4f; plan-check converged 12→4→0 FLAG-only; validator 0). Routes attended builds to the passed v1 agent (artifacts d87a0280/0b4ea056, amended + battery 161/161); channel probes BOTH CONFIRMED 2026-08-01 (detached 14.5min done; foreground migrated at 600s ceiling, done) — evidence in issue-13 § Caveats. | `docs/changes/orchestrator-activation.md` | build AFTER wrapper-follow-ups integrates (ordering edge on apex-code/SKILL.md); hooks task needs live owner confirmation |
+| orchestrator-activation | BUILD-READY (`docs/changes/orchestrator-activation.md` 42842c4f, plan-check 12→4→0, validator 0). Its prerequisite wrapper-follow-ups SHIPPED 2026-08-02 (build+review+gate 12/12 exit-0+integrated live; spec archived; handoff `docs/handoff/2026-08-02.md`). Probes both confirmed. | `docs/changes/orchestrator-activation.md` | NEXT ATTENDED SESSION: build it (hooks/apex-session-context.md task needs live owner confirmation) → smoke → ACTIVATED |
 
 <!-- CODING:END -->
 
@@ -33,13 +32,11 @@ _Last updated:_ 2026-08-01
   adjudication; recommended: fold all into one small wave-3 "wrapper-hygiene follow-ups" spec):
   (1) -AllowSharedWorktree/exit-80 spec amendment (narrow live-sibling exclusion to running/stalled)
   (2) spec's `branch -[dD]` acceptance-grep narrowing, then remove the ([char]45) evasion
-  (3) delta-review low advisories: gate row_kind skip breadth · -Adopt stdout diff tail · lease
-  fixture fidelity · exit-81 stream inconsistency (4) teardown mutex-across-git perf debt
-  (5) NEW 2026-08-01 late: -Adopt phase catch-22 — adopt requires -Phase build|review AND matches
-  rows by spec+phase, so rows recorded with test phases (verify-fast/verify-stall, 7 dispatcher-test
-  orphans in ~/.claude) are unrecoverable by adopt; abandon 82s on the dirty tree. Wrapper fix or
-  clean-moment abandon. (6) Sol r5 exit-79 doctrine note: SKILL.md:169 queues BOTH 79 conditions,
-  but the invalid-capacity-contract sub-case is permanent — consider a distinct exit or park rule.
+  ALL SIX OWNER ITEMS CLOSED by wrapper-follow-ups (shipped 2026-08-02). OWED TO OWNER at next
+  attended moment: (a) one-line AGENTS.md ~/.claude verify-fence addition (events suite — parked
+  host-state) (b) ~/.claude commit: 7 integrated wrapper files + 2 orchestrator artifacts +
+  registry (git add -f by name; check concurrent-session dirt first) (c) adopt-sweep the 7
+  dispatcher-test orphans — NOW RECOVERABLE via the shipped -Adopt -RunId any-phase fix.
 - **Wave-3 queue** (unblocked now the wrapper build closed): preflight baseline digest→green cache
   + cheap-gates-first ordering (`docs/research/preflight-baseline-cache-plan-2026-07-31.md`) ·
   sandbox-TEMP fix (`docs/research/sandbox-temp-research-2026-07-30.md`) · P2(b/c) AGENTS.md verify
