@@ -466,3 +466,49 @@ exited 0 without writing a completion report") and `:2990` when it is **unparsea
 existed. Only `final` witnesses a report — which is why the contract's null rule is now the single
 rule "`final` is null exactly when no parseable report was found", with no exit code implying it
 either way.
+
+---
+
+## V1 scope note (2026-08-01, owner-delegated)
+
+**This pack still describes every producer. The v1 CONTRACT deliberately consumes only some of them.**
+Nothing above is retracted — the derivations, citations and measurements stand and remain the grading
+reference. What changed is the *consumer*: the `apex-build-orchestrator` agent and its protocol schema
+were descoped to a v1 that owns the **build phase only, for attended builds only**.
+
+**What v1 owns.** Task selection · wave sequencing · per-task dispatch parameters · exit-code routing ·
+verify adjudication · retry / effort-escalation / Sonnet-fallback / fork calls · integration order.
+
+**What moved out of the contract, and where it went.**
+
+| Descoped | Why | Where it lives instead |
+|---|---|---|
+| Close-out: reviewer, docs agents, family gate, obligations, archival (§ C.5) | The order is fixed and canonical elsewhere; a second copy in the agent file would be the copy that drifts | The agent emits ONE terminal `complete` adjudication; the HOST executes the chain per `apex-code/SKILL.md` § Post-build. Deference by pointer, no restatement — which is how r12's F15 is resolved. The review **digest-binding** question stays open in SKILL.md's own queue, not this contract's |
+| `reviewer_result`, `family_gate_result`, `agent_result` `$defs` (§ B, § A.8, § C.1–C.3) | All three are close-out carriers; with close-out out of the protocol they model events the agent never receives | Deleted from the schema. § B's producer-typed finding and § B.5's no-normalizer result are unchanged and still bind whatever consumes them in v2 |
+| `integration_verify` `$def` (§ D.1) | Kept as a fact, dropped as a schema'd event kind | Reaches the agent as a **bounded field on the resume message** — the recipe's exit codes plus a tail of ≤50 lines — described in prose in the agent file |
+| `d1_exception_row` `$def` and the ledger-append machinery (§ C.6) | Exception-row writing is v2 | A v1 attended host takeover is recorded as a **D1-EXCEPTION entry in the session handoff**. § C.3's gap (the exception never reaching the technical docs agent's `coder_summary`) therefore does not arise in v1, and re-opens with the row machinery in v2 |
+| AFK / unattended branches everywhere — recovery, channel doctrine, the end-gate rung (§ B.4) | v1 is dispatched for attended builds only | Unattended builds stay on the current host path until v2. The recovery ladder is nudge → fresh instance → attended host takeover. The unattended-channel paragraphs are parked pending the foreground-migration probe |
+
+**Schema shape after the descope: five `$defs`** — `dispatch_result`, `refusal`, `wave_plan`,
+`adjudication`, `build_state`.
+
+**Facts from this pack that the v1 surface still turns on**, and which a v2 must not re-derive: § A.2
+(flags recorded independently of the exit code — read all four, every time) · § A.3 plus the r12
+status corrections (`success` is legal; `error` / `digest_mismatch` are not statuses) · § A.4
+(`run_id` and `log_path` come from the ledger row, never stdout) · § A.6 (an adopt is an ordinary
+build outcome arriving late) · the r10 addendum (exit 1 does not imply a missing `.final`) · the r12
+addendum's measured caps and the 22-character `run_id` floor on exit 78 · the r12 finding that
+`report_status` is derived/synthesized and cannot witness a report.
+
+**Two producer facts the descope surfaced, both cited to code and both now load-bearing in v1:**
+
+- **The exit-precedence chain is PATH-DEPENDENT.** § A.2's chain is the normal build path
+  (`codex-dispatch.ps1:3161-3228`): `67 > 69 > 66 > 65 > 77 > 73 > 68 > 1 > 0`. The **adoption** path
+  (`codex-dispatch.ps1:1731-1737`) runs a different one — `67 > 66 > 65 > 73 > 77 > 68 > 0` — which
+  checks **encoding before critical** and has no tree-moved rung, so an adopted row carrying both
+  flags exits **73** where a normal row carrying both exits **77**. Flags remain the authority; exits
+  are advisory.
+- **`adopted-done_with_concerns` is NOT in the family gate's terminal-success set**
+  (`apex-family-gate.ps1:38-43`, which lists exactly `done`, `done_with_concerns`, `success`,
+  `adopted-done`). An adopted-with-concerns task cannot be vouched at close-out and needs a fresh
+  green build first — so v1 routes it as pass-with-obligation, never as a plain pass.
