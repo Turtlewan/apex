@@ -16,7 +16,7 @@ _Last updated:_ 2026-08-01
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| build-orchestrator-contract | PARKED at pass-or-park cap (Sol r5 13→adjudicated+amended · r6 10→adjudicated+amended · r7 8B+7F BLOCK, ALL new each round — each excavated a different live producer surface. Draft is 2 amendment passes better [referent table, live schemas, close-out chain, Task 8b probe, null-code refusals, endgate event, 12 sequential waves] but NOT build-ready. Full record: sidecar + 3 %TEMP% .final reports) | `docs/drafts/build-orchestrator-contract.md` | OWNER CALL: (a) producer-surface evidence pack (wrapper exits+ledger fields, apex-reviewer, docs agents, family-gate 12/13, endgate contracts) → single derivation pass → r8, or (b) descope to narrower v1 protocol. Review-repair proven non-convergent for this spec class. |
+| build-orchestrator-contract | PARKED at r9 hard stop (9 rounds lifetime). Owner chose derivation 2026-08-01 late: evidence pack `docs/research/orchestrator-producer-surfaces-2026-08-01.md` (commit with this session) → derivation pass (6-kind event union, producer-typed reviewers, ledger flags) → r8 13 findings (ZERO unmapped surfaces — method held) → patch (validator 0) → r9 10B+4F, ALL internal-consistency class at 1400 prose lines. Draft is vastly stronger but NOT ready. Full 9-round record in sidecar. | `docs/drafts/build-orchestrator-contract.md` | OWNER CALL, third method: (i) SCHEMA-FIRST — author event/directive JSON schemas as real artifacts, generate contract prose from them (kills the pseudo-shape consistency class) — or (ii) v1 DESCOPE (attended-only, fewer events, widen later). Both review-repair and prose-derivation evidenced non-convergent at this complexity. |
 
 <!-- CODING:END -->
 

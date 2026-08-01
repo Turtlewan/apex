@@ -18,13 +18,14 @@ max_parallel_codex: 1
   - The agent holds `tools: Read, Glob, Grep` and nothing else — it emits directives; it never edits a file, runs a command, or launches a process.
   - Every orchestrator turn ends with exactly ONE fenced JSON block of a declared `kind`; the host acts on nothing else.
   - The orchestrator receives only bounded results (exit codes, `.final` fields, a bounded verify tail, porcelain status) — never a raw transcript or a whole log (ADR-015).
-  - The host refuses any directive that crosses a hard block (integration-branch commit without the draft→show→approve exchange, push to main, teardown outside ADR-046 D8, an unconfirmed critical-path dispatch, an audit-directory write) or that fails the deterministic pre-launch structural validation (cap arithmetic, file-disjointness), and returns a refusal event instead of executing it.
+  - The host refuses any directive that crosses a hard block (integration-branch commit without the draft→show→approve exchange, push to main, teardown outside ADR-046 D8, an unconfirmed critical-path dispatch, an audit-directory write) or that fails the deterministic pre-launch structural validation — **cap arithmetic, file-disjointness, and `authorized` ⊆ `Files to Change`, all three** — and returns a refusal event instead of executing it.
   - No document in either tree describes the host as the build's in-force interim executor; a host takeover exists only as an attended, recorded D1-EXCEPTION.
   - The ADR-029 high-risk carve-out keeps its parallel-pool exclusion untouched — high-risk work never enters an unattended pool; only the process channel it runs on is restated, keyed on attendance (owner ruling, 2026-07-31), and nothing here widens the carve-out.
 - **Non-goals:** any wrapper, script, hook, or settings change · restating the ADR-046 D8 teardown algorithm anywhere (pointer only) · the retro P1(a) capacity lease and every other wrapper-side item (owned by `retro-wrapper-hygiene`) · the D6 docs-agent permissions follow-up · a Codex-dispatching `apex-build-wave` workflow variant · every `apex-plan/SKILL.md` section except § Wave plan and its frontmatter version.
 
 ## Assumptions
 - `retro-wrapper-hygiene` **has built and integrated (2026-08-01)**, so `apex-code/SKILL.md`, `references/parallel-codex.md`, `ADR-046-doctrine-audit-resolutions.md`, `SKILLS.md`, and `SKILL-HISTORY.md` carry its edits; this spec's amendment pass was re-grounded against that post-integration wrapper — the lease-before-gates ordering in `codex-dispatch.ps1` and the live `codex-completion-schema.json` / `codex-review-schema.json` shapes — and every anchor quoted in the task bodies is re-greped against the post-integration text before editing → impact: Stop
+- The event shapes in Task 1 are **derived from the producer-surfaces research doc at docs/research/orchestrator-producer-surfaces-2026-08-01.md**, the complete producer-surface evidence pack read off the live post-`retro-wrapper-hygiene` tree. It is **planning evidence, not a build target**: a TRACKED research doc, git-committed at planning time (session close) by the host, so it is on disk and citable before this spec dispatches and it is deliberately absent from `## Files to Change` — no task creates or edits it. That file is the citable source for every field, enum, and exit in this spec; where a shape here and the pack disagree, the pack wins and this spec is the thing corrected. Its § A rows are pinned to that day's `codex-dispatch.ps1`. Because it is cited and never changed, every citation of it inside this spec's `## Acceptance Criteria`, `## Permissions`, and task `files:` segments is written as its **bare basename**, `orchestrator-producer-surfaces-2026-08-01.md`, with its directory named in words rather than joined to it — the validator's FILES-COMPLETENESS check classifies any whitespace-delimited token that carries BOTH a directory separator and a file extension as a file path, in plain prose exactly as inside a backtick span, and would then demand a `## Files to Change` row for a file this spec must not touch. The same rule applies to any other cited-but-untouched artifact (the ledger-append hook, for one) → impact: Stop
 - The tracked historical test corpus under `skills/apex-code/scripts/fixtures/` (notably `spec-corpus/`, which contains 16 `interim executor` lines) is a **historical record, never edited**, and is excluded from every sweep in this spec via `--exclude-dir=fixtures` → impact: Stop
 - The **thirteen** live D1-interim clauses listed in the grep-evidence block below — **ten in `~/.claude`** (eight exact `interim executor` hits, plus `apex-governance/levels/L3.md` and `apex-plan/SKILL.md`) and **three in this repo** (the architecture overview and the two ADR homes) — are the complete set across BOTH trees; archived specs under `docs/changes/done/` and dated handoffs are historical records and are never edited → impact: Stop
 - `retro-planning-gates` has already built and integrated, and none of its tasks touched `apex-plan/SKILL.md` § Wave plan (`:154-159`), so that clause is unowned and this spec takes it; its § Wave plan text and frontmatter `version` are re-read post-integration before Task 9 edits them → impact: Stop
@@ -93,7 +94,7 @@ cd ~/apex    && grep -rn --include="*.md" -i "interim" docs/technical docs/produ
 
 ## Tasks
 
-- [ ] **Task 1**: Create the orchestrator agent contract, exactly as the block below — files: C:\Users\User\.claude\agents\apex-build-orchestrator.md — done when: the file exists with frontmatter `name`, `description`, `tools: Read, Glob, Grep`, `model: opus`, and a body carrying the two output shapes, the five input event shapes, the enumerated build-state block, the exit-code translation table, the resume loop with its attendance-split recovery, the refusal contract including the host's structural validation, and the channel rule.
+- [ ] **Task 1**: Create the orchestrator agent contract, exactly as the block below — files: C:\Users\User\.claude\agents\apex-build-orchestrator.md — done when: the file exists with frontmatter `name`, `description`, `tools: Read, Glob, Grep`, `model: opus`, and a body carrying the two output shapes, the **six** input event shapes, the enumerated build-state block, the exit-code translation table, the resume loop with its attendance-split recovery, the refusal contract including the host's structural validation and its structured-output enforcement, and the channel rule.
 
 ````markdown
 ---
@@ -128,20 +129,27 @@ re-route, or adjudicate. The coder never adjudicates its own output.
    `max_parallel_codex`, `coder_effort` default, attended/AFK flag, and the build-state block from
    any earlier turn of this build.
 4. Result events. These are a **tagged union on `kind`** — read `kind` first, and never assume a
-   field the tag does not guarantee. There are **five** kinds, below. Two of them carry an
+   field the tag does not guarantee. There are **six** kinds, below. Two of them carry a wrapper
    `exit_code`, and the same number means different things on each: a BUILD-phase exit arrives as a
    `dispatch_result`, the identical number from a REVIEW-phase dispatch arrives as a
-   `reviewer_result`. The tag, not the code, tells you what you are holding.
+   `reviewer_result`. The tag, not the code, tells you what you are holding. A sixth kind,
+   `agent_result`, carries producers that have no exit code at all.
 
 ```json
 { "kind": "dispatch_result", "task_id": "3", "repo": "<repo root>", "exit_code": 0,
   "run_id": "<ledger run_id — REQUIRED>",
+  "log_path": "<dispatch log path from the ledger row>",
+  "status": "<the ledger row's terminal status, verbatim — incl. adopted-* and +scope<N> forms>",
+  "scope_violation": true|false,
+  "encoding_violation": true|false,
+  "critical_violation": true|false|null,
+  "tree_moved_flag": true|false,
   "final": { "status": "done|done_with_concerns|blocked", "changed_files": ["..."],
              "commands_run": [ { "command": "<the command as run>",
                                  "result": "pass|fail|not_run",
                                  "detail": "<string, or null>" } ],
              "deviations": ["..."], "unresolved": ["..."],
-             "blocker": "<string, or null>" },
+             "blocker": "<string, or null>" }|null,
   "concerns_md": "<verbatim <final>.concerns.md, <=10 KB, or null>",
   "scope_check": "<wrapper scope-check output, <=50 lines, or null>",
   "truncated": ["<field name>", "..."],
@@ -154,6 +162,44 @@ you assume otherwise — **`commands_run` is an array of OBJECTS**, not of comma
 command that did not run is visible as `"result": "not_run"` rather than by absence; and **`blocker`
 is not always null** — it is set on a `blocked` status, and also when the wrapper refutes a `done`
 claim.
+
+**`final` is `<completion-schema object, or null>`.** It is null EXACTLY when no `.final` report
+exists, which is three cases and no fourth:
+
+1. **A pre-launch tree-moved exit 69** — the wrapper refused before the coder ran, so no report was
+   ever written.
+2. **An adoption that found no report** — the `adopted-blocked` status: the run was recovered, but
+   there was no `.final` on disk to recover with it.
+3. **Abandon success** — `-AbandonRunId` prints the closed ledger row instead of a report, and the
+   event reaches you as a `dispatch_result` with `status: "abandoned-unadopted"`, `exit_code: 0`, and
+   `final: null`. That is the carrier for a successful abandon; it is not a `refusal`.
+
+**When `final` is null, `status` is the authority** — adjudicate on the ledger row's terminal string.
+A null `final` is never "the build produced nothing to judge".
+
+**The four violation flags are independent facts, and the exit code hides three of them.** The
+wrapper records `scope_violation`, `encoding_violation`, `critical_violation` and `tree_moved_flag` in
+the ledger row **unconditionally**, whichever condition won the exit code. The exit is chosen by a
+single precedence chain — **67 > 69 > 66 > 65 > 77 > 73 > 68** — so an exit **67 masks a simultaneous
+scope, encoding, or critical violation**: the code says "blocked", the row says "blocked AND out of
+scope". **Read all four flags on EVERY `dispatch_result`, whatever the exit code says.** A tree that
+is both blocked and scope-violating is not merely blocked, and routing it as a plain 67 accepts a
+violation. `critical_violation` is `null`, not `false`, on a read-only or review row — the wrapper
+records that field only on build rows with workspace write access, so `null` means "not applicable",
+never "clean".
+
+`status` is the ledger row's own terminal string, not a restatement of the exit: `done` ·
+`done_with_concerns` · `blocked` · `failed` · `abandoned-unadopted` · `adopted-void` ·
+`adopted-done` · `adopted-done_with_concerns` · `adopted-blocked`, where an adopted row may carry a
+`+scope<N>` suffix (`adopted-done+scope65`). Match it as a prefix, never by equality against the bare
+nine. An `adopted-*` status means the work was recovered through the wrapper's adoption path and its
+verdict re-derived — adjudicate it exactly as you would the equivalent fresh build outcome.
+
+`run_id` and `log_path` reach you **from the ledger row, not from the wrapper's stdout**: the
+completion path prints only `[dispatch] report: <final_path>` (plus a concerns line and a banner) and
+never prints either identifier. The host matches the row by worktree, spec, and task to fill them.
+That is why you must never invent, reconstruct, or infer a `run_id` — there is no text on stdout it
+could have been read from.
 
 ```json
 { "kind": "refusal", "task_id": "3|null", "repo": "<repo root>|null",
@@ -174,46 +220,165 @@ claim.
 
 ```json
 { "kind": "reviewer_result", "task_ids": ["3"],
-  "reviewer": "apex-reviewer|codex-review|human|opus-endgate",
-  "family": "anthropic|openai|human", "verdict": "BLOCK|FLAG|CLEAN",
-  "exit_code": 0|67|68|69, "tree_moved": true|false,
-  "findings": [ { "severity": "BLOCK|FLAG|CLEAN", "file": "<path>", "line": "<integer, or null>",
-                  "criterion": "<criterion this finding is cited to, or null>",
-                  "rationale": "<=200 chars" } ],
-  "endgate": { "findings": [ { "severity": "P1|P2|note", "issue": "<string>", "file": "<path>",
-                               "why": "<string>" } ],
-               "verdict": "<string>" },
-  "truncated": ["<field name>", "..."],
-  "reviewed_run_id": "<run_id the review covers>" }
+  "reviewer": "apex-reviewer|apex-wave-reviewer|codex-review|opus-endgate|human",
+  "family": "anthropic|openai|human",
+  "exit_code": 0|67|68|69|null,
+  "tree_moved": true|false,
+  "reviewed_run_id": "<run_id the review covers>",
+  "result": "<the producer's own return, VERBATIM — the sub-shape keyed by `reviewer`, below>",
+  "truncated": ["<field name>", "..."] }
 ```
 
-This mirrors the live review schema (`codex-review-schema.json`). `apex-reviewer` on the Claude side
-returns the same `BLOCK|FLAG|CLEAN` vocabulary, so **one shape serves both families** — never branch
-your reading of a `reviewer_result` on `family`. At most **<=30 findings** reach you per event; the
-host truncates beyond that and flags the truncation when it resumes you.
+**There is no common verdict field, because there is no producer that emits one.** Read `reviewer`
+first, then the matching sub-shape. Each carries its producer's fields **exactly as that producer
+emits them** — different key names, different enums, different types. The host does not translate
+them, and neither should you expect it to. The derivation and its citations live in
+`~/apex/docs/research/orchestrator-producer-surfaces-2026-08-01.md` § B.
 
-**A review dispatch exits through the wrapper too.** A read-only review pass (`-Phase review`) runs
-under the same wrapper as a build and returns its own exit code: **67** BLOCK · **68** FLAG-only ·
-**0** CLEAN · **69** the tree moved — and its `.final` uses the **REVIEW** schema, not the completion
-schema. Those codes therefore arrive on `reviewer_result`, carried in its `exit_code`, and never as a
-`dispatch_result`. `tree_moved` restates exit 69 as a boolean; a `reviewer_result` with
-`tree_moved: true` adjudicates as **`void` → `request_verify`** (re-pin, re-run the review), exactly
-as a build-phase 69 does.
-
-**The AFK end-gate arrives on this tag.** `reviewer: opus-endgate` is the standing mandatory
-end-of-run adversarial pass for unattended multi-task builds;
-`~/.claude/skills/apex-code/references/afk-endgate.md` is canonical for it and this file does not
-restate it. Its own § Output contract uses different field names (`issue`, `why`) and its own
-severity vocabulary, so the host carries that result **verbatim** in the `endgate` sub-object
-(`null` for every other reviewer) and fills the standard fields by this fixed mapping:
-**P1 → BLOCK** · **P2 → FLAG** · **`note` → CLEAN, informational only**.
-The event `verdict` is the highest severity so mapped. (The end-gate's third finding class is
-literally `note`, not `P3` — carry its own field names, `issue` and `why`, verbatim in `endgate`.)
+`reviewer: "apex-reviewer"` — the Claude-side post-build reviewer. Top-level key is `status`, not
+`verdict`:
 
 ```json
-{ "kind": "family_gate_result", "spec": "<spec-name>", "task_id": "3|null",
-  "exit_code": 0, "detail": "0 pass | 12 same-family refusal | 13 unverifiable" }
+"result": { "status": "clean|findings",
+            "findings": [ { "type": "missed_requirement|bug|risky_pattern|spec_divergence",
+                            "severity": "low|medium|high",
+                            "file": "<path>", "description": "<string>",
+                            "suggestion": "<string>" } ] }
 ```
+
+`reviewer: "apex-wave-reviewer"` — the high-risk wave reviewer. It returns **plain text, not JSON**,
+carried verbatim in one string:
+
+```json
+"result": { "text": "VERDICT: BLOCK|FLAG|CLEAN, then a FINDINGS: block of [BLOCK] {file}:{line} — {what} — {evidence} lines; a CLEAN result is the single line VERDICT: CLEAN and nothing else" }
+```
+
+`reviewer: "codex-review"` — the cross-family reviewer, and the **only** one dispatched through the
+wrapper. This sub-shape mirrors `codex-review-schema.json`:
+
+```json
+"result": { "verdict": "BLOCK|FLAG|CLEAN",
+            "findings": [ { "severity": "BLOCK|FLAG|CLEAN", "file": "<path>",
+                            "line": "<integer, or null>",
+                            "criterion": "<criterion this finding is cited to, or null>",
+                            "rationale": "<=200 chars" } ] }
+```
+
+`reviewer: "opus-endgate"` — the mandatory AFK end-of-run adversarial pass.
+`~/.claude/skills/apex-code/references/afk-endgate.md` is canonical for it and this file does not
+restate it. Its `verdict` is **free text, not an enum**, and its third severity class is literally the
+lowercase word `note`, never `P3`:
+
+```json
+"result": { "verdict": "<free text — NOT an enum>",
+            "findings": [ { "severity": "P1|P2|note", "issue": "<string>",
+                            "file": "<path>", "why": "<string>" } ] }
+```
+
+`reviewer: "human"` — an attended human review:
+
+```json
+"result": { "verdict": "<free text>", "notes": "<string, or null>" }
+```
+
+**Adjudication guidance — for your verdicts, never for rewriting a field.** When you weigh findings
+across these vocabularies, treat **`high` / `BLOCK` / `P1`** as blocking, **`medium` / `FLAG` / `P2`**
+as concerns, and **`low` / a `CLEAN`-severity finding / `note`** as informational. That is how to
+reason, not a mapping anyone applies to the data: the fields keep their producer's names and values
+all the way to you, and you must quote them in that form when you cite one. Never record a
+translated severity as if the producer emitted it. A P1 in particular is a production bug that
+`apex-code` routes through fix-and-reverify before the handoff — treat it as blocking and never emit
+`run_family_gate` over an unresolved end-gate P1.
+
+At most **<=30 findings** reach you per event; the host truncates beyond that and names `result` in
+`truncated` when it does.
+
+**`exit_code` applies ONLY to `reviewer: "codex-review"`.** That is the one reviewer
+that runs through the wrapper, so it is the one that has an exit code: **67** BLOCK · **68** FLAG, or
+CLEAN carrying findings · **0** CLEAN with zero findings · **69** the tree moved — and its `.final`
+uses the **REVIEW** schema, not the completion schema. A `-Phase review` dispatch is forced read-only,
+so 65, 66, 73 and 77 are **structurally unreachable** there; a review that returns an unrecognized
+verdict exits 67. Every **agent** reviewer — `apex-reviewer`, `apex-wave-reviewer`, `opus-endgate`,
+`human` — carries **`exit_code: null`**: no wrapper ran, so there is no code to read. That is why the
+enum on this tag is `0|67|68|69|null`, with `null` covering all four agent-dispatched kinds.
+
+**`tree_moved` applies to ALL reviewer kinds — agent reviewers included — and is never forced false.**
+The host pins the tree before it opens ANY review gate and pin-verifies when that gate closes
+(`apex-code/SKILL.md:323`), so an agent reviewer's verdict can be voided by a moved pin exactly as a
+wrapper reviewer's can. An agent-reviewer result whose pin moved therefore arrives with
+`tree_moved: true` and adjudicates **`void` → `request_verify`** (re-pin, re-run the review) — the same
+adjudication a build-phase 69 gets, reached without any exit code at all. Where an exit code does
+exist, `tree_moved: true` simply restates exit 69.
+
+```json
+{ "kind": "agent_result", "task_id": "3|null", "repo": "<repo root>",
+  "agent": "apex-coder|apex-docs-product-agent|apex-docs-technical-agent",
+  "run_id": "<the in-session ledger run_id for apex-coder; null for both docs agents>",
+  "result": "<the agent's own return, VERBATIM — the sub-shape keyed by `agent`, below>",
+  "truncated": ["<field name>", "..."] }
+```
+
+**`agent_result` is how every producer that has no exit code reaches you.** These agents run as
+subagents, not through the wrapper: there is no `.final`, no wrapper ledger row, and no exit code, so
+none of them can arrive as a `dispatch_result` and none of them enters the exit-code table.
+
+`agent: "apex-coder"` — the Sonnet fallback coder:
+
+```json
+"result": { "files_changed": ["..."],
+            "task_summaries": [ { "task": "N", "status": "done|blocked",
+                                  "files": ["..."], "summary": "<string>" } ],
+            "decisions": [ { "task": "<id>", "decision": "<string>", "reason": "<string>",
+                             "review_needed": true|false } ],
+            "blocked_actions": [ { "action": "<string>", "task": "<id>",
+                                   "reason": "<string>" } ] }
+```
+
+A fallback build still has a run identity: the host appends an **in-session ledger row** for it —
+fresh `run_id`, `phase` build, `builder_family` `anthropic`, `end_tree_digest` from the tree-pin
+helper's `-Digest` mode or the literal `unverifiable` — and **that** `run_id` is what `agent_result`
+carries, what a later review cites in `reviewed_run_id`, and what the family gate selects on. Treat a
+`task_summaries[].status` of `blocked` as you would a build `blocked`, and read `decisions` and
+`blocked_actions` the way you read `deviations` and `blocker` on a `.final`.
+
+`agent: "apex-docs-product-agent"` — note the third status value:
+
+```json
+"result": { "status": "completed|completed_with_skips|failed",
+            "inline_docs_added": ["..."], "changelog_updated": true|false,
+            "readme_updated": true|false, "readme_section": "<string>",
+            "skipped_off_scope": ["..."] }
+```
+
+`agent: "apex-docs-technical-agent"` — it returns **one free-text sentence**, not JSON, so it is
+carried as a string and must never be parsed as an object:
+
+```json
+"result": { "text": "<the agent's single returned sentence, verbatim>" }
+```
+
+```json
+{ "kind": "family_gate_result", "spec": "<spec-name>", "task_id": "3",
+  "worktree_key": "<the worktree key the gate was invoked with>",
+  "exit_code": 0|12|13,
+  "detail": "<the gate's printed line; the EMPTY STRING on exit 0, because success is silent>" }
+```
+
+**The family gate is strictly PER-TASK.** `apex-family-gate.ps1` takes `-Spec`, `-Task` and
+`-WorktreeKey` as **mandatory** parameters and vouches for the newest terminal-success build row
+matching that triple. So `task_id` is **required on this tag** — there is no null option and no
+spec-level invocation, because the script has no spec-level notion at all. Its three exits:
+**0** vouched (a cross-family review row bound by `reviewed_run_id` with a matching tree digest, or an
+attended human-review row) — and **exit 0 prints nothing**, so `detail` is the empty string, not a
+success message; **12** a valid build row exists but no acceptable review is bound to it; **13** it
+cannot vouch at all (ledger missing or malformed, no build row, the row is not terminal, or an
+unknown `builder_family`), with the printed line naming which.
+
+**A spec-level pass is a quantifier, not an event.** "The spec passed the family gate" means exactly:
+the gate was invoked once for every task in the spec and **every** invocation exited 0. You may emit
+`complete` only when a `family_gate_result` with `exit_code: 0` is recorded in the build-state block
+for **every** task — one missing task is one unvouched task, and there is no aggregate result that
+could tell you otherwise.
 
 `refusal` is how every gate that produced no completion report reaches you — pre-dispatch refusals,
 live workers, and the watchdog alike. Two fields, one rule each:
@@ -234,17 +399,21 @@ live workers, and the watchdog alike. Two fields, one rule each:
 | **124** | this run's own id — the run was already launched, so it is known from launch context |
 | **71, 72, 74, 76, 79, 81, 83** | `null` — the wrapper surfaces no id on these paths |
 
-A `dispatch_result` always carries both `run_id` and `final`.
+A `dispatch_result` always carries a `run_id`. Its `final`, by contrast, is
+`<completion-schema object, or null>` — null in exactly the three cases listed with the
+`dispatch_result` shape above, where `status` is the authority instead.
 
-**`exit_code` is null on a host-generated refusal.** Not every refusal comes from the wrapper. Two
+**`exit_code` is null on a host-generated refusal.** Not every refusal comes from the wrapper. Three
 classes are produced by the host itself and never ran a wrapper, so there is no code to report and
 `exit_code` is `null`: **host-policy refusals** (the hard-block directives in § Directives the host
-will refuse) and **structural-validation refusals** (cap arithmetic, wave file-disjointness, and the
-authorized-outside-spec subset check). On those the `rule` field carries a value from this small
-named set, and nothing else: `hard-block-commit-unapproved` · `hard-block-push-main` ·
-`hard-block-merge` · `hard-block-teardown-outside-d8` · `hard-block-critical-unconfirmed` ·
-`hard-block-audit-write` · `structural-cap` · `structural-disjointness` ·
-`structural-authorized-outside-spec`. **Null-exit_code refusals never map through the exit table** —
+will refuse), **structural-validation refusals** (cap arithmetic, wave file-disjointness, and the
+authorized-outside-spec subset check), and **structured-output refusals** (your own last block failed
+the host's deterministic validation — see § Directives the host will refuse). On those the `rule`
+field carries a value from this small named set, and nothing else: `hard-block-commit-unapproved` ·
+`hard-block-push-main` · `hard-block-merge` · `hard-block-teardown-outside-d8` ·
+`hard-block-critical-unconfirmed` · `hard-block-audit-write` · `structural-cap` ·
+`structural-disjointness` · `structural-authorized-outside-spec` · `structural-malformed-output`.
+**Null-exit_code refusals never map through the exit table** —
 there is no code to translate and no verdict row to read — and the only legal responses to one are to
 **re-plan** within the rules or to **park**. Read `rule`, not a code, on these.
 
@@ -260,8 +429,8 @@ you decide on what arrived — you never get the untruncated original. **Which f
 field, not a promise:** `dispatch_result` and `reviewer_result` each carry `truncated`, an array
 naming exactly the fields the host cut to fit these caps, empty when nothing was cut. Read it before
 you conclude that something is absent — an empty `concerns_md` and a truncated one are different
-facts. `pending_events[]` in the build-state block carries every event verbatim, so a resume adds no
-further truncation of its own.
+facts. `agent_result` carries `truncated` on the same rule. `pending_events[]` in the build-state
+block carries every event verbatim, so a resume adds no further truncation of its own.
 
 It never means a transcript. Where `apex-code/SKILL.md`
 says the host "returns the raw results", it means exactly this set and nothing wider. You are
@@ -338,7 +507,8 @@ from one repo applies to the other.
 Rules for both shapes: `task_id` matches the spec's task numbering, or is `null` for a
 spec-scoped directive (`request_review` over the whole spec, `run_docs_agents`, `run_family_gate`,
 `teardown`, `complete`) · `authorized` is
-worktree-relative, never absolute · one wave's tasks must be file-disjoint · a wave never exceeds
+worktree-relative, never absolute · one wave's tasks must be file-disjoint — no task's `authorized`
+path equal to, an ancestor of, or a descendant of another task's, compared per-repo · a wave never exceeds
 `max_parallel_codex` (an `ultra` task counts double) · a `redispatch` carries `repo`, `worktree` and
 `channel` in `params`, because choosing where and how a retry runs is your decision, not the host's.
 
@@ -358,7 +528,10 @@ Actions that hand work back to the host with a precondition:
   prints the BLOCKING unresolved row's id and the event carries it verbatim, so that id names the row
   to abandon and never this attempt's own run. Never reconstruct the id from a log, a path, or
   memory. The wrapper gates abandonment behind its `-Attended` switch, so the host executes it **only when
-  attended**; AFK, the host returns a `refusal` and you `park`.
+  attended**; AFK, the host returns a `refusal` and you `park`. **A SUCCESSFUL abandon comes back as a
+  `dispatch_result`, not a refusal:** the wrapper prints the closed row rather than a report, so the
+  event carries `status: "abandoned-unadopted"`, `exit_code: 0`, and `final: null`. That is
+  `-AbandonRunId` success's carrier — read `status`, because there is no `.final` to read.
 - `request_confirmation` — a critical-file, host-state, or owner gate needs a live human "yes"
   before the dispatch can proceed. Attended, the host asks; AFK, the host parks the task.
 - `request_review` — open the post-build review chain for a task or the spec.
@@ -426,7 +599,7 @@ id is present and what it points at.
 | 75 | fail | `call-died-coder-alive` | refusal |
 | 76 | blocked | `critical-file-gate-refused` | refusal |
 | 77 | blocked | `post-hoc-critical-write` | dispatch_result |
-| 78 | void | `review-digest-binding-refused` | refusal |
+| 78 | fail | `review-digest-binding-refused` | refusal |
 | 79 | fail | `at-capacity-no-lease` | refusal |
 | 80 | fail | `unresolved-row-holds-worktree` | refusal |
 | 81 | fail | `declared-runtime-paths-refused` | refusal |
@@ -444,8 +617,31 @@ Default action per code, where it is forced: 75 → `queue` · 79 → `queue` ·
 watchdog flags silence and deliberately leaves the child ALIVE, so the worker is still running —
 await it, or `adopt` its `run_id`; never `request_verify` against a tree it may still be writing) ·
 83 → `request_confirmation` attended, `park` AFK · 80 → `request_abandon` attended, `park`
-AFK · 69 and 78 → `request_verify` · 67 → `fork` or `park`, never `redispatch` unadjusted.
+AFK · 69 → `request_verify` · 67 → `fork` or `park`, never `redispatch` unadjusted.
 Everything else is yours.
+
+**The four violation flags are verdict-INDEPENDENT obligations: they ADD to the exit verdict's
+action, they never replace it.** On ANY `dispatch_result`, whatever the exit code says — a true
+`scope_violation` adds the out-of-scope handling · a true `encoding_violation` adds the mojibake
+handling · a `critical_violation` that is non-null TRUE (`null` means "not applicable", never
+"clean") adds `request_confirmation` attended and `park` AFK · a true `tree_moved_flag` adds
+`request_verify`. Each of those is emitted **in addition to** whatever the exit table's row already
+required, so one event can owe two actions. **Exit 67 never absorbs them.** The precedence chain
+picked 67 for the *code*; the ledger row still recorded every flag that fired, and a 67 carrying a
+true `scope_violation` is a tree that is blocked AND out of scope, owing both responses.
+
+**78 has no single forced action — route it by CAUSE.** Exit 78 is the review-digest binding refusal,
+and it fires for three unrelated reasons that want three different responses. Read the refusal's
+`detail`, then:
+
+- **A bad or unknown `ReviewedRunId`** — the review named a run the ledger does not have, or named the
+  wrong one. Correct the id and **re-dispatch the review**; `request_verify` here would re-run a build
+  gate that was never in question.
+- **The binding helper is unavailable** — the gate could not run at all. **`park` and surface it**:
+  nothing you re-plan makes a missing helper present, and re-dispatching only burns the loop.
+- **A digest mismatch, or an unverifiable digest** — the tree the review covers is not the tree on
+  disk. **`request_verify`** (re-pin, then re-run), or route it to an **attended human-review row**,
+  which `apex-code/SKILL.md:168` accepts as a vouching review in its own right.
 
 **79, and the re-queue trap.** The canonical `apex-code/SKILL.md` row routes 79 to QUEUE for both of
 its conditions — a transient at-capacity refusal AND an invalid capacity contract — so `queue` is the
@@ -482,12 +678,24 @@ carries, and nothing else: `spec_path` · `spec_digest` (the hash the plan was c
 (`not_integrated|integrated|reverted`) · which task branches are integrated · `pending_waves[]` ·
 `base_sha` per worktree · `repo` per task · `run_ids[]` from the ledger, per task ·
 **`phase`** (`build|review|docs|family_gate|archive` — the close-out rung this build has reached) ·
+`family_gate_results` (a map `task_id` → `exit_code`, one entry per task the gate has run on — this
+is what `complete` is checked against) · `reviewer_results` (per task or per spec, the reviewer type
+and its verdict-or-status **only**) · `docs_status` (the product agent's `status` value, and the
+technical agent's `done|not_run`) · `rung_notes` (<=200 chars, what is part-done INSIDE the current
+rung — which tasks of this rung are already gated, which review is outstanding) ·
 `refusal_history[]` · `nudge_count` · **`pending_events[]`** — an ORDERED LIST of every event that
 has not been adjudicated yet, each carried **verbatim** (its `kind`, exit code, verify tail, refusal
 `rule` and `detail`), in arrival order. It is a list, not a single slot, because a wave can deliver
 several results before an adjudication turn comes round. That last field is what makes a fresh
 instance lossless: without it, the resume would drop exactly the results the previous turn was
-mid-way through judging. If a field you need is absent, say so in
+mid-way through judging.
+
+**The four summary fields stay bounded on purpose: verdicts, statuses and exit codes only, never a
+findings body.** `family_gate_results`, `reviewer_results`, `docs_status` and `rung_notes` exist so a
+fresh instance knows *which rungs are discharged*, not so it can re-adjudicate them. An unadjudicated
+finding lives in `pending_events[]`, verbatim, until you judge it; once judged, only its outcome is
+kept. Never copy finding text into the summary fields — that is how a build-state block grows without
+bound across a long build. If a field you need is absent, say so in
 `notes` and decide on what is present.
 
 **Known failure mode, handled.** An orchestrator subagent may end a turn early or without a JSON
@@ -517,10 +725,20 @@ order:
    guarantees.
 
 ```json
-{ "row_kind": "exception", "ts": "<utc-o>", "reason": "<why the takeover happened>",
+{ "row_kind": "exception", "ts": "<utc-o>", "spec": "<the build's spec name>",
+  "task_scope": "<the task ids this row covers, comma-separated — or the literal \"spec\">",
+  "reason": "<why the takeover happened>",
   "scope": "<exactly what the host took over — spec, tasks, or one adjudication>",
-  "operator": "<who was at the machine>" }
+  "operator": "<who was at the machine>",
+  "resolution": "open|resolved" }
 ```
+
+**Three of those seven fields are selectors, not prose.** `spec` is what the technical docs agent's
+`build_exceptions` input selects on — it is handed exactly the rows whose `spec` matches the build
+being closed, and no others. `task_scope` names the task ids the takeover covered, or the literal
+`spec` for a spec-wide one. `resolution` is `open` while the taken-over adjudication is still
+outstanding and `resolved` once it has been closed out, and it is what routes the row in the handoff:
+`open` renders into **Blocked Actions**, `resolved` into **Decisions Made**.
 
 A `row_kind: "exception"` row is a record, not a run: like the wrapper's other non-dispatch row
 kinds (`lease_close`, `obligation`), it is excluded from build-row selection by the `row_kind` rule,
@@ -542,8 +760,11 @@ artifacts and nothing else; every other off-list write is still refused.
 **Structural validation, before any wave launches.** The host also runs a deterministic check over
 your wave plan and refuses the whole wave back to you on violation: (a) **cap arithmetic** — the
 wave's slot count, counting an `ultra` task as two, must not exceed `max_parallel_codex` (rule
-`structural-cap`); (b) **file-disjointness** — no path appears in two tasks' `authorized` sets in the
-same wave (rule `structural-disjointness`); (c) **authorized ⊆ spec** — every task's `authorized` set
+`structural-cap`); (b) **file-disjointness** — within a wave, no task's `authorized` path may **EQUAL**,
+be an **ANCESTOR** of, or be a **DESCENDANT** of another task's `authorized` path, so a directory and
+a file inside it collide just as two identical paths do; the comparison is **per-repo**, so equal
+relative paths in two different repos do NOT collide (rule `structural-disjointness`);
+(c) **authorized ⊆ spec** — every task's `authorized` set
 must be a SUBSET of the paths in the spec's `## Files to Change`, path-normalized before comparison
 (`authorized` is worktree-relative, the spec's rows are absolute, so both are reduced to the same
 repo-relative form first). A plan naming any path outside that table is refused with rule
@@ -551,6 +772,21 @@ repo-relative form first). A plan naming any path outside that table is refused 
 intersection, and set inclusion over the plan you emitted, with no discretion in it, so it neither
 reads on your ownership nor substitutes for it. All three refuse as **null-`exit_code`** refusals
 (§ Inputs), so the only responses are re-plan or `park`.
+
+**Structured-output validation, on every turn you take.** Before acting on anything you emit, the host
+validates the turn deterministically: **exactly one** fenced JSON block is present · it parses as
+JSON · its `kind` is one of the two declared output kinds · every field that kind requires is present
+· every enum-valued field holds a declared member · and there is **no unknown top-level field**.
+**The fenced JSON shapes in this file are NORMATIVE, not illustrative:** the host checks each block
+against the fenced shape declared for its `kind` — field presence, enum membership, and rejection of
+unknown top-level keys — as deterministic mechanics read straight off this document, and no separate
+schema artifact ships (that is an explicit non-goal). This file IS the schema. A
+turn that fails any one of those checks is not executed. The host returns a **null-`exit_code`
+refusal** with rule **`structural-malformed-output`** and `detail` naming which check failed, and asks
+you once more. If the re-ask also fails validation, the build escalates to the **fresh-instance rung**
+of the recovery ladder in § The loop — a new instance, same contract, same build-state block. This is
+a parser, not a critic: it never reads your reasoning and never re-routes a decision, it only refuses
+a turn it cannot mechanically execute. Emit one block, in shape, every time, and it never fires.
 
 On any refusal, re-plan within the rules; never re-issue the same directive.
 
@@ -579,26 +815,26 @@ short one is literal `foreground`. The attendance flag is in your inputs — rea
 `channel`, and never infer it from duration.
 ````
 
-- [ ] **Task 2**: Switch the orchestrator skill's build route from interim execution to dispatching the agent: replace the `build · implement · execute · start build` route-table row with the row below, delete the `**Transitional (2026-07-29):**` paragraph entirely, leave the "Both dispatches are the ADR-045 role split" paragraph's mechanics sentence intact, and bump the frontmatter `version` minor — files: C:\Users\User\.claude\skills\apex-orchestrate\SKILL.md — done when: the file contains the new row verbatim, no `interim executor` string, and no `Transitional` paragraph.
+- [ ] **Task 2**: Switch the orchestrator skill's build route from interim execution to dispatching the agent: replace the `build · implement · execute · start build` route-table row with the row below, delete the `**Transitional (2026-07-29):**` paragraph entirely, leave the "Both dispatches are the ADR-045 role split" paragraph's mechanics sentence intact, and bump the frontmatter `version` minor **and set `last_updated` to the build date** — files: C:\Users\User\.claude\skills\apex-orchestrate\SKILL.md — done when: the file contains the new row verbatim, no `interim executor` string, no `Transitional` paragraph, and both the `version` and `last_updated` frontmatter lines changed.
 
 ```
 | build · implement · execute · start build | **apex-code** — dispatch a `model: opus` **`apex-build-orchestrator`** (Opus 5; ADR-045 as amended) and give it the spec, the repo's `AGENTS.md` verify contract, and the live tree facts. It owns task selection, wave sequencing, dispatch parameters, exit-code routing, verify adjudication, retries, and integration order; you execute its wave plan as mechanics and return bounded results. |
 ```
 
-- [ ] **Task 3**: Retire the interim clause in the build skill's wave-analysis ownership note — replace the `**Who does this (ADR-046 D1).**` paragraph with the text below, leave the two traps and the sequential-when-unsure rule untouched, and bump the frontmatter `version` minor — files: C:\Users\User\.claude\skills\apex-code\SKILL.md — done when: the paragraph reads as below and the file no longer contains `interim executor`.
+- [ ] **Task 3**: Retire the interim clause in the build skill's wave-analysis ownership note — replace the `**Who does this (ADR-046 D1).**` paragraph with the text below, leave the two traps and the sequential-when-unsure rule untouched, and bump the frontmatter `version` minor **and set `last_updated` to the build date** — files: C:\Users\User\.claude\skills\apex-code\SKILL.md — done when: the paragraph reads as below, the file no longer contains `interim executor`, and both the `version` and `last_updated` frontmatter lines changed.
 
 ```
-**Who does this (ADR-046 D1).** Wave grouping, dispatch sequencing, and completion routing are **orchestrator-owned** and are performed by the dispatched `apex-build-orchestrator` agent (`~/.claude/agents/apex-build-orchestrator.md`). The analysis below is what that agent applies; the host executes the resulting plan and returns bounded results. **"Raw results" throughout this skill means the bounded fixed result fields — exit code, `.final` fields, a bounded verify tail, porcelain output — unadjudicated; never a transcript or a whole log. The agent contract defines that set.** Producing them is host mechanics, in three parts: the host **assembles the bounded result events** from the wrapper's stdout, the `.final` report, and the run's ledger row, in the event shapes the agent contract declares; it runs the deterministic pre-launch **structural validation** — cap arithmetic, wave file-disjointness, and the subset check that every task's `authorized` set lies inside the spec's `## Files to Change` (path-normalized) — over every wave plan the agent emits, and returns a refusal event instead of launching when a wave violates it; and it persists the **build-state block** across turns and resumes the agent with it verbatim. None of the three is a judgement call, and none of them re-routes the agent's decision.
+**Who does this (ADR-046 D1).** Wave grouping, dispatch sequencing, and completion routing are **orchestrator-owned** and are performed by the dispatched `apex-build-orchestrator` agent (`~/.claude/agents/apex-build-orchestrator.md`). The analysis below is what that agent applies; the host executes the resulting plan and returns bounded results. **"Raw results" throughout this skill means the bounded fixed result fields — exit code, `.final` fields, a bounded verify tail, porcelain output — unadjudicated; never a transcript or a whole log. The agent contract defines that set.** Producing them is host mechanics, in four parts: the host **assembles the bounded result events** from the wrapper's stdout, the `.final` report, and the run's ledger row, in the event shapes the agent contract declares — and because the wrapper's stdout prints neither, `run_id` and `log_path` are read from the ledger row, never scraped, along with the four violation flags the exit code can mask; it runs the deterministic pre-launch **structural validation** — cap arithmetic, wave file-disjointness (within a wave, no task's authorized path may EQUAL, be an ANCESTOR of, or be a DESCENDANT of another task's authorized path, compared per-repo, so equal relative paths in different repos do not collide), and the subset check that every task's `authorized` set lies inside the spec's `## Files to Change` (path-normalized) — over every wave plan the agent emits, and returns a refusal event instead of launching when a wave violates it; it runs a deterministic **structured-output validation** over every orchestrator turn (exactly one fenced JSON block, parseable, a known `kind`, all required fields present, every enum value declared, no unknown top-level field) and on failure returns a null-code refusal with rule `structural-malformed-output`, re-asks once, and then escalates to the fresh-instance rung rather than interpreting a malformed turn; and it persists the **build-state block** across turns and resumes the agent with it verbatim. None of the four is a judgement call, and none of them re-routes the agent's decision. **Serial does not exempt the channel:** for ANY attended-long dispatch — serial ones included — the host loads `references/parallel-codex.md` § Dispatch channel and follows the runner recipe there; that reference's 2+-task load trigger governs parallel WAVE mechanics, not this recipe, so a single long attended task loads it too.
 ```
 
-- [ ] **Task 4**: In the parallel-dispatch reference, (a) rewrite the opening paragraph so the dispatched orchestrator is named as the owner, (b) add a `## Dispatch channel` section directly after the `## Isolation = git-worktree-per-task` block, both exactly as below, (c) delete the now-superseded paragraph that begins `Launch every task in the sub-wave with` — its wait-then-integrate rule, log-path rule, and observability pointer are all carried by the new section — and (d) append to the EXISTING `## Supervision gate — parallel-safe is not parallel-eligible` section, as its final paragraph, the attendance-key paragraph given below; leave that section's existing text, `## Cap`, `## Integrate`, `## Teardown`, `## Failure / fallback`, and the rest of the cross-spec half unchanged — files: C:\Users\User\.claude\skills\apex-code\references\parallel-codex.md — done when: the file names the dispatched orchestrator in its opening paragraph, carries the `## Dispatch channel` section and the supervision-gate paragraph verbatim, contains no `interim` D1 wording, and mentions `run_in_background` exactly once (inside the `background` bullet). **Precondition:** the foreground-migration claim the unattended half of this section rests on is the one **Task 8b** confirms, and Task 8b lands before this task in the wave plan — a `re-opened` verdict from Task 8b blocks this task until its unattended-channel sentences are revised.
+- [ ] **Task 4**: In the parallel-dispatch reference, (a) rewrite the opening paragraph so the dispatched orchestrator is named as the owner, (b) add a `## Dispatch channel` section directly after the `## Isolation = git-worktree-per-task` block, both exactly as below, (c) delete the now-superseded paragraph that begins `Launch every task in the sub-wave with` — its wait-then-integrate rule, log-path rule, and observability pointer are all carried by the new section — and (d) append to the EXISTING `## Supervision gate — parallel-safe is not parallel-eligible` section, as its final paragraph, the attendance-key paragraph given below; leave that section's existing text, `## Cap`, `## Integrate`, `## Teardown`, `## Failure / fallback`, and the rest of the cross-spec half unchanged — files: C:\Users\User\.claude\skills\apex-code\references\parallel-codex.md — done when: the file names the dispatched orchestrator in its opening paragraph, carries the `## Dispatch channel` section and the supervision-gate paragraph verbatim, contains no `interim` D1 wording, and mentions `run_in_background` exactly once (inside the `background` bullet). **Precondition:** the foreground-migration claim the unattended half of this section rests on is the one **Task 8b** confirms, and Task 8b lands before this task in the wave plan — a `re-opened` verdict from Task 8b blocks this task until its unattended-channel sentences are revised. **The phrase `confirmed (see issue-13 § Caveats foreground bullet)` may be written here ONLY if Task 8b's appended bullet carries its eighth field — the harness's own migration notice, quoted verbatim.** That notice is the only observable proof the call migrated rather than merely finishing; without it "migrated" is an inference from the run having completed, which a run that never hit the ceiling would also satisfy. If field 8 is absent, treat Task 8b as `re-opened` regardless of what its seventh field says, and do not write the clause.
 
 ```
 Load when a dependency (sub-)wave has **2+ independent `▸codex` tasks** and `max_parallel_codex > 1`.
 The wave plan comes from the dispatched **`apex-build-orchestrator`** agent (`~/.claude/agents/apex-build-orchestrator.md`); the host runs the tasks as **concurrent `codex exec` subprocesses** — **as mechanics only**: launching and monitoring them strictly from that wave plan and returning status/exit codes to it. Task selection, sequencing, routing, verification, retries, and close-out are the orchestrator's (ADR-045 as amended 2026-07-29; ADR-046 D1).
 ```
 
-```
+````
 ## Dispatch channel (P1(b))
 
 Attended parallel waves are **GO**. Issue 13 is closed: on the 2026-07-30 harness there is no
@@ -621,7 +857,8 @@ duration alone (owner ruling, 2026-07-31), and the orchestrator sets it per task
   owner is present to supervise and where the stop class was observed.
 - **`foreground` — the UNATTENDED / AFK channel, and the attended-short one.** A plain wrapper call
   the harness owns. Honestly stated: past the ~10-minute tool ceiling the harness **migrates** the
-  call to background instead of killing it — confirmed, not assumed, by a real >=12-minute plain
+  call to background instead of killing it — confirmed (see issue-13 § Caveats foreground bullet),
+  not assumed, by a real >=12-minute plain
   foreground dispatch whose record sits under § Caveats of the evidence doc below — and it remains
   harness-owned and synchronously collected, so an unattended long run is safe here, and this is the
   right unattended choice rather than a fallback.
@@ -632,6 +869,38 @@ duration alone (owner ruling, 2026-07-31), and the orchestrator sets it per task
 Unattended → `foreground`, the harness-owned channel, at any duration. Attended + short →
 `foreground` or `background`. Read the attendance flag; never infer the channel from a stopwatch.
 
+### The detached recipe
+
+**This is the recipe for EVERY attended long dispatch — serial ones included.** It is not a
+parallel-wave device: a single long task dispatched on its own uses it unchanged, because what makes
+it the right channel is attendance and duration, not how many tasks are in flight. Three parts, and
+all three are required — a runner without a marker leaves the host with nothing to wait on.
+
+**1. The runner script.** A small `.ps1` written to the scratch root (never into either repo) that
+invokes the wrapper and then, unconditionally, writes the marker. Shape:
+
+```powershell
+# <scratch>/run-<spec>-<task>.ps1
+& "<path to codex-dispatch.ps1>" -Spec <spec> -Task <task> -Phase build `
+    -Worktree <worktree> -BaseSha <sha> -Schema completion -Effort <effort> `
+    -Prompt <prompt> -SpecSourcePath <spec path> -Authorized <paths>
+"$LASTEXITCODE" | Set-Content -Encoding utf8 "<scratch>/<spec>-<task>.done"
+```
+
+The exit-code capture must sit **outside** any `try`, so a wrapper crash still produces a marker; a
+run that dies without writing one is indistinguishable from a run still going.
+
+**2. The marker convention.** One file per dispatch at `<scratch>/<spec>-<task>.done`, whose entire
+content is the wrapper's exit code as text. Path derived from spec and task so concurrent dispatches
+cannot collide; content is the exit code so the host reads the outcome from the marker itself and
+needs no second lookup to know whether to proceed.
+
+**3. The wait.** Launch the runner as a **normal background task**, then `Monitor` the marker path
+until it exists. The host does not poll in a sleep loop and does not hold a blocking call open for the
+duration — that is the whole point of the channel. When the marker appears, read the exit code from
+it, then read the ledger row (matched by worktree/spec/task) for `run_id`, `log_path`, and the
+violation flags, which the wrapper's stdout never prints.
+
 **Version-pinned:** the probe results — including the foreground-migrates-to-background behaviour the
 unattended channel rests on — hold for the harness build they were run on. A harness upgrade re-opens
 the question: re-confirm with a ≥12-min real dispatch before relying on the harness-owned channel for
@@ -641,7 +910,7 @@ Evidence: `~/apex/docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`.
 Either way, wait for every subprocess in the sub-wave to exit before integrating, and give the user
 each task's log path so they can tail them in parallel (the host reads only each `.final`). Full
 observability recipe + teardown → `references/codex-observability.md`.
-```
+````
 
 The paragraph appended to `## Supervision gate — parallel-safe is not parallel-eligible`:
 
@@ -659,7 +928,7 @@ An attended SHORT high-risk dispatch stays literal foreground. So
 sit inside a blocking call.
 ```
 
-- [ ] **Task 5**: Sweep the `~/.claude` consumers of the interim-executor clause — in each file replace the clause as listed below, changing nothing else; in the governance skill change only the frontmatter `version` (patch bump), leaving its body untouched. Only the ownership sentences change: `apex-coder`'s own fallback-path wave-grouping and worker-spawning behaviour is unaffected by this spec, and the `apex-plan` frontmatter `version` covering this file's `model-routing.md` edit is bumped once in Task 9, not here — files: C:\Users\User\.claude\skills\apex-code\references\dispatch-pack.md, C:\Users\User\.claude\skills\apex-code\references\workflow-dispatch.md, C:\Users\User\.claude\skills\apex-plan\references\model-routing.md, C:\Users\User\.claude\skills\apex-governance\levels\L3.md, C:\Users\User\.claude\skills\apex-governance\SKILL.md, C:\Users\User\.claude\agents\apex-coder.md, C:\Users\User\.claude\agents\apex-docs-technical-agent.md — done when: none of these files contains `interim executor` or `interim: the host`, and each replacement below is present verbatim.
+- [ ] **Task 5**: Sweep the `~/.claude` consumers of the interim-executor clause — in each file replace the clause as listed below, changing nothing else; in the governance skill change only the frontmatter `version` (patch bump) **and its `last_updated` line**, leaving its body untouched. Only the ownership sentences change: `apex-coder`'s own fallback-path wave-grouping and worker-spawning behaviour is unaffected by this spec, and the `apex-plan` frontmatter `version` covering this file's `model-routing.md` edit is bumped once in Task 9, not here — files: C:\Users\User\.claude\skills\apex-code\references\dispatch-pack.md, C:\Users\User\.claude\skills\apex-code\references\workflow-dispatch.md, C:\Users\User\.claude\skills\apex-plan\references\model-routing.md, C:\Users\User\.claude\skills\apex-governance\levels\L3.md, C:\Users\User\.claude\skills\apex-governance\SKILL.md, C:\Users\User\.claude\agents\apex-coder.md, C:\Users\User\.claude\agents\apex-docs-technical-agent.md — done when: none of these files contains `interim executor` or `interim: the host`, each replacement below is present verbatim, `apex-docs-technical-agent.md` declares a `build_exceptions` input, and the governance skill's diff shows exactly two changed lines — its `version` and its `last_updated`.
 
 Each pair below is a literal find/replace on that file. Backticks shown are part of the text.
 
@@ -688,24 +957,29 @@ REPLACE: terminal verify-failure routing by the `apex-build-orchestrator`
 FIND:    Ownership of the scheduling doctrine is unchanged: orchestrator-owned is the target, with the host as interim executor until the build-orchestrator agent contract ships.
 REPLACE: Ownership of the scheduling doctrine is unchanged: it is owned by the dispatched `apex-build-orchestrator`.
 
---- agents/apex-docs-technical-agent.md
+--- agents/apex-docs-technical-agent.md (edit 1 of 2, the coder_summary clause)
 FIND:    **the host, as interim executor (ADR-046 D1), assembles it from the wrapper's `.final` completion reports**
 REPLACE: **the host assembles it from the wrapper's `.final` completion reports as build mechanics (ADR-046 D1)**
+
+--- agents/apex-docs-technical-agent.md (edit 2 of 2, a NEW declared input, inserted as a new bullet immediately BEFORE the reviewer_findings bullet)
+FIND:    - reviewer_findings: output from apex-reviewer (findings or clean)
+REPLACE: - build_exceptions: the `row_kind: "exception"` (D1-EXCEPTION) ledger rows recorded for THIS build, or an empty list. Each row carries `ts`, `spec`, `task_scope`, `reason`, `scope`, `operator`, `resolution`. Rows are selected by `spec` match — you are handed exactly the rows whose `spec` equals this build's spec name, and no others. Render every one of them into the handoff, routed by `resolution`: a row with `resolution: open` becomes a **Blocked Actions** entry — the adjudication the takeover left outstanding, named with its `task_scope` — and a row with `resolution: resolved` becomes a **Decisions Made** entry naming the host takeover and exactly what was taken over, from its `reason` and `scope`. These rows are the ONLY producer for a host takeover — a takeover appears in no `.final` field and in no `apex-coder` summary — so if this list is non-empty and the handoff does not mention it, the takeover has gone unrecorded, which is the one thing the D1-EXCEPTION mechanism exists to prevent.
+- reviewer_findings: output from apex-reviewer (findings or clean)
 ````
 
-- [ ] **Task 6**: Amend both ADRs. (a) In ADR-046, append to § D1 immediately before `### D2` an `**Amendment — <build date>: interim executor retired**` paragraph recording that the build-orchestrator agent contract shipped at `~/.claude/agents/apex-build-orchestrator.md`; that D1's interim clause is fulfilled and retired; that the ownership assignment and the host's mechanics-only role are unchanged; that the host additionally runs a deterministic pre-launch structural validation (cap arithmetic, wave file-disjointness) and refuses a violating wave back to the orchestrator, which is mechanics, not adjudication; that **dispatch channel is keyed on attendance** (owner ruling, 2026-07-31) — attended long dispatches run detached with the owner supplying ADR-029's supervision, unattended runs use the harness-owned foreground call at any duration, and ADR-029's parallel-pool exclusion for high-risk work is unchanged; and that a host takeover of orchestrator duties now exists **only** as an attended, recorded **D1-EXCEPTION** — a ledger row `{row_kind:'exception', ts, reason, scope, operator}`, excluded from dispatch and family-gate selection by the `row_kind` rule, plus a handoff entry — while an AFK build parks and surfaces instead. Then mark the ORIGINAL interim paragraph (`Until the build-orchestrator agent contract ships…`, `:61-62`) with a leading `**Superseded — <build date>, see the amendment below:**` marker, following ADR-045's annotation precedent; leave its wording otherwise intact so the historical record survives, and do not delete it. (b) In ADR-045, edit the D1-amendment sentence at `:74-77` **in place** — the one beginning `Until the orchestrator's agent contract ships` — replacing it with a sentence in the past tense that marks it superseded, names the agent file, and cites this amendment; follow that ADR's own annotation precedent for superseded text rather than appending a second paragraph. (c) In ADR-041, add a one-line banner directly under the `**Deferred:**` bullet at `:72-77` reading `**Annotation (<build date>):** "the host adjudicates" here is the pre-D1 arrangement; build-result adjudication is now the dispatched `apex-build-orchestrator`'s (ADR-046 D1). Historical text retained.` — a banner only; the bullet's own wording is NOT rewritten. (d) In ADR-044, the § Decision **Item 1** paragraph at `:187` still ends `the host must adjudicate before accepting the diff` — the last unswept adjudication consumer. Add a one-line banner directly UNDER that paragraph reading `**Annotation (<build date>):** post-hoc critical-violation adjudication is the dispatched `apex-build-orchestrator`'s (ADR-046 D1); the host executes its directive. Attended confirmation remains the recovery. Historical text retained.` — banner only, in the same pattern as (c)'s ADR-041 banner: the original paragraph's wording is NOT touched, not one word. Use the session date supplied in the dispatch pack, or `2026-07-30` if none is supplied — files: C:\users\user\apex\docs\technical\adr\ADR-046-doctrine-audit-resolutions.md, C:\users\user\apex\docs\technical\adr\ADR-045-four-role-split.md, C:\users\user\apex\docs\technical\adr\ADR-041-wrapper-hardening-scope-cap-pin.md, C:\users\user\apex\docs\technical\adr\ADR-044-round8-deferred-designs.md — done when: ADR-046 § D1 carries the amendment with the structural-validation and D1-EXCEPTION clauses AND the superseded marker on the original interim paragraph, ADR-045's sentence is rewritten in place with a supersession marker, ADR-041 and ADR-044 each carry their banner with their original text unchanged, and no other decision text is reworded.
+- [ ] **Task 6**: Amend both ADRs. (a) In ADR-046, append to § D1 immediately before `### D2` an `**Amendment — <build date>: interim executor retired**` paragraph recording that the build-orchestrator agent contract shipped at `~/.claude/agents/apex-build-orchestrator.md`; that D1's interim clause is fulfilled and retired; that the ownership assignment and the host's mechanics-only role are unchanged; that the host additionally runs a deterministic pre-launch structural validation over every wave plan — **all three checks named: cap arithmetic, wave file-disjointness — within a wave, no task's authorized path may EQUAL, be an ANCESTOR of, or be a DESCENDANT of another task's authorized path, compared per-repo so equal relative paths in different repos do not collide — and `authorized` ⊆ the spec's `Files to Change`** — and refuses a violating wave back to the orchestrator, which is mechanics, not adjudication; that **dispatch channel is keyed on attendance** (owner ruling, 2026-07-31) — attended long dispatches run detached with the owner supplying ADR-029's supervision, unattended runs use the harness-owned foreground call at any duration, and ADR-029's parallel-pool exclusion for high-risk work is unchanged; and that a host takeover of orchestrator duties now exists **only** as an attended, recorded **D1-EXCEPTION** — a ledger row `{row_kind:'exception', ts, spec, task_scope, reason, scope, operator, resolution}` whose `spec` selects it into the technical docs agent's `build_exceptions` input and whose `resolution` (`open|resolved`) routes it to Blocked Actions or Decisions Made, excluded from dispatch and family-gate selection by the `row_kind` rule, plus a handoff entry — while an AFK build parks and surfaces instead. Then mark the ORIGINAL interim paragraph (`Until the build-orchestrator agent contract ships…`, `:61-62`) with a leading `**Superseded — <build date>, see the amendment below:**` marker, following ADR-045's annotation precedent; leave its wording otherwise intact so the historical record survives, and do not delete it. (b) In ADR-045, edit the D1-amendment sentence at `:74-77` **in place** — the one beginning `Until the orchestrator's agent contract ships` — replacing it with a sentence in the past tense that marks it superseded, names the agent file, and cites this amendment; follow that ADR's own annotation precedent for superseded text rather than appending a second paragraph. (c) In ADR-041, add a one-line banner directly under the `**Deferred:**` bullet at `:72-77` reading `**Annotation (<build date>):** "the host adjudicates" here is the pre-D1 arrangement; build-result adjudication is now the dispatched `apex-build-orchestrator`'s (ADR-046 D1). Historical text retained.` — a banner only; the bullet's own wording is NOT rewritten. (d) In ADR-044, the § Decision **Item 1** paragraph at `:187` still ends `the host must adjudicate before accepting the diff` — the last unswept adjudication consumer. Add a one-line banner directly UNDER that paragraph reading `**Annotation (<build date>):** post-hoc critical-violation adjudication is the dispatched `apex-build-orchestrator`'s (ADR-046 D1); the host executes its directive. Attended confirmation remains the recovery. Historical text retained.` — banner only, in the same pattern as (c)'s ADR-041 banner: the original paragraph's wording is NOT touched, not one word. Use the session date supplied in the dispatch pack, or `2026-07-30` if none is supplied — files: C:\users\user\apex\docs\technical\adr\ADR-046-doctrine-audit-resolutions.md, C:\users\user\apex\docs\technical\adr\ADR-045-four-role-split.md, C:\users\user\apex\docs\technical\adr\ADR-041-wrapper-hardening-scope-cap-pin.md, C:\users\user\apex\docs\technical\adr\ADR-044-round8-deferred-designs.md — done when: ADR-046 § D1 carries the amendment with the structural-validation and D1-EXCEPTION clauses AND the superseded marker on the original interim paragraph, ADR-045's sentence is rewritten in place with a supersession marker, ADR-041 and ADR-044 each carry their banner with their original text unchanged, and no other decision text is reworded.
 
-- [ ] **Task 7**: Double-write the registry. This task is coder-dispatched against the `apex` worktree directly — it is ordinary repository bookkeeping in the spec's own scope lock, not one of the three host's-pen artifacts (handoff, live status file, spec archival) that D6 reserves, so the sibling specs' host-pen convention does not apply to it. In `SKILLS.md` change the `## Agents (5)` heading to `## Agents (6)` and add the row below as the first row of the agents table. In `SKILL-HISTORY.md` add one row at the top of the table, dated the build date, listing skills `apex-code, apex-orchestrate, apex-governance, apex-plan`, every file this spec changed under `~/.claude`, event `updated`, a What-Changed summary naming the agent creation, the interim-executor retirement, and the dispatch-channel doctrine, and sources `docs/technical/adr/ADR-046-doctrine-audit-resolutions.md · docs/technical/adr/ADR-045-four-role-split.md · docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`. **RECORD the version numbers Tasks 2, 3, 5, and 9 already wrote — read each SKILL.md frontmatter and copy the value. Bump nothing here.** **Integration directive for this task, executed by the host as mechanics in this order:** (1) `git -C <apex> log -1 --format=%H -- SKILLS.md SKILL-HISTORY.md` and read the first five lines of each table; (2) if either top row differs from what this task's worktree branched onto, rebase the worktree onto the current tip and **RE-APPEND this spec's row as the newest row** — a move of the one existing row within the rewrite, never a second copy, and never left buried under a row that landed later; (3) only then the path-scoped `git checkout` integration. Step (2) is what keeps the done-condition below true after a race: this spec's row is the newest row, and the versions it records are read from it as the newest row. `retro-validator-versioning` and `adr032-predraft-architecture-pass` write these same two files, so step (2) is not optional — files: C:\users\user\apex\SKILLS.md, C:\users\user\apex\SKILL-HISTORY.md — done when: the agents table has six data rows and a matching count in its heading, the history table's newest row is the one described, and its version numbers equal the live frontmatter values.
+- [ ] **Task 7**: Double-write the registry. This task is coder-dispatched against the `apex` worktree directly — it is ordinary repository bookkeeping in the spec's own scope lock, not one of the three host's-pen artifacts (handoff, live status file, spec archival) that D6 reserves, so the sibling specs' host-pen convention does not apply to it. In `SKILLS.md` change the `## Agents (5)` heading to `## Agents (6)` and add the row below as the first row of the agents table. In `SKILL-HISTORY.md` add one row at the top of the table, dated the build date, listing skills `apex-code, apex-orchestrate, apex-governance, apex-plan`, every file this spec changed under `~/.claude`, event `updated`, a What-Changed summary naming the agent creation, the interim-executor retirement, and the dispatch-channel doctrine, and sources `docs/technical/adr/ADR-046-doctrine-audit-resolutions.md · docs/technical/adr/ADR-045-four-role-split.md · docs/research/issue13-kill-ceiling-rootcause-2026-07-30.md`. **RECORD the version numbers Tasks 2, 3, 5, and 9 already wrote — read each SKILL.md frontmatter and copy the value. Bump nothing here.** **Integration directive for this task, executed by the host as mechanics in this order:** (1) `git -C <apex> log -1 --format=%H -- SKILLS.md SKILL-HISTORY.md` and read the first five lines of each table; (2) if either top row differs from what this task's worktree branched onto, rebase the worktree onto the current tip, then **locate this spec's row wherever it now sits** — it is unique-matched by the agent-name string `apex-build-orchestrator`, which no other spec writes — and path-scope-integrate it; (3) only then the path-scoped `git checkout` integration. **The row's POSITION in the table is not a requirement.** A sibling spec's row landing above it is a normal outcome of two specs writing the same table, not a defect, and nothing downstream reads position: the version numbers this task records are read from **this spec's row, found by its agent-name string**, never from "the newest row". What step (2) must guarantee is only that the row is present **exactly once** — a rebase that leaves a second copy is the real failure. `retro-validator-versioning` and `adr032-predraft-architecture-pass` write these same two files, so step (2) is not optional — files: C:\users\user\apex\SKILLS.md, C:\users\user\apex\SKILL-HISTORY.md — done when: the agents table has six data rows and a matching count in its heading, `SKILL-HISTORY.md` carries this spec's row exactly once at any position, and the version numbers in that row equal the live frontmatter values.
 
 ```
 | **apex-build-orchestrator** | apex-code (host dispatch) | Wave scheduling, dispatch parameters, exit-code routing, verify adjudication, integration order — reasoning only |
 ```
 
-- [ ] **Task 8**: **Host-executed, attended — never dispatched to a coder** (it launches a real `codex exec`, and a nested dispatch inside a sandboxed coder is not a supported path). Run ONE real dummy dispatch through `codex-dispatch.ps1` in a throwaway scratch worktree. The channel is `detached` **by the attendance rule, not as an exception**: this task is attended and long, which is exactly the case the rule assigns to the detached runner. **The mechanism is fixed:** a **runner script** — which itself launches `codex-dispatch.ps1` — executed as a **normal background task**, a **completion marker file** written by that runner, and `Monitor` on the marker; owner present and the host tailing the dispatch log throughout. Direct `Start-Process` / `schtasks` detachment is classifier-blocked on this harness (`docs/handoff/2026-08-01.md`) and must NOT be used. **The dummy is deterministic, not open-ended** — dispatch it with this EXACT prompt text, verbatim: `Emit exactly one line to stdout every 30 seconds, of the form "heartbeat <n>/25 <UTC ISO-8601 timestamp>", beginning at n=1 and continuing through n=25. Sleep 30 seconds between lines. Do NOT create, edit, or delete any file. Do NOT run any other command. After the 25th line, print "heartbeat complete" and exit.` — and this EXACT wrapper argument list: `-Spec build-orchestrator-contract -Task 8-detached-channel-probe -Phase build -Worktree <the throwaway scratch worktree> -Effort low -Schema completion`, plus EITHER `-Authorized <the single scratch file the probe may touch>` OR, when the probe writes nothing at all, `-ScopeUnlocked -ScopeUnlockedReason "issue-13 detached-channel probe: heartbeat only, no file writes"`. 25 iterations × 30 s bounds the run below at **≥12 minutes wall clock** (the issue-13 doc's stated threshold, which the heartbeat probes could not exercise because they never filled a 64-KB stdout pipe). If the prompt finishes early, re-run with a larger iteration count; a short run proves nothing. Then append to § Caveats of the issue-13 research doc a `**Real-codex confirmation (<date>)**` bullet whose seven fields are: harness build · run id · wall-clock duration in minutes, computed as `ended - started` from that ledger row's own timestamps (never estimated) · terminal ledger row status · whether the `--json` log's last line parses as a complete final event · whether the `.final` file exists · `verdict: confirmed` — files: C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md — done when: the run reached natural completion, all four mechanical checks pass (terminal ledger status, complete final log event, `.final` present, computed duration ≥ 12 min), and the appended bullet carries all seven fields. **A `re-opened` outcome is NOT a completion of this task** — it means the kill class reproduced on a real dispatch, which invalidates the Task 4 channel doctrine as written: stop, record the evidence, and surface it as a spec-level blocker. **Scope note:** this task confirms only the ATTENDED/`detached` half of the channel doctrine. The unattended half — the claim that a plain foreground call past the ~10-minute tool ceiling MIGRATES rather than dies — is not assumed here; it is confirmed separately by **Task 8b**, and until 8b returns `verdict: confirmed` that claim stands unconfirmed.
+- [ ] **Task 8**: **Host-executed, attended — never dispatched to a coder** (it launches a real `codex exec`, and a nested dispatch inside a sandboxed coder is not a supported path). Run ONE real dummy dispatch through `codex-dispatch.ps1` in a throwaway scratch worktree. The channel is `detached` **by the attendance rule, not as an exception**: this task is attended and long, which is exactly the case the rule assigns to the detached runner. **The mechanism is fixed:** a **runner script** — which itself launches `codex-dispatch.ps1` — executed as a **normal background task**, a **completion marker file** written by that runner, and `Monitor` on the marker; owner present and the host tailing the dispatch log throughout. Direct `Start-Process` / `schtasks` detachment is classifier-blocked on this harness (`docs/handoff/2026-08-01.md`) and must NOT be used. **The dummy is deterministic, not open-ended** — dispatch it with this EXACT prompt text, verbatim: `Emit exactly one line to stdout every 30 seconds, of the form "heartbeat <n>/25 <UTC ISO-8601 timestamp>", beginning at n=1 and continuing through n=25. Sleep 30 seconds between lines. Do NOT create, edit, or delete any file. Do NOT run any other command. After the 25th line, print "heartbeat complete" and exit.` — and this EXACT wrapper argument list, which is the wrapper's full caller contract and not an abbreviation of it — every parameter below is required on a dispatch: `-Spec build-orchestrator-contract -Task 8-detached-channel-probe -Phase build -Worktree <the throwaway scratch worktree> -BaseSha <that scratch worktree's HEAD sha, read with `git -C <worktree> rev-parse HEAD` immediately before launch> -Schema completion -Effort low -Prompt <the heartbeat prompt text above, passed verbatim as one argument> -SpecSourcePath <this spec's promoted path, per the spec-wide assumption> -Attended:$true -CriticalFilesConfirmed`, plus EITHER `-Authorized <the single scratch file the probe may touch>` OR, when the probe writes nothing at all, `-ScopeUnlocked -ScopeUnlockedReason "issue-13 detached-channel probe: heartbeat only, no file writes"`. **`-Attended:$true` and `-CriticalFilesConfirmed` are mandatory on this invocation, not optional hardening.** The wrapper requires `-CriticalFilesConfirmed` on every `-ScopeUnlocked` build, and the live attended confirmation it stands for is the operator running this probe by hand; `-Attended:$true` is passed explicitly because **attendance is the routing fact under test** — the ledger row's attendance telemetry must read `true`, never null, or the run cannot evidence an attendance-keyed channel rule at all. **Omitting `-BaseSha` or `-Prompt` is not a shorthand — the wrapper refuses the dispatch**, so a probe that "failed to launch" for either reason is an argument-list defect, not evidence about the channel. 25 iterations × 30 s bounds the run below at **≥12 minutes wall clock** (the issue-13 doc's stated threshold, which the heartbeat probes could not exercise because they never filled a 64-KB stdout pipe). If the prompt finishes early, re-run with a larger iteration count; a short run proves nothing. Then append to § Caveats of the issue-13 research doc a `**Real-codex confirmation (<date>)**` bullet whose **TEN** fields are: harness build · run id · wall-clock duration in minutes, computed as `ended - started` from that ledger row's own timestamps (never estimated) · terminal ledger row status · whether the `--json` log's last line parses as a complete final event · whether the `.final` file exists · `verdict: confirmed` · **`invocation:` the full wrapper invocation line exactly as executed, verbatim** · **`worktree head:` the launch-time HEAD sha of the scratch worktree** · **`prompt first line:` the heartbeat prompt's first line**. Those last three exist because the runner script, the marker file, and the scratch worktree are all deleted at teardown: without them nothing on disk records what was actually run, and the bullet stops being a reproducible record the moment the artifacts go. **At completion the host appends TWO ledger rows for this task — part of the task, not bookkeeping after it.** (1) An **in-session build row** for this task's edit to the research doc: fresh `run_id`, `phase` `build`, `builder_family` `anthropic`, the apex `worktree_key`, and `end_tree_digest` computed with the tree-pin helper's `-Digest` mode (or the literal `unverifiable`), exactly as `apex-code/SKILL.md:360-375` prescribes for in-session work. (2) An **attended human-review row**: `phase` `human-review`, `attended` `true`, and `reviewed_run_id` bound to that build row's `run_id` — this work is attended and host-verified, and the attended human-review row is the family gate's human-review vouching path. Both rows carry this task's real id, `8-detached-channel-probe`, so the per-task completion rule holds for Task 8 under the same triple the gate selects on — files: C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md — done when: the run reached natural completion, all four mechanical checks pass (terminal ledger status, complete final log event, `.final` present, computed duration ≥ 12 min), the appended bullet carries all **ten** fields, and both ledger rows exist with the human-review row's `reviewed_run_id` equal to the build row's `run_id`. **A `re-opened` outcome is NOT a completion of this task** — it means the kill class reproduced on a real dispatch, which invalidates the Task 4 channel doctrine as written: stop, record the evidence, and surface it as a spec-level blocker. **Scope note:** this task confirms only the ATTENDED/`detached` half of the channel doctrine. The unattended half — the claim that a plain foreground call past the ~10-minute tool ceiling MIGRATES rather than dies — is not assumed here; it is confirmed separately by **Task 8b**, and until 8b returns `verdict: confirmed` that claim stands unconfirmed.
 
-- [ ] **Task 8b**: **Host-executed, attended — never dispatched to a coder** (same reason as Task 8: it launches a real `codex exec`, and a nested dispatch inside a sandboxed coder is not a supported path). Run the SAME deterministic ≥12-minute heartbeat dummy as Task 8 — its exact prompt text and wrapper argument list are given verbatim in Task 8's body and are reused unchanged except that `-Task` becomes `8b-foreground-channel-probe` — through `codex-dispatch.ps1` in a throwaway scratch worktree, but this time as a **PLAIN FOREGROUND wrapper call**: no runner script, no background task, no completion marker, no `Monitor`. That is precisely the harness-owned channel the attendance rule assigns to an unattended run, and this task is the only place in this spec where a foreground long call is deliberate rather than an error. **Expected outcome:** the harness MIGRATES the call past its ~10-minute tool ceiling and the run reaches natural completion, with all four mechanical checks passing — terminal ledger row status (not `running`, `adopting`, `stalled`, or `killed`); computed duration `ended - started` from that row's OWN timestamps ≥ 12.0 minutes (computed, never estimated); the `.final` file present at the wrapper's reported path; the `--json` log's last line parsing as a complete final event rather than truncating mid-event. Then append to § Caveats of the issue-13 research doc a `**Real-codex foreground confirmation (<date>)**` bullet — a marker deliberately DISTINCT from Task 8's `**Real-codex confirmation (<date>)**`, so neither task's acceptance extract can swallow the other's bullet — in the SAME seven-field format as Task 8's, but for the foreground channel: harness build · run id · wall-clock duration in minutes computed as `ended - started` from that ledger row's own timestamps · terminal ledger row status · whether the `--json` log's last line parses as a complete final event · whether the `.final` file exists · `verdict: confirmed`. **STOP CONDITION — this is the point of the task.** The 2026-08-01 handoff records a foreground 10-minute timeout that KILLED the whole process tree. If that reproduces here — the tree is killed at the ceiling rather than the call migrating — then the unattended-channel doctrine is **invalidated as written**: do NOT continue and do NOT record a confirmation. Record the evidence in the same § Caveats as a bullet whose seventh field is `verdict: re-opened`, and surface it as a **spec-level blocker**. Because this task runs in wave 2 — before Task 1 or Task 4 has written a line of doctrine — a `re-opened` verdict PARKS the spec with nothing yet to roll back: the unattended-channel sentences planned for Task 4's `## Dispatch channel` and for Task 1's agent-contract § Channel must be re-drafted in this spec before the sweep resumes — files: C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md — done when: the plain foreground call completed past the tool ceiling without the tree being killed, all four mechanical checks pass, and the appended `Real-codex foreground confirmation` bullet carries all seven fields ending `verdict: confirmed`. A `re-opened` outcome is NOT a completion of this task.
+- [ ] **Task 8b**: **Host-executed, attended — never dispatched to a coder** (same reason as Task 8: it launches a real `codex exec`, and a nested dispatch inside a sandboxed coder is not a supported path). Run the SAME deterministic ≥12-minute heartbeat dummy as Task 8 — its exact prompt text and wrapper argument list are given verbatim in Task 8's body and are reused unchanged except that `-Task` becomes `8b-foreground-channel-probe` and `-BaseSha` is read from THIS task's own scratch worktree (`-Prompt`, `-Schema`, `-Effort`, `-SpecSourcePath`, `-Attended:$true`, `-CriticalFilesConfirmed` and the `-Authorized`/`-ScopeUnlocked` choice are all identical — and `-Attended:$true` is passed here too even though the channel is the unattended one, because the operator IS at the machine for this probe and the attendance telemetry must record the fact rather than null) — through `codex-dispatch.ps1` in a throwaway scratch worktree, but this time as a **PLAIN FOREGROUND wrapper call**: no runner script, no background task, no completion marker, no `Monitor`. That is precisely the harness-owned channel the attendance rule assigns to an unattended run, and this task is the only place in this spec where a foreground long call is deliberate rather than an error. **Expected outcome:** the harness MIGRATES the call past its ~10-minute tool ceiling and the run reaches natural completion, with all four mechanical checks passing — terminal ledger row status (not `running`, `adopting`, `stalled`, or `killed`); computed duration `ended - started` from that row's OWN timestamps ≥ 12.0 minutes (computed, never estimated); the `.final` file present at the wrapper's reported path; the `--json` log's last line parsing as a complete final event rather than truncating mid-event. Then append to § Caveats of the issue-13 research doc a `**Real-codex foreground confirmation (<date>)**` bullet — a marker deliberately DISTINCT from Task 8's `**Real-codex confirmation (<date>)**`, so neither task's acceptance extract can swallow the other's bullet — in Task 8's TEN-field format **plus one field this task alone carries, making ELEVEN**: harness build · run id · wall-clock duration in minutes computed as `ended - started` from that ledger row's own timestamps · terminal ledger row status · whether the `--json` log's last line parses as a complete final event · whether the `.final` file exists · `verdict: confirmed` · as **field 8**, `migration notice: "<the harness's own notice, quoted verbatim>"` — the tool result in which the harness recorded that this call was moved to the background · and then, as fields **9, 10 and 11**, Task 8's three reproducibility fields, identical in form: `invocation:` the full wrapper invocation line exactly as executed, verbatim · `worktree head:` the launch-time HEAD sha of THIS task's scratch worktree · `prompt first line:` the heartbeat prompt's first line. Those three survive the teardown that deletes this task's scratch worktree, which is the only reason the record stays reproducible. **Field 8 is the observable signal, and it is the point of the task.** A run that simply finished proves only that it finished; the migration notice is the harness stating that the ceiling was reached and the call was migrated rather than killed, which is the actual claim under test. **If no such notice was emitted, the eighth field is not to be fabricated, paraphrased, or filled with an inference from the run's completion** — record `migration notice: ABSENT` and treat the outcome as `re-opened` under the stop condition below, whatever the other seven fields say. **STOP CONDITION — this is the point of the task.** The 2026-08-01 handoff records a foreground 10-minute timeout that KILLED the whole process tree. If that reproduces here — the tree is killed at the ceiling rather than the call migrating — then the unattended-channel doctrine is **invalidated as written**: do NOT continue and do NOT record a confirmation. Record the evidence in the same § Caveats as a bullet whose seventh field is `verdict: re-opened`, and surface it as a **spec-level blocker**. Because this task runs in wave 2 — before Task 1 or Task 4 has written a line of doctrine — a `re-opened` verdict PARKS the spec with nothing yet to roll back: the unattended-channel sentences planned for Task 4's `## Dispatch channel` and for Task 1's agent-contract § Channel must be re-drafted in this spec before the sweep resumes. **At completion the host appends TWO ledger rows for this task, on the same rule as Task 8 — part of the task, not bookkeeping after it.** (1) An **in-session build row** for this task's edit to the research doc: fresh `run_id`, `phase` `build`, `builder_family` `anthropic`, the apex `worktree_key`, and `end_tree_digest` computed with the tree-pin helper's `-Digest` mode (or the literal `unverifiable`), per `apex-code/SKILL.md:360-375`. (2) An **attended human-review row**: `phase` `human-review`, `attended` `true`, `reviewed_run_id` bound to that build row's `run_id` — the work is attended and host-verified, and that row is the family gate's human-review vouching path. Both rows carry this task's real id, `8b-foreground-channel-probe`, so the per-task completion rule holds for Task 8b under the same triple the gate selects on — files: C:\users\user\apex\docs\research\issue13-kill-ceiling-rootcause-2026-07-30.md — done when: the plain foreground call completed past the tool ceiling without the tree being killed, all four mechanical checks pass, the appended `Real-codex foreground confirmation` bullet carries all **eleven** fields — the seventh reading `verdict: confirmed`, the eighth carrying the harness's migration notice verbatim and not `ABSENT`, and fields 9–11 carrying the invocation line, the launch-time worktree HEAD sha, and the prompt's first line — and both ledger rows exist with the human-review row's `reviewed_run_id` equal to the build row's `run_id`. A `re-opened` outcome is NOT a completion of this task, and neither is a `confirmed` verdict whose eighth field is `ABSENT`.
 
-- [ ] **Task 9**: Retire the § Wave plan interim clause in the planning skill and bump its version once. Replace the sentence that currently spans two lines — `Final task selection and sequencing are **orchestrator-owned** (ADR-046 D1; interim: the` / `host performs them as executor until that agent contract ships).` — with: `Final task selection and sequencing are **orchestrator-owned** — the dispatched `apex-build-orchestrator` (ADR-046 D1).` Leave the surrounding proposal/binding-dependency sentences and every other section of the file untouched, and bump the frontmatter `version` PATCH exactly once, covering both this edit and Task 5's `model-routing.md` edit — files: C:\Users\User\.claude\skills\apex-plan\SKILL.md — done when: the wrapped clause is gone (checked across line breaks), the orchestrator phrasing is present, and the diff contains exactly one changed `version` line plus the § Wave plan sentence.
+- [ ] **Task 9**: Retire the § Wave plan interim clause in the planning skill and bump its version once. Replace the sentence that currently spans two lines — `Final task selection and sequencing are **orchestrator-owned** (ADR-046 D1; interim: the` / `host performs them as executor until that agent contract ships).` — with: `Final task selection and sequencing are **orchestrator-owned** — the dispatched `apex-build-orchestrator` (ADR-046 D1).` Leave the surrounding proposal/binding-dependency sentences and every other section of the file untouched, and bump the frontmatter `version` PATCH exactly once **and set `last_updated` to the build date**, covering both this edit and Task 5's `model-routing.md` edit — files: C:\Users\User\.claude\skills\apex-plan\SKILL.md — done when: the wrapped clause is gone (checked across line breaks), the orchestrator phrasing is present, and the diff contains exactly the `version` line, the `last_updated` line, and the § Wave plan sentence.
 
 - [ ] **Task 10**: Reword the architecture overview's host-role bullet — replace the clause that wraps `:41-42`, `scheduling, routing, and verify adjudication are orchestrator-owned, performed by the host as **interim executor** until that agent contract ships (ADR-046 D1)`, with `scheduling, routing, and verify adjudication are owned by the dispatched `apex-build-orchestrator` (ADR-045 as amended; ADR-046 D1)`; change nothing else in the file, including the Build-orchestrator bullet below it — files: C:\users\user\apex\docs\technical\architecture\overview.md — done when: the file contains no `interim` string and names `apex-build-orchestrator` in the host-role bullet.
 
@@ -814,7 +1088,7 @@ grep -c 'refusal' ~/.claude/agents/apex-build-orchestrator.md                   
 - [ ] **Task 1** — the input events are a tagged union on `kind`, and the refusal tag carries the `run_id` REFERENT table — not a blanket "neither field" claim, and not a pre/post-identity partition → verify:
 
 ```
-cd ~/.claude/agents && for p in '"kind": "dispatch_result"' '"kind": "refusal"' '"kind": "integration_verify"' '"kind": "reviewer_result"' '"kind": "family_gate_result"'; do grep -c "$p" apex-build-orchestrator.md; done   # each 1
+cd ~/.claude/agents && for p in '"kind": "dispatch_result"' '"kind": "refusal"' '"kind": "integration_verify"' '"kind": "reviewer_result"' '"kind": "family_gate_result"' '"kind": "agent_result"'; do grep -c "$p" apex-build-orchestrator.md; done   # each 1 (SIX kinds)
 cd ~/.claude/agents && grep -ci 'neither run_id nor final' apex-build-orchestrator.md       # 0 (the superseded generalization)
 cd ~/.claude/agents && grep -c '`final` is ALWAYS null on this tag' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -ci 'post-identity' apex-build-orchestrator.md                  # 0 (the superseded partition)
@@ -828,7 +1102,8 @@ cd ~/.claude/agents && for r in '**75**' '**82**' '**78**' '**124**'; do grep -c
 cd ~/.claude/agents && grep -c '"event":' apex-build-orchestrator.md                        # 0 (no stale key)
 cd ~/.claude/agents && grep -c 'integration_branch' apex-build-orchestrator.md              # >=1
 cd ~/.claude/agents && grep -c 'reviewed_run_id' apex-build-orchestrator.md                 # >=1
-# the intro still declares FIVE kinds, and warns that one exit code can arrive on two tags
+# the intro declares SIX kinds, and warns that one exit code can arrive on two tags
+cd ~/.claude/agents && grep -c 'There are \*\*six\*\* kinds, below' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -c 'kinds, below' apex-build-orchestrator.md                     # 1
 cd ~/.claude/agents && grep -c 'The tag, not the code, tells you what you are holding' apex-build-orchestrator.md   # 1
 ```
@@ -844,17 +1119,116 @@ cd ~/.claude/agents && grep -ci 'codex-completion-schema.json' apex-build-orches
 cd ~/.claude/agents && grep -ci 'array of OBJECTS' apex-build-orchestrator.md              # 1
 ```
 
-- [ ] **Task 1** — `reviewer_result` mirrors the live review schema and one shape serves both reviewer families → verify:
+- [ ] **Task 1** — `dispatch_result.final` is NULLABLE, with the three no-report cases enumerated and `status` named as the authority when it is null → verify (the superseded contract claimed a `dispatch_result` always carries a `final`, which pre-launch 69, report-less adoption, and abandon-success all falsify):
 
 ```
+cd ~/.claude/agents && grep -c '<completion-schema object, or null>' apex-build-orchestrator.md   # 2 (the field declaration + the refusal-contrast sentence)
+cd ~/.claude/agents && grep -c 'always carries both' apex-build-orchestrator.md            # 0 (the superseded always-present claim)
+cd ~/.claude/agents && grep -ci 'three cases and no fourth' apex-build-orchestrator.md     # 1
+cd ~/.claude/agents && grep -ci 'pre-launch tree-moved exit 69' apex-build-orchestrator.md # 1 (null case 1)
+cd ~/.claude/agents && grep -c 'adopted-blocked` status' apex-build-orchestrator.md        # 1 (null case 2)
+cd ~/.claude/agents && grep -c 'abandoned-unadopted"`, `exit_code: 0`' apex-build-orchestrator.md   # 2 (null case 3 + the request_abandon carrier)
+cd ~/.claude/agents && grep -c '`status` is the authority' apex-build-orchestrator.md      # 2
+cd ~/.claude/agents && grep -ci 'not a `refusal`' apex-build-orchestrator.md               # 1 (abandon success is a dispatch_result)
+```
+
+- [ ] **Task 1** — `dispatch_result` carries the ledger facts the exit code masks, and names the ledger as the source of `run_id`/`log_path` → verify (the wrapper records all four violation flags unconditionally, so an exit 67 can hide a scope, encoding, or critical violation — the contract must say so):
+
+```
+cd ~/.claude/agents && for f in '"scope_violation"' '"encoding_violation"' '"critical_violation"' '"tree_moved_flag"' '"log_path"'; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1
+cd ~/.claude/agents && grep -c 'true|false|null' apex-build-orchestrator.md                       # 1 (critical_violation is tri-state)
+cd ~/.claude/agents && grep -c '67 > 69 > 66 > 65 > 77 > 73 > 68' apex-build-orchestrator.md      # 1 (the precedence chain, in order)
+cd ~/.claude/agents && grep -ci 'masks a simultaneous' apex-build-orchestrator.md                 # 1
+cd ~/.claude/agents && grep -c 'Read all four flags on EVERY' apex-build-orchestrator.md          # 1
+cd ~/.claude/agents && grep -ci 'never "clean"' apex-build-orchestrator.md                        # 1 (null critical_violation is not false)
+cd ~/.claude/agents && grep -c 'from the ledger row, not from' apex-build-orchestrator.md         # 1
+cd ~/.claude/agents && grep -ci 'never invent, reconstruct, or infer a' apex-build-orchestrator.md   # 1
+# the ledger status vocabulary, including the adopted forms and the scope suffix
+cd ~/.claude/agents && grep -c 'adopted-done_with_concerns' apex-build-orchestrator.md            # 1
+cd ~/.claude/agents && grep -c 'adopted-done+scope65' apex-build-orchestrator.md                  # 1
+cd ~/.claude/agents && grep -ci 'Match it as a prefix' apex-build-orchestrator.md                 # 1
+# and the flags are ADDITIVE routing obligations, not something the exit verdict can swallow
+cd ~/.claude/agents && grep -c 'verdict-INDEPENDENT obligations' apex-build-orchestrator.md       # 1
+cd ~/.claude/agents && grep -c 'Exit 67 never absorbs them' apex-build-orchestrator.md            # 1
+cd ~/.claude/agents && grep -ci 'in addition to' apex-build-orchestrator.md                       # 1
+```
+
+- [ ] **Task 1** — `reviewer_result` is PRODUCER-TYPED: each of the five reviewers carries its own fields verbatim, and no normalized verdict field is invented → verify (the four producers emit four different vocabularies and no normalizer exists anywhere in `apex-code` — see § B of the producer-surfaces research doc `orchestrator-producer-surfaces-2026-08-01.md`, which lives under the research directory of this repo and is cited by basename because it is planning evidence, not a build target):
+
+```
+cd ~/.claude/agents && grep -c 'apex-reviewer|apex-wave-reviewer|codex-review|opus-endgate|human' apex-build-orchestrator.md   # 1 (the reviewer enum, all five)
+cd ~/.claude/agents && grep -c 'There is no common verdict field' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -c 'orchestrator-producer-surfaces-2026-08-01' apex-build-orchestrator.md   # 1 (the derivation is cited)
+# apex-reviewer's OWN vocabulary — status/type/low-medium-high, not BLOCK|FLAG|CLEAN
+cd ~/.claude/agents && grep -c '"status": "clean|findings"' apex-build-orchestrator.md      # 1
+cd ~/.claude/agents && grep -c 'missed_requirement|bug|risky_pattern|spec_divergence' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -c '"severity": "low|medium|high"' apex-build-orchestrator.md   # 1 (its real enum — NOT zero)
+cd ~/.claude/agents && for f in '"description":' '"suggestion":' '"type":'; do grep -c "$f" apex-build-orchestrator.md; done   # each 1
+# apex-wave-reviewer is PLAIN TEXT, carried as one string
+cd ~/.claude/agents && grep -c 'apex-wave-reviewer' apex-build-orchestrator.md              # 3
+cd ~/.claude/agents && grep -c 'plain text, not JSON' apex-build-orchestrator.md            # 1
+# codex-review's schema
 cd ~/.claude/agents && grep -c '"verdict": "BLOCK|FLAG|CLEAN"' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -c '"severity": "BLOCK|FLAG|CLEAN"' apex-build-orchestrator.md  # 1
-cd ~/.claude/agents && grep -c 'clean|findings|BLOCK' apex-build-orchestrator.md            # 0 (superseded verdict enum)
-cd ~/.claude/agents && grep -c '"severity": "low|medium|high"' apex-build-orchestrator.md   # 0 (superseded severity enum)
 cd ~/.claude/agents && grep -c '"criterion":' apex-build-orchestrator.md                    # 1
 cd ~/.claude/agents && grep -c '"rationale":' apex-build-orchestrator.md                    # 1
-cd ~/.claude/agents && grep -ci 'codex-review-schema.json' apex-build-orchestrator.md       # >=1
-cd ~/.claude/agents && grep -ci 'one shape serves both families' apex-build-orchestrator.md # 1
+cd ~/.claude/agents && grep -ci 'codex-review-schema.json' apex-build-orchestrator.md       # 1
+# opus-endgate's own field names and its free-text verdict
+cd ~/.claude/agents && grep -c '"severity": "P1|P2|note"' apex-build-orchestrator.md        # 1
+cd ~/.claude/agents && for f in '"issue":' '"why":'; do grep -c "$f" apex-build-orchestrator.md; done   # each 1
+cd ~/.claude/agents && grep -c 'free text — NOT an enum' apex-build-orchestrator.md        # 1
+# the invented shapes are GONE: no normalized top-level verdict, no endgate sub-object
+cd ~/.claude/agents && grep -c '"family": "anthropic|openai|human", "verdict"' apex-build-orchestrator.md   # 0
+cd ~/.claude/agents && grep -c '"endgate": {' apex-build-orchestrator.md                    # 0 (superseded sub-object)
+cd ~/.claude/agents && grep -ci 'one shape serves both families' apex-build-orchestrator.md # 0 (superseded claim)
+cd ~/.claude/agents && grep -c 'P1 → BLOCK' apex-build-orchestrator.md                      # 0 (no field rewriting)
+# guidance, explicitly NOT a field rewrite
+cd ~/.claude/agents && grep -c 'Adjudication guidance' apex-build-orchestrator.md           # 1
+cd ~/.claude/agents && grep -c 'never for rewriting a field' apex-build-orchestrator.md     # 1
+cd ~/.claude/agents && grep -ci 'never record a' apex-build-orchestrator.md                 # 1
+```
+
+- [ ] **Task 1** — the wrapper-only `exit_code` on `reviewer_result` is scoped to `codex-review` and its enum admits `null` for the four agent-dispatched kinds, while `tree_moved` applies to EVERY reviewer kind and is never forced false → verify (the host pin-verifies around agent reviewers too, so an agent-reviewer result with a moved pin arrives `tree_moved: true` and adjudicates void → request_verify):
+
+```
+cd ~/.claude/agents && grep -c '"exit_code": 0|67|68|69|null' apex-build-orchestrator.md    # 1 (null for the four agent kinds)
+cd ~/.claude/agents && grep -c '"exit_code": 0|67|68|69,' apex-build-orchestrator.md        # 0 (the superseded non-nullable enum)
+cd ~/.claude/agents && grep -c '"tree_moved": true|false' apex-build-orchestrator.md        # 1
+cd ~/.claude/agents && grep -c 'applies ONLY to' apex-build-orchestrator.md                 # 1 (exit_code, and exit_code alone)
+cd ~/.claude/agents && grep -c 'exit_code: null' apex-build-orchestrator.md                 # 1
+cd ~/.claude/agents && grep -c 'applies to ALL reviewer kinds' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'never forced false' apex-build-orchestrator.md             # 1
+cd ~/.claude/agents && grep -c 'tree_moved: false' apex-build-orchestrator.md               # 0 (no kind is pinned to false)
+cd ~/.claude/agents && grep -c 'SKILL.md:323' apex-build-orchestrator.md                    # 1 (the pin-before-any-review-gate citation)
+cd ~/.claude/agents && grep -c 'structurally unreachable' apex-build-orchestrator.md        # 1 (65/66/73/77 on a review phase)
+cd ~/.claude/agents && grep -c 'A review dispatch exits through the wrapper too' apex-build-orchestrator.md   # 0 (superseded blanket claim)
+```
+
+- [ ] **Task 1** — the SIXTH kind `agent_result` carries the three exit-codeless producers verbatim → verify:
+
+```
+cd ~/.claude/agents && grep -c '"agent": "apex-coder|apex-docs-product-agent|apex-docs-technical-agent"' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -c 'no exit code at all' apex-build-orchestrator.md             # 1
+cd ~/.claude/agents && for f in files_changed task_summaries blocked_actions; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1
+cd ~/.claude/agents && grep -c '"status": "completed|completed_with_skips|failed"' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -c 'inline_docs_added' apex-build-orchestrator.md               # 1
+cd ~/.claude/agents && grep -c 'single returned sentence' apex-build-orchestrator.md        # 1 (technical agent is free text)
+cd ~/.claude/agents && grep -c 'in-session ledger row' apex-build-orchestrator.md           # 1 (the fallback coder's run identity)
+cd ~/.claude/agents && grep -ci 'unverifiable' apex-build-orchestrator.md                   # 2 (the digest sentinel + the 78 digest cause)
+```
+
+- [ ] **Task 1** — `family_gate_result` matches the per-task gate, and spec-level completion is a quantifier over it → verify (`apex-family-gate.ps1` takes `-Spec`, `-Task`, `-WorktreeKey` all mandatory, exits 0/12/13, and prints nothing on 0):
+
+```
+cd ~/.claude/agents && grep -c '"exit_code": 0|12|13' apex-build-orchestrator.md            # 1
+cd ~/.claude/agents && grep -c '"kind": "family_gate_result", "spec": "<spec-name>", "task_id": "3",' apex-build-orchestrator.md   # 1 (required)
+cd ~/.claude/agents && grep -c 'family_gate_result", "spec": "<spec-name>", "task_id": "3|null"' apex-build-orchestrator.md       # 0 (the null option is gone from THIS tag)
+cd ~/.claude/agents && grep -c 'worktree_key' apex-build-orchestrator.md                    # 1
+cd ~/.claude/agents && grep -c 'strictly PER-TASK' apex-build-orchestrator.md               # 1
+cd ~/.claude/agents && grep -ci 'success is silent' apex-build-orchestrator.md              # 1
+cd ~/.claude/agents && grep -c 'quantifier, not an event' apex-build-orchestrator.md        # 1
+cd ~/.claude/agents && grep -c 'for \*\*every\*\* task' apex-build-orchestrator.md          # 1
+cd ~/.claude/agents && grep -c '"detail": "0 pass | 12 same-family refusal | 13 unverifiable"' apex-build-orchestrator.md   # 0 (superseded shape)
 ```
 
 - [ ] **Task 1** — a host-generated refusal is representable: `exit_code` may be `null`, `rule` comes from a named set, and such a refusal never routes through the exit table → verify:
@@ -868,22 +1242,27 @@ cd ~/.claude/agents && grep -ci 'the only legal responses to one are to' apex-bu
 cd ~/.claude/agents && for r in hard-block-commit-unapproved hard-block-push-main hard-block-merge hard-block-teardown-outside-d8 hard-block-critical-unconfirmed hard-block-audit-write structural-cap structural-disjointness structural-authorized-outside-spec; do grep -c -- "$r" apex-build-orchestrator.md; done   # each >=1
 ```
 
-- [ ] **Task 1** — review-phase exits ride `reviewer_result`, and the AFK end-gate is representable on it → verify:
+- [ ] **Task 1** — the AFK end-gate rung is present and a P1 blocks the family gate → verify:
 
 ```
-cd ~/.claude/agents && grep -c '"exit_code": 0|67|68|69' apex-build-orchestrator.md               # 1
-cd ~/.claude/agents && grep -c '"tree_moved": true|false' apex-build-orchestrator.md              # 1
-cd ~/.claude/agents && grep -c 'A review dispatch exits through the wrapper too' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -c 'This table is the BUILD phase' apex-build-orchestrator.md         # 1
-cd ~/.claude/agents && grep -c 'tree_moved' apex-build-orchestrator.md                            # 4
-cd ~/.claude/agents && grep -c 'opus-endgate' apex-build-orchestrator.md                          # 3
+cd ~/.claude/agents && grep -c 'tree_moved' apex-build-orchestrator.md                            # 8 (incl. the 2 tree_moved_flag uses and the all-kinds rule)
+cd ~/.claude/agents && grep -c 'opus-endgate' apex-build-orchestrator.md                          # 4
 cd ~/.claude/agents && grep -c 'afk-endgate.md' apex-build-orchestrator.md                        # 2
-cd ~/.claude/agents && grep -c 'P1 → BLOCK' apex-build-orchestrator.md                            # 1
-cd ~/.claude/agents && grep -c 'P2 → FLAG' apex-build-orchestrator.md                             # 1
-cd ~/.claude/agents && grep -c 'CLEAN, informational only' apex-build-orchestrator.md             # 1
-cd ~/.claude/agents && grep -c '"severity": "P1|P2|note"' apex-build-orchestrator.md              # 1
 cd ~/.claude/agents && grep -c 'mandatory AFK end-gate' apex-build-orchestrator.md                # 1
-cd ~/.claude/agents && grep -c 'unresolved end-gate P1' apex-build-orchestrator.md                # 1
+cd ~/.claude/agents && grep -c 'unresolved end-gate P1' apex-build-orchestrator.md                # 2 (the guidance rule + the close-out rung)
+```
+
+- [ ] **Task 1** — exit 78 routes by CAUSE, not to a single forced action → verify (78 fires for three unrelated reasons and `request_verify` is right for only one of them):
+
+```
+cd ~/.claude/agents && grep -c 'route it by CAUSE' apex-build-orchestrator.md                     # 1
+cd ~/.claude/agents && grep -c '69 and 78' apex-build-orchestrator.md                             # 0 (the merged forced rule is gone)
+cd ~/.claude/agents && grep -c '69 → `request_verify`' apex-build-orchestrator.md                 # 1 (69 keeps its forced action)
+cd ~/.claude/agents && grep -ci 'bad or unknown' apex-build-orchestrator.md                       # 1 (cause 1 → re-dispatch the review)
+cd ~/.claude/agents && grep -ci 'binding helper is unavailable' apex-build-orchestrator.md        # 1 (cause 2 → park)
+cd ~/.claude/agents && grep -ci 'digest mismatch' apex-build-orchestrator.md                      # 1 (cause 3 → request_verify or human review)
+cd ~/.claude/agents && grep -c 'SKILL.md:168' apex-build-orchestrator.md                          # 1 (the human-review row is cited)
 ```
 
 - [ ] **Task 1** — the bounded-input caps are stated numerically, not merely as "bounded" → verify:
@@ -896,7 +1275,7 @@ cd ~/.claude/agents && grep -c '<=30 findings' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -c 'concerns_md' apex-build-orchestrator.md     # >=2 (shape + the "raw" enumeration)
 cd ~/.claude/agents && grep -c 'scope_check' apex-build-orchestrator.md     # >=2
 # truncation is a FIELD, not a promise: both result tags carry it, and the caps prose points at it
-cd ~/.claude/agents && grep -c '"truncated": \["<field name>", "..."\]' apex-build-orchestrator.md   # 2
+cd ~/.claude/agents && grep -c '"truncated": \["<field name>", "..."\]' apex-build-orchestrator.md   # 3 (dispatch_result, reviewer_result, agent_result)
 cd ~/.claude/agents && grep -c 'Which fields were cut is a' apex-build-orchestrator.md              # 1
 cd ~/.claude/agents && grep -c 'naming exactly the fields the host cut' apex-build-orchestrator.md  # 1
 cd ~/.claude/agents && grep -c 'empty when nothing was cut' apex-build-orchestrator.md              # 1
@@ -1026,12 +1405,15 @@ cd ~/.claude/agents && grep -c 'docs/changes/done/' apex-build-orchestrator.md  
 
 ```
 cd ~/.claude/agents && grep -c '"row_kind": "exception"' apex-build-orchestrator.md   # 1
-cd ~/.claude/agents && for f in '"ts"' '"reason"' '"scope"' '"operator"'; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1
+cd ~/.claude/agents && for f in '"ts"' '"spec"' '"task_scope"' '"reason"' '"scope"' '"operator"' '"resolution"'; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1 (SEVEN fields)
+cd ~/.claude/agents && grep -c '"resolution": "open|resolved"' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'three of those seven fields are selectors' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'selects on' apex-build-orchestrator.md               # >=1 (`spec` is build_exceptions' selector)
 cd ~/.claude/agents && grep -c 'lease_close' apex-build-orchestrator.md               # >=1 (cross-reference)
 cd ~/.claude/agents && grep -ci 'excluded from build-row selection' apex-build-orchestrator.md   # 1
 ```
 
-- [ ] **Task 1** — a fixture exception row parses and is rejected by the selection rule → verify: write the schema's example row to a scratch file, parse it (`ConvertFrom-Json`), and confirm it has all four fields plus `row_kind: exception`, and that a `row_kind`-filtered selection over a fixture ledger containing that row plus one real build row returns only the build row.
+- [ ] **Task 1** — a fixture exception row parses and is rejected by the selection rule → verify: write the schema's example row to a scratch file, parse it (`ConvertFrom-Json`), and confirm it has all **seven** fields — `ts`, `spec`, `task_scope`, `reason`, `scope`, `operator`, `resolution` — plus `row_kind: exception`, with `resolution` holding one of `open` / `resolved`; that filtering the fixture by `spec` returns it only for its own spec name; and that a `row_kind`-filtered selection over a fixture ledger containing that row plus one real build row returns only the build row.
 - [ ] **Task 1** — "raw" is defined once and the definition is pointed at from the build skill → verify:
 
 ```
@@ -1043,6 +1425,12 @@ cd ~/.claude && grep -ci 'never a transcript or a whole log' skills/apex-code/SK
 
 ```
 cd ~/.claude/agents && for f in spec_digest completed_waves integration_state pending_waves base_sha run_ids phase refusal_history nudge_count pending_events; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1
+# resume-state completeness: the close-out rungs are recoverable too, and stay BOUNDED
+cd ~/.claude/agents && for f in family_gate_results reviewer_results docs_status rung_notes; do grep -c "$f" apex-build-orchestrator.md; done   # each >=1
+cd ~/.claude/agents && grep -c 'The four summary fields stay bounded on purpose' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -c 'findings body' apex-build-orchestrator.md               # 1
+cd ~/.claude/agents && grep -ci 'not so it can re-adjudicate them' apex-build-orchestrator.md   # 1
+cd ~/.claude/agents && grep -ci 'Never copy finding text into the summary fields' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -c 'pending_events\[\]' apex-build-orchestrator.md          # >=1 (plural, list-valued)
 cd ~/.claude/agents && grep -ci 'an ORDERED LIST of every event' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -ci 'in arrival order' apex-build-orchestrator.md           # 1
@@ -1067,11 +1455,32 @@ cd ~/.claude/agents && grep -c '"channel": "detached|background|foreground"' ape
 cd ~/.claude/agents && grep -ci 'cap arithmetic' apex-build-orchestrator.md        # >=1
 cd ~/.claude/agents && grep -ci 'file-disjointness' apex-build-orchestrator.md     # >=1
 cd ~/.claude/agents && grep -ci 'mechanics, not judgment' apex-build-orchestrator.md   # 1
+# check (b): disjointness is equal / ancestor / descendant, compared PER-REPO
+cd ~/.claude/agents && grep -c 'be an \*\*ANCESTOR\*\* of' apex-build-orchestrator.md            # 1 (the structural check (b) definition)
+cd ~/.claude/agents && grep -ci 'an ancestor of, or a descendant of' apex-build-orchestrator.md  # 1 (the wave-plan rules mirror)
+cd ~/.claude/agents && grep -ci 'relative paths in two different repos' apex-build-orchestrator.md   # 1 (the per-repo carve-out; the sentence wraps before this fragment)
 # check (c): the authorized set must be a SUBSET of the spec's Files to Change
 cd ~/.claude/agents && grep -c 'authorized ⊆ spec' apex-build-orchestrator.md      # 1
 cd ~/.claude/agents && grep -c 'must be a SUBSET of the paths' apex-build-orchestrator.md   # 1
 cd ~/.claude/agents && grep -c 'structural-authorized-outside-spec' apex-build-orchestrator.md   # 2 (the named set + check (c))
 cd ~/.claude/agents && grep -c 'set inclusion' apex-build-orchestrator.md          # 1
+```
+
+- [ ] **Task 1** — the host's structured-output enforcement is declared, with its named rule and its escalation → verify (a malformed turn is refused deterministically, never interpreted):
+
+```
+cd ~/.claude/agents && grep -c 'structural-malformed-output' apex-build-orchestrator.md      # 2 (the named rule set + the enforcement paragraph)
+cd ~/.claude/agents && grep -c 'Structured-output validation' apex-build-orchestrator.md     # 1
+cd ~/.claude/agents && grep -c 'exactly one fenced JSON block' apex-build-orchestrator.md    # 1
+cd ~/.claude/agents && grep -c 'no unknown top-level field' apex-build-orchestrator.md       # 1
+cd ~/.claude/agents && grep -c 'are NORMATIVE, not illustrative' apex-build-orchestrator.md  # 1 (the fenced shapes ARE the schema)
+cd ~/.claude/agents && grep -ci 'no separate' apex-build-orchestrator.md                     # 1 (no schema artifact ships — a non-goal)
+cd ~/.claude/agents && grep -c 'If the re-ask also fails validation' apex-build-orchestrator.md   # 1 (the sentence wraps — anchor on a fragment that does not)
+cd ~/.claude/agents && grep -c 'fresh-instance rung' apex-build-orchestrator.md              # 1
+cd ~/.claude/agents && grep -ci 'a parser, not a critic' apex-build-orchestrator.md          # 1
+# and it is stated on the host side too, so both documents describe the same enforcement
+cd ~/.claude && grep -c 'structural-malformed-output' skills/apex-code/SKILL.md              # 1
+cd ~/.claude && grep -ci 'structured-output validation' skills/apex-code/SKILL.md            # 1
 ```
 
 - [ ] **Task 1** — recovery is a named mechanism with both attendance branches → verify:
@@ -1087,7 +1496,7 @@ cd ~/.claude/agents && grep -c 'apex-ledger-append.ps1' apex-build-orchestrator.
 cd ~/.claude/agents && grep -c 'hooks/apex-ledger-append.ps1' apex-build-orchestrator.md      # 1 (the path, not just the name)
 cd ~/.claude/agents && grep -c 'LineBase64' apex-build-orchestrator.md                        # 1
 cd ~/.claude/agents && grep -c 'Never a bare `Add-Content`' apex-build-orchestrator.md        # 1
-cd ~/.claude/agents && grep -c 'bare' apex-build-orchestrator.md                              # 1 (both uses sit on one line)
+cd ~/.claude/agents && grep -c 'bare' apex-build-orchestrator.md                              # 2 (the two `Add-Content` uses share a line; "the bare nine" statuses is the other)
 cd ~/.claude/agents && grep -c 'ApexCodexRunLedger' apex-build-orchestrator.md                # 1
 cd ~/.claude/agents && grep -c 'only attended' apex-build-orchestrator.md                     # 1
 ```
@@ -1106,7 +1515,8 @@ cd ~/.claude && grep -c 'D8' agents/apex-build-orchestrator.md                  
 cd ~/.claude && grep -c 'apex-build-orchestrator' skills/apex-orchestrate/SKILL.md   # >=1
 cd ~/.claude && grep -ci 'interim executor' skills/apex-orchestrate/SKILL.md         # 0
 cd ~/.claude && grep -c 'Transitional' skills/apex-orchestrate/SKILL.md              # 0
-cd ~/.claude && git diff -U0 -- skills/apex-orchestrate/SKILL.md | grep -c '^+version:'   # 1
+cd ~/.claude && git diff -U0 -- skills/apex-orchestrate/SKILL.md | grep -c '^+version:'        # 1
+cd ~/.claude && git diff -U0 -- skills/apex-orchestrate/SKILL.md | grep -c '^+last_updated:'   # 1
 ```
 
 - [ ] **Task 3** — the wave-analysis note names the agent, the untouched D6 clause survives, and the frontmatter `version` minor is bumped → verify:
@@ -1115,7 +1525,8 @@ cd ~/.claude && git diff -U0 -- skills/apex-orchestrate/SKILL.md | grep -c '^+ve
 cd ~/.claude && grep -ci 'interim executor' skills/apex-code/SKILL.md        # 0
 cd ~/.claude && grep -c 'apex-build-orchestrator' skills/apex-code/SKILL.md  # >=1
 cd ~/.claude && grep -c 'Interim mechanics' skills/apex-code/SKILL.md        # 1
-cd ~/.claude && git diff -U0 -- skills/apex-code/SKILL.md | grep -c '^+version:'   # 1
+cd ~/.claude && git diff -U0 -- skills/apex-code/SKILL.md | grep -c '^+version:'        # 1
+cd ~/.claude && git diff -U0 -- skills/apex-code/SKILL.md | grep -c '^+last_updated:'   # 1
 ```
 
 - [ ] **Task 3** — the parent-side producing mechanism is stated, so the agent's bounded inputs have a named source → verify:
@@ -1128,6 +1539,13 @@ cd ~/.claude && grep -ci 'resumes the agent with it verbatim' skills/apex-code/S
 # the subset check is mirrored here, so both documents describe the same three-part validation
 cd ~/.claude && grep -c 'the subset check that every task' skills/apex-code/SKILL.md      # 1
 cd ~/.claude && grep -c 'Files to Change` (path-normalized)' skills/apex-code/SKILL.md    # 1
+# the disjointness definition is mirrored here too, in the same equal/ancestor/descendant, per-repo form
+cd ~/.claude && grep -ci 'compared per-repo' skills/apex-code/SKILL.md                    # 1
+cd ~/.claude && grep -ci 'be an ANCESTOR of, or be a DESCENDANT of' skills/apex-code/SKILL.md   # 1
+# the serial-load pointer: an attended LONG dispatch loads the channel reference even when it is alone
+cd ~/.claude && grep -ci 'Serial does not exempt the channel' skills/apex-code/SKILL.md   # 1
+cd ~/.claude && grep -c 'parallel-codex.md` § Dispatch channel' skills/apex-code/SKILL.md # 1
+cd ~/.claude && grep -ci 'serial ones included' skills/apex-code/SKILL.md                 # 1
 ```
 
 - [ ] **Task 4** — the channel doctrine is in place, the opening paragraph names the dispatched orchestrator, and the ADR-029 supervision gate keeps its own text with the attendance paragraph appended → verify:
@@ -1147,6 +1565,26 @@ cd ~/.claude/skills/apex-code/references && grep -c 'run_in_background' parallel
 cd ~/.claude/skills/apex-code/references && grep -c 'Launch every task in the sub-wave' parallel-codex.md   # 0
 ```
 
+- [ ] **Task 4** — the detached recipe is SELF-CONTAINED and declared as the recipe for all attended long dispatches, serial included → verify (a reader must be able to execute the channel from this section alone, without reconstructing it from a handoff):
+
+```
+cd ~/.claude/skills/apex-code/references && grep -c '### The detached recipe' parallel-codex.md   # 1
+cd ~/.claude/skills/apex-code/references && grep -ci 'serial ones included' parallel-codex.md     # 1
+cd ~/.claude/skills/apex-code/references && grep -ci 'parallel-wave device' parallel-codex.md     # 1 (the sentence wraps before this fragment)
+# part 1 — the runner script, with its wrapper invocation shown
+cd ~/.claude/skills/apex-code/references && grep -c 'codex-dispatch.ps1' parallel-codex.md        # >=1
+cd ~/.claude/skills/apex-code/references && grep -c 'LASTEXITCODE' parallel-codex.md              # 1
+cd ~/.claude/skills/apex-code/references && grep -ci 'outside\*\* any `try`' parallel-codex.md    # 1
+# part 2 — the marker convention: path AND content are both stated
+cd ~/.claude/skills/apex-code/references && grep -c '<spec>-<task>.done' parallel-codex.md        # >=1
+cd ~/.claude/skills/apex-code/references && grep -ci 'the wrapper.s exit code as text' parallel-codex.md   # 1
+# part 3 — the wait, and the ledger read that follows it
+cd ~/.claude/skills/apex-code/references && grep -ci 'does not poll in a sleep loop' parallel-codex.md     # 1
+cd ~/.claude/skills/apex-code/references && grep -ci 'read the ledger row' parallel-codex.md      # 1
+```
+
+- [ ] **Task 4** — the foreground-migration claim is written ONLY on Task 8b's eighth-field evidence → verify: if the § Caveats `Real-codex foreground confirmation` bullet carries a `migration notice:` field whose value is not `ABSENT`, then `grep -c 'confirmed (see issue-13 § Caveats foreground bullet)' parallel-codex.md` is 1; if that field is absent or reads `ABSENT`, the same grep must be **0** and the task is blocked pending a re-drafted unattended-channel paragraph. The two halves are checked together — a `1` with no evidence field is a failure of this criterion, not a pass.
+
 - [ ] **Task 5** — the sweep is complete across both trees, with no residual anywhere → verify:
 
 ```
@@ -1155,16 +1593,39 @@ cd ~/.claude/skills/apex-code/references && grep -c 'Launch every task in the su
 cd ~/.claude && grep -rn --include="*.md" --exclude-dir=fixtures -io "interim executor" skills agents hooks workflows   # 0 hits
 cd ~/.claude && grep -rnz --include="*.md" --exclude-dir=fixtures -i "interim: *the" skills agents                      # 0 hits (-z spans line wraps)
 cd ~/.claude && grep -rn --include="*.md" --exclude-dir=fixtures "apex-build-orchestrator" skills agents                # >=7 files
-# apex tree: derived form — ADR-045/046 RETAIN annotated historical occurrences, so require annotation, not absence
-cd ~/apex && grep -rn --include="*.md" -i "interim executor" docs/technical *.md | grep -civE 'retired|superseded'   # 0
+# apex tree: derived form — ADR-045/046 RETAIN annotated historical occurrences, so require annotation,
+# not absence; and the annotation legitimately sits on the PRECEDING line, so this is context-tolerant
+# for the same reason the Task 6 check is (a same-line grep would demand an undocumented reflow)
+cd ~/apex && bare=0; while IFS=: read -r f n _; do \
+    s=$(( n > 1 ? n - 1 : 1 )); \
+    sed -n "${s},$((n+1))p" "$f" | grep -qiE 'retired|superseded' || bare=$((bare+1)); \
+  done < <(grep -rn --include="*.md" -i "interim executor" docs/technical *.md); echo "$bare"   # 0
 cd ~/apex && grep -rn --include="*.md" -i "interim" docs/technical/architecture                  # 0 hits
 ```
 
-- [ ] **Task 5** — the governance body is untouched: the file's diff shows exactly one changed line and that line is the frontmatter `version` → verify:
+- [ ] **Task 5** — the governance body is untouched: the file's diff shows exactly the two frontmatter lines, `version` and `last_updated` → verify:
 
 ```
-cd ~/.claude && git diff -U0 -- skills/apex-governance/SKILL.md | grep -c '^+version:'   # 1
-cd ~/.claude && git diff --numstat -- skills/apex-governance/SKILL.md                    # 1 added, 1 deleted
+cd ~/.claude && git diff -U0 -- skills/apex-governance/SKILL.md | grep -c '^+version:'        # 1
+cd ~/.claude && git diff -U0 -- skills/apex-governance/SKILL.md | grep -c '^+last_updated:'   # 1
+cd ~/.claude && git diff --numstat -- skills/apex-governance/SKILL.md                         # 2 added, 2 deleted
+```
+
+- [ ] **Task 5** — the technical docs agent has a DECLARED producer for D1-EXCEPTION rows, so a host takeover reaches the handoff → verify (the exception row is neither a `.final` field nor an `apex-coder` summary, so without this input it has no route into the handoff at all):
+
+```
+cd ~/.claude && grep -c 'build_exceptions' agents/apex-docs-technical-agent.md                     # 1
+cd ~/.claude && grep -c 'row_kind: "exception"' agents/apex-docs-technical-agent.md               # 1
+cd ~/.claude && grep -ci 'the ONLY producer for a host takeover' agents/apex-docs-technical-agent.md   # 1
+cd ~/.claude && grep -c 'Decisions Made' agents/apex-docs-technical-agent.md                      # >=2 (the existing mapping + the exception mapping)
+cd ~/.claude && grep -c 'Blocked Actions' agents/apex-docs-technical-agent.md                     # >=2
+# the three selector fields: `spec` selects the rows, `resolution` routes them, `task_scope` names them
+cd ~/.claude && grep -c 'task_scope' agents/apex-docs-technical-agent.md                          # >=1
+cd ~/.claude && grep -c 'selected by `spec` match' agents/apex-docs-technical-agent.md            # 1
+cd ~/.claude && grep -c 'resolution: open' agents/apex-docs-technical-agent.md                    # 1
+cd ~/.claude && grep -c 'resolution: resolved' agents/apex-docs-technical-agent.md                # 1
+# the input is declared in the Inputs list, above reviewer_findings
+cd ~/.claude && awk '/^## Inputs/{f=1} f&&/^- build_exceptions:/{b=NR} f&&/^- reviewer_findings:/{r=NR} END{print (b>0 && b<r) ? "PASS" : "FAIL"}' agents/apex-docs-technical-agent.md   # PASS
 ```
 
 - [ ] **Task 6** — both ADRs record the activation and neither still asserts an in-force D1 interim arrangement → verify:
@@ -1174,6 +1635,8 @@ cd ~/apex/docs/technical/adr && grep -ci 'interim executor retired' ADR-046-doct
 cd ~/apex/docs/technical/adr && grep -c 'D1-EXCEPTION' ADR-046-doctrine-audit-resolutions.md                # >=1
 cd ~/apex/docs/technical/adr && grep -c "row_kind:'exception'" ADR-046-doctrine-audit-resolutions.md        # >=1
 cd ~/apex/docs/technical/adr && grep -ci 'structural validation' ADR-046-doctrine-audit-resolutions.md      # >=1
+cd ~/apex/docs/technical/adr && grep -ci 'compared per-repo' ADR-046-doctrine-audit-resolutions.md          # 1 (disjointness defined, not just named)
+cd ~/apex/docs/technical/adr && grep -ci 'be an ANCESTOR of, or be a DESCENDANT of' ADR-046-doctrine-audit-resolutions.md   # 1
 cd ~/apex/docs/technical/adr && grep -ci 'keyed on attendance' ADR-046-doctrine-audit-resolutions.md        # 1
 cd ~/apex/docs/technical/adr && grep -c '2026-07-31' ADR-046-doctrine-audit-resolutions.md                  # >=1 (the owner ruling is dated)
 cd ~/apex/docs/technical/adr && grep -c 'apex-build-orchestrator' ADR-045-four-role-split.md                # >=1
@@ -1184,8 +1647,17 @@ cd ~/apex/docs/technical/adr && grep -ciE 'superseded|no longer in force' ADR-04
 - [ ] **Task 6** — the ADR-046 zero-hit check is the DERIVED form: every surviving `interim executor` occurrence is annotated, none is bare → verify (a flat zero-hit grep is wrong here — the amendment heading and the retained historical paragraph both legitimately contain the phrase):
 
 ```
-# every line carrying the phrase must also carry an annotation token
-cd ~/apex/docs/technical/adr && grep -in 'interim executor' ADR-046-doctrine-audit-resolutions.md | grep -civE 'retired|superseded'   # 0
+# CONTEXT-TOLERANT, and deliberately so: a `**Superseded — …:**` marker naturally sits on the line
+# BEFORE the paragraph it marks, so a same-line grep would fail on correct markdown and force an
+# undocumented reflow. Every occurrence of the phrase must have an annotation token within ONE line
+# either side of it; the count of occurrences that do not is the thing that must be zero.
+cd ~/apex/docs/technical/adr && F=ADR-046-doctrine-audit-resolutions.md; bare=0; \
+  for n in $(grep -in 'interim executor' "$F" | cut -d: -f1); do \
+    s=$(( n > 1 ? n - 1 : 1 )); \
+    sed -n "${s},$((n+1))p" "$F" | grep -qiE 'retired|superseded' || bare=$((bare+1)); \
+  done; echo "$bare"   # 0 (no bare occurrence)
+# and the phrase must still be PRESENT, so the loop above cannot pass vacuously
+cd ~/apex/docs/technical/adr && grep -ci 'interim executor' ADR-046-doctrine-audit-resolutions.md   # >=2 (amendment heading + retained paragraph)
 cd ~/apex/docs/technical/adr && grep -c '**Superseded —' ADR-046-doctrine-audit-resolutions.md   # >=1
 cd ~/apex/docs/technical/adr && grep -ci 'until the build-orchestrator agent contract ships' ADR-046-doctrine-audit-resolutions.md   # 1 (historical text retained, not deleted)
 ```
@@ -1209,7 +1681,7 @@ cd ~/apex/docs/technical/adr && grep -c 'Attended confirmation remains the recov
 cd ~/apex && git diff --numstat -- docs/technical/adr/ADR-044-round8-deferred-designs.md            # 1 added, 0 deleted
 ```
 
-- [ ] **Task 7** — the double-write is consistent: the agents heading count matches six data rows, and the newest history row names the agent and cites all three sources → verify:
+- [ ] **Task 7** — the double-write is consistent: the agents heading count matches six data rows, and this spec's history row names the agent and cites all three sources → verify:
 
 ```
 cd ~/apex && grep -c '## Agents (6)' SKILLS.md                    # 1
@@ -1219,9 +1691,13 @@ cd ~/apex && grep -c 'apex-build-orchestrator' SKILL-HISTORY.md   # >=1
 cd ~/apex && awk '/^## Agents \(6\)/{f=1;next} /^## /{f=0} f&&/^\|/{n++} END{print n-2}' SKILLS.md   # 6
 ```
 
-- [ ] **Task 7** — the recorded versions match the live frontmatter (no second bump), read from THIS spec's row as the newest row → verify: for each of `apex-code`, `apex-orchestrate`, `apex-governance`, and `apex-plan`, the version string in the newest history row equals that skill's live frontmatter `version`.
-- [ ] **Task 7** — the race branch, if it fired, moved the row rather than duplicating it → verify: `grep -c 'apex-build-orchestrator' SKILL-HISTORY.md` is 1 across the whole file, that row is the first data row of the table, and no row from `retro-validator-versioning` or `adr032-predraft-architecture-pass` sits above it.
-- [ ] **Task 8** — the real-codex confirmation ran to natural completion and is recorded: a `.final` was written, the ledger row is terminal (not `running`, `stalled`, or `killed`), the `--json` log ends on a complete final event rather than truncating mid-event, and the appended § Caveats bullet carries all seven recorded fields → verify:
+- [ ] **Task 7** — the recorded versions match the live frontmatter (no second bump), read from THIS spec's row located by its agent-name string → verify: for each of `apex-code`, `apex-orchestrate`, `apex-governance`, and `apex-plan`, the version string in the row matched by `apex-build-orchestrator` equals that skill's live frontmatter `version`.
+- [ ] **Task 7** — the race branch, if it fired, left ONE copy of the row; its position is not asserted → verify (a sibling spec's row landing above this one is a normal outcome of two specs writing the same table, and nothing reads position):
+
+```
+cd ~/apex && grep -c 'apex-build-orchestrator' SKILL-HISTORY.md   # 1 (exactly once in the whole file — a duplicate is the real failure)
+```
+- [ ] **Task 8** — the real-codex confirmation ran to natural completion and is recorded: a `.final` was written, the ledger row is terminal (not `running`, `stalled`, or `killed`), the `--json` log ends on a complete final event rather than truncating mid-event, and the appended § Caveats bullet carries all **ten** recorded fields → verify:
 
 ```
 # scope every field check to the APPENDED bullet, not the whole document
@@ -1230,8 +1706,12 @@ B="$SCRATCH/apex-t8-bullet.txt"   # session scratch dir, never the repo
 cd ~/apex/docs/research && awk '/\*\*Real-codex confirmation/{f=1} f&&/^[[:space:]]*$/{exit} f' issue13-kill-ceiling-rootcause-2026-07-30.md > "$B"
 grep -c 'Real-codex confirmation' "$B"                                    # 1
 grep -c 'Real-codex foreground confirmation' "$B"                         # 0 (Task 8b's bullet is NOT in this extract)
-for f in 'harness build' 'run id' 'duration' 'ledger status' 'final event' '.final' 'verdict'; do grep -ci -- "$f" "$B"; done   # each >=1
+for f in 'harness build' 'run id' 'duration' 'ledger status' 'final event' '.final' 'verdict' 'invocation:' 'worktree head:' 'prompt first line:'; do grep -ci -- "$f" "$B"; done   # each >=1 (TEN fields)
 grep -c 'verdict: confirmed' "$B"                                          # 1 (re-opened is a blocker, not a pass)
+# the three durability fields make the record reproducible after the runner/worktree artifacts are deleted
+grep -cE 'invocation: *.*codex-dispatch\.ps1' "$B"                         # 1 (the invocation line as EXECUTED, not paraphrased)
+grep -cE 'worktree head: *[0-9a-f]{7,40}' "$B"                             # 1 (launch-time HEAD sha of the scratch worktree)
+grep -ci 'prompt first line: *Emit exactly one line to stdout' "$B"        # 1 (the heartbeat prompt's first line)
 # duration is a NUMERIC comparison against the ledger-derived value, not a presence test:
 # D = (ended - started) in minutes, computed from that run_id's own ledger timestamps
 awk 'match($0,/duration: *[0-9]+(\.[0-9]+)?/){d=substr($0,RSTART+10,RLENGTH-10)+0; print (d>=12) ? "PASS " d : "FAIL " d}' "$B"   # PASS
@@ -1239,8 +1719,22 @@ awk 'match($0,/duration: *[0-9]+(\.[0-9]+)?/){d=substr($0,RSTART+10,RLENGTH-10)+
 ```
 
 - [ ] **Task 8** — the run itself passed its four mechanical checks → verify: the ledger row for that `run_id` has a terminal status (not `running`, `adopting`, `stalled`, or `killed`); the numeric difference `ended - started` on that row is **≥ 12.0 minutes** (computed, then compared — never eyeballed from the log); the `.final` file exists at the wrapper's reported path; and the last line of the `--json` log parses as a complete final agent event (not a truncated object).
+- [ ] **Tasks 8 and 8b** — each probe was launched with the wrapper's FULL caller contract, not an abbreviation → verify: the recorded invocation for each run carries every one of `-Spec`, `-Task`, `-Phase`, `-Worktree`, `-BaseSha`, `-Schema`, `-Effort`, `-Prompt`, `-SpecSourcePath`, `-Attended:$true`, `-CriticalFilesConfirmed`, and exactly one of `-Authorized` / `-ScopeUnlocked` (with `-ScopeUnlockedReason` when the latter is used); the `-BaseSha` value equals `git -C <that run's worktree> rev-parse HEAD` taken at launch; the ledger row's attendance telemetry reads `true` and not null for both runs; and the two runs differ only in `-Task` and `-BaseSha`. A run that failed to launch for a missing `-BaseSha` or `-Prompt` is an argument-list defect and is re-run, never recorded as channel evidence; a `-ScopeUnlocked` run launched without `-CriticalFilesConfirmed` is the same kind of defect.
+- [ ] **Tasks 8 and 8b** — each host-executed probe closed with BOTH in-session ledger rows, so the per-task family gate can vouch for it under its real task id → verify, for `8-detached-channel-probe` and for `8b-foreground-channel-probe` in turn: the ledger holds an in-session **build** row for that task with `phase` `build`, `builder_family` `anthropic`, the apex `worktree_key`, a fresh `run_id`, and an `end_tree_digest` that is a 64-hex digest or the literal `unverifiable`; it holds an **attended human-review** row for the same task with `phase` `human-review`, `attended` `true`, and `reviewed_run_id` equal to that build row's `run_id`; and `apex-family-gate.ps1 -Spec build-orchestrator-contract -Task <that task id> -WorktreeKey <the apex worktree key>` exits 0. Both rows are appended with the mutex-guarded helper `apex-ledger-append.ps1` under the `~/.claude` hooks directory (an existing host hook, cited by basename because this spec neither creates nor edits it), never a bare `Add-Content`.
+- [ ] **Tasks 8 and 8b** — the two rows are actually on disk in the run ledger, matched mechanically per task → verify:
+
+```
+# resolve the ledger the same way the wrapper does; %TEMP%\apex\progress is the last fallback
+L="${APEX_STATE_DIR:-$LOCALAPPDATA/apex}/progress/codex-run-ledger.jsonl"
+for t in 8-detached-channel-probe 8b-foreground-channel-probe; do \
+  grep -c "\"task\":\"$t\".*\"phase\":\"build\".*\"builder_family\":\"anthropic\"" "$L"; \
+  grep -c "\"task\":\"$t\".*\"phase\":\"human-review\".*\"attended\":true" "$L"; \
+done   # each >=1 — one in-session build row and one attended human-review row per probe task
+# and the review row must BIND to the build row, not float free
+grep -c '"phase":"human-review".*"reviewed_run_id":"insession-' "$L"   # >=2
+```
 - [ ] **Task 8** — the channel used matches the attendance rule → verify: the run was launched via the detached runner — a runner script started as a normal background task, a completion marker file, and a `Monitor` wait all exist for it, and no direct `Start-Process`/`schtasks` detachment was attempted — with the owner attended, which is what the rule assigns to an attended long dispatch; not a foreground call, and not an exception recorded anywhere.
-- [ ] **Task 8b** — the plain-foreground confirmation ran to natural completion past the tool ceiling and is recorded: the harness MIGRATED the call rather than killing the process tree, a `.final` was written, the ledger row is terminal, the `--json` log ends on a complete final event, and the appended § Caveats bullet carries all seven recorded fields → verify:
+- [ ] **Task 8b** — the plain-foreground confirmation ran to natural completion past the tool ceiling and is recorded: the harness MIGRATED the call rather than killing the process tree, a `.final` was written, the ledger row is terminal, the `--json` log ends on a complete final event, and the appended § Caveats bullet carries all **eleven** recorded fields → verify:
 
 ```
 # scope every field check to the 8b bullet ALONE, not to Task 8's bullet and not to the whole document
@@ -1248,9 +1742,16 @@ B="$SCRATCH/apex-t8b-bullet.txt"   # session scratch dir, never the repo
 # marker → next BLANK LINE (not marker → EOF), so this extract holds Task 8b's bullet ALONE
 cd ~/apex/docs/research && awk '/\*\*Real-codex foreground confirmation/{f=1} f&&/^[[:space:]]*$/{exit} f' issue13-kill-ceiling-rootcause-2026-07-30.md > "$B"
 grep -c 'Real-codex foreground confirmation' "$B"                         # 1
-for f in 'harness build' 'run id' 'duration' 'ledger status' 'final event' '.final' 'verdict'; do grep -ci -- "$f" "$B"; done   # each >=1
+for f in 'harness build' 'run id' 'duration' 'ledger status' 'final event' '.final' 'verdict' 'migration notice' 'invocation:' 'worktree head:' 'prompt first line:'; do grep -ci -- "$f" "$B"; done   # each >=1 (ELEVEN fields)
+# fields 9-11 are the durability set, identical in form to Task 8's
+grep -cE 'invocation: *.*codex-dispatch\.ps1' "$B"                         # 1 (the invocation line as EXECUTED)
+grep -cE 'worktree head: *[0-9a-f]{7,40}' "$B"                             # 1 (launch-time HEAD sha of THIS task's scratch worktree)
+grep -ci 'prompt first line: *Emit exactly one line to stdout' "$B"        # 1
 grep -c 'verdict: confirmed' "$B"                                          # 1 (re-opened is a blocker, not a pass)
 grep -c 'verdict: re-opened' "$B"                                          # 0
+# field 8 is the observable signal — the harness's OWN migration notice, quoted. `ABSENT` fails.
+grep -ci 'migration notice: *ABSENT' "$B"                                  # 0
+grep -cE 'migration notice: *"[^"]+"' "$B"                                 # 1 (a quoted verbatim notice, not a paraphrase)
 # duration is a NUMERIC comparison against the ledger-derived value, not a presence test:
 # D = (ended - started) in minutes, computed from that run_id's own ledger timestamps
 awk 'match($0,/duration: *[0-9]+(\.[0-9]+)?/){d=substr($0,RSTART+10,RLENGTH-10)+0; print (d>=12) ? "PASS " d : "FAIL " d}' "$B"   # PASS
@@ -1258,7 +1759,7 @@ awk 'match($0,/duration: *[0-9]+(\.[0-9]+)?/){d=substr($0,RSTART+10,RLENGTH-10)+
 
 - [ ] **Task 8b** — the run itself passed its four mechanical checks on the foreground channel → verify: the ledger row for that `run_id` has a terminal status (not `running`, `adopting`, `stalled`, or `killed`); the numeric difference `ended - started` on that row is **≥ 12.0 minutes** (computed, then compared — never eyeballed); the `.final` file exists at the wrapper's reported path; and the last line of the `--json` log parses as a complete final agent event.
 - [ ] **Task 8b** — the channel actually exercised was the harness-owned one → verify: NO runner script, NO background task, NO completion-marker file, and NO `Monitor` wait exist for this run — it was a plain foreground wrapper call, which is the only way the migration claim is tested rather than bypassed.
-- [ ] **Task 8b** — the STOP condition is honoured → verify: if the process tree was killed at the ~10-minute ceiling instead of migrating, the appended bullet's seventh field reads `verdict: re-opened`, no `Real-codex foreground confirmation` bullet claims `confirmed`, and the spec is surfaced as BLOCKED with Task 4's `## Dispatch channel` unattended sentences and Task 1's § Channel unattended bullet listed as requiring revision. A `re-opened` outcome fails this task and blocks the spec; it never passes as a completion.
+- [ ] **Task 8b** — the STOP condition is honoured → verify: if the process tree was killed at the ~10-minute ceiling instead of migrating, **or if the harness emitted no migration notice at all**, the appended bullet's seventh field reads `verdict: re-opened` and its eighth reads `migration notice: ABSENT` where applicable, no `Real-codex foreground confirmation` bullet claims `confirmed`, and the spec is surfaced as BLOCKED with Task 4's `## Dispatch channel` unattended sentences and Task 1's § Channel unattended bullet listed as requiring revision. A `re-opened` outcome fails this task and blocks the spec; it never passes as a completion. **A `confirmed` verdict with an absent eighth field is the same failure** — the run completing is not evidence that it migrated, only that it finished.
 - [ ] **Task 11** — the two limit cells name the orchestrator and no other row moved → verify:
 
 ```
@@ -1281,6 +1782,7 @@ cd ~/.claude && grep -cz 'interim: *the[[:space:]]*host performs them as executo
 cd ~/.claude && grep -cz 'orchestrator-owned' skills/apex-plan/SKILL.md                    # >=1
 cd ~/.claude && grep -c 'apex-build-orchestrator' skills/apex-plan/SKILL.md                # >=1
 cd ~/.claude && git diff -U0 -- skills/apex-plan/SKILL.md | grep -c '^+version:'           # 1
+cd ~/.claude && git diff -U0 -- skills/apex-plan/SKILL.md | grep -c '^+last_updated:'      # 1
 cd ~/.claude && grep -c 'dependencies are binding' skills/apex-plan/SKILL.md               # unchanged from pre-build
 ```
 
