@@ -16,7 +16,7 @@ _Last updated:_ 2026-08-01
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| orchestrator-activation | BUILT 6/8 + SMOKE PASSED 2026-08-02 (T1 route row · T3 apex-code host-mechanics · T4 both-tree sweep incl. AGENTS-template pair (i) · T5 ADR amendments · T6 registry — all host-verified; T8 smoke: agent's first live round-trip, wave_plan + out_of_scope adjudication both schema-VALID, intelligent wave-hold). Integrated live ~/.claude (11 files blob-identical, worktree branch ba379b8). FUNCTIONALLY ACTIVE: the route row now dispatches the agent for attended builds. | `docs/changes/orchestrator-activation.md` (stays until parked tasks done) | OWNER: T2 hooks/apex-session-context.md edit (live confirmation) + T7 ~/.claude commit (approval; conflict-check first). Then reviewer+gate+archival close the spec. |
+(In-Flight EMPTY — orchestrator-activation COMPLETE 2026-08-02: all 8 tasks incl. owner-confirmed T2/T7, smoke passed, gate 9/9 exit 0, archived. ~/.claude commit `7cbd7ff` tracks all machinery blob-pinned. Adopt field-bug found+fixed+shipped same evening via the wrapper's own new event emission. All ledger orphans resolved; worktrees+branches torn down.)
 
 <!-- CODING:END -->
 
