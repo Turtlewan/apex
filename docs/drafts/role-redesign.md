@@ -10,7 +10,8 @@ apex-plan once the open items are resolved, and becomes ADR-048 plus staged spec
 2. **Host stays Claude.** Astra is dispatched as a deliberator (it can't host Claude Code).
 3. **Direction B:** OpenAI authors specs and code; Claude is the thin host and cross-family checker.
 4. **Roles are redesigned** from the functions the system needs, not reassigned one for one.
-5. **Planning gate:** for new unplanned changes, Fable plans and Astra cross-checks.
+5. **Planning gate:** for new unplanned changes, one model plans and another cross-checks (models
+   superseded by items 10, 35 and 38).
 6. **System map:** a one-time sweep per repo produces `docs/system-map.md`.
 7. **Every later change reads the map before any change is made,** unless it's trivial (below). This
    covers:
@@ -168,6 +169,9 @@ apex-plan once the open items are resolved, and becomes ADR-048 plus staged spec
     spec authors 44.7% (Opus, almost all cache re-reads), host 40.4% (mostly Fable 5.1), reviewers
     10.5%. The largest saving is item 17 (gpt-6-sol writes specs), so the spec-author swap belongs
     in the first rollout stage.
+    When the Engine absorbs `dispatch-receipt-preflight`, its receipt gate must exempt `-AuthorSpec`
+    dispatches (no spec exists yet to hold a receipt), and it must be built on top of
+    `wrapper-model-author`'s edits to `codex-dispatch.ps1` and `AGENTS.md`.
 
 38. **Planner:** the Steward (host) writes plans itself, with effort raised to high per message (which
     keeps the cache). There is no fresh planner agent, which avoids the re-read cost behind the
@@ -258,5 +262,5 @@ All open items were settled 2026-09-30 (items 34–41).
   first).
 - **Owner preference:** explain in plain language, with analogies (the building-site picture worked).
   One stage at a time, with 2–4 questions each, each with a recommendation.
-- **After the design:** resolve the three prerequisites, then apex-plan → ADR-048 and the staged
+- **After the design:** resolve the prerequisites (all four resolved 2026-09-30), then apex-plan → ADR-048 and the staged
   specs.

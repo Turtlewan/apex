@@ -10,13 +10,13 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/hooks/apex-session-context.md` (hook-injected), not here. See ADR-037.
 
-_Last updated:_ 2026-09-30
+_Last updated:_ 2026-10-01
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Role redesign | design COMPLETE 2026-09-30 (items 1–37) | `docs/drafts/role-redesign.md` | prerequisites all resolved 2026-09-30 → apex-plan → ADR-048 + staged specs (cheap swaps first, spec author first) |
+| Role redesign stage 1 | wave 1 BUILT 2026-10-01: synced-runtime-exclusion + wrapper-model-author complete (gates 0, full suite green), integrated UNCOMMITTED in ~/.claude | `docs/handoff/2026-10-01.md` | owner: approve 3 session-end commits + rule on AC8/scope criteria → teardown codex/* → spec wave 2 `spec-author-routing` |
 
 <!-- CODING:END -->
 
@@ -24,7 +24,7 @@ _Last updated:_ 2026-09-30
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
-| `role-redesign` (drafts/, design draft pre-spec, 2026-09-27) | Direction B role redesign to cut Anthropic spend: Steward/Architect/Builder/Critic/Scribe + Engine, planning gate (Opus 5.5 plans, gpt-6-sol checks), per-repo `system-map.md` read before every non-trivial change. Design COMPLETE 2026-09-30 (items 1–37); prerequisites all resolved 2026-09-30; ready for apex-plan. Absorbs dispatch-receipt-preflight into the Engine (item 37). Supersedes the model-routing-refresh open question below. |
+| `role-redesign` (drafts/, design draft pre-spec, 2026-09-27) | Direction B role redesign to cut Anthropic spend: Steward/Architect/Builder/Critic/Scribe + Engine, planning gate (Opus 5.5 plans, gpt-6-sol checks), per-repo `system-map.md` read before every non-trivial change. Design COMPLETE (items 1–41); ADR-048; stage 1 wave 1 built 2026-10-01 (next: spec-author-routing). Absorbs dispatch-receipt-preflight into the Engine (item 37). Supersedes the model-routing-refresh open question below. |
 | `dispatch-receipt-preflight` (drafts/, 2 plan-check rounds + adjudication done) | Receipt gate: `spec-preflight.ps1` -Generate at promotion / -Verify at dispatch; wrapper exit 84; 13 files. Sidecar has full round record. Follow-ups queued: `receipt-authoring-contract` · artemis AGENTS.md worktree/import-origin rule · family-gate pairing · artemis 9-spec receipt migration (owner decision). ADR-047 drafted. **PARKED 2026-09-30: folded into the role-redesign Engine (item 37), not built standalone.** |
 
 ## Open Questions
