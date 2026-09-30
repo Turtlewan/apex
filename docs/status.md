@@ -10,13 +10,13 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/hooks/apex-session-context.md` (hook-injected), not here. See ADR-037.
 
-_Last updated:_ 2026-08-01
+_Last updated:_ 2026-09-30
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-(In-Flight EMPTY — orchestrator-activation COMPLETE 2026-08-02: all 8 tasks incl. owner-confirmed T2/T7, smoke passed, gate 9/9 exit 0, archived. ~/.claude commit `7cbd7ff` tracks all machinery blob-pinned. Adopt field-bug found+fixed+shipped same evening via the wrapper's own new event emission. All ledger orphans resolved; worktrees+branches torn down.)
+| Role redesign | design COMPLETE 2026-09-30 (items 1–37) | `docs/drafts/role-redesign.md` | prerequisites all resolved 2026-09-30 → apex-plan → ADR-048 + staged specs (cheap swaps first, spec author first) |
 
 <!-- CODING:END -->
 
@@ -24,9 +24,28 @@ _Last updated:_ 2026-08-01
 ## Pending Specs
 | Spec | Summary |
 |------|---------|
+| `role-redesign` (drafts/, design draft pre-spec, 2026-09-27) | Direction B role redesign to cut Anthropic spend: Steward/Architect/Builder/Critic/Scribe + Engine, planning gate (Opus 5.5 plans, gpt-6-sol checks), per-repo `system-map.md` read before every non-trivial change. Design COMPLETE 2026-09-30 (items 1–37); prerequisites all resolved 2026-09-30; ready for apex-plan. Absorbs dispatch-receipt-preflight into the Engine (item 37). Supersedes the model-routing-refresh open question below. |
+| `dispatch-receipt-preflight` (drafts/, 2 plan-check rounds + adjudication done) | Receipt gate: `spec-preflight.ps1` -Generate at promotion / -Verify at dispatch; wrapper exit 84; 13 files. Sidecar has full round record. Follow-ups queued: `receipt-authoring-contract` · artemis AGENTS.md worktree/import-origin rule · family-gate pairing · artemis 9-spec receipt migration (owner decision). ADR-047 drafted. **PARKED 2026-09-30: folded into the role-redesign Engine (item 37), not built standalone.** |
 
 ## Open Questions
 
+- **Model-routing refresh — now carried by `docs/drafts/role-redesign.md` (2026-09-27); this entry is history, delete once the draft is promoted. PARKED by owner 2026-09-23, revisit ~2026-09-26+.** Research in
+  `docs/research/model-refresh-2026-09/` (landscape · artemis-rework-evidence · gpt6-sol-luna-comments).
+  Host rec: Fable 5→5.1 host; Opus 5→5.5 for spec author/build orchestrator/apex-reviewer/
+  apex-spec-reviewer (currently sonnet — ledger says opus-5, mismatch unresolved; verify `opus` alias
+  resolves to 5.5); coder: keep gpt-5.6-sol, A/B `gpt-6-sol` (CLI ≥0.155) once practitioner reports
+  mature (quota burn + scope); no Astra (scope-overreach reports), no Luna. Artemis rework was ~80%
+  process (no review stop rule, unexecuted author/host fixes), not model — propose ADR: executed
+  Claude review first + single Sol cross-family pass + third-strike/defect-class counting.
+  Owner decisions owed: (1) ChatGPT plan tier (2) approve Claude swaps → apex-plan (3) review-loop ADR.
+  On revisit: re-run the GPT-6 Sol/Luna comments sweep first.
+  **2026-09-27 owner direction (resume 2026-09-28):** goal = cut Anthropic token spend. Proposal:
+  Astra host · gpt-6-sol replaces Opus roles + codes · cross-family (Claude) review tiered by
+  difficulty. Checked: codex 0.157.1, gpt-6-astra/gpt-6-sol in catalog (live call unprobed — owner
+  `! codex exec -m <id>`). Astra-as-Claude-Code-host unsupported → owner picked option 1: Claude
+  host, Astra as dispatched deliberator. Open: cheapest Claude host (Sonnet?), approve review tiers
+  (low=Astra-reviews-Sol · med=+Sonnet · high=Opus required + Claude spec check), then apex-plan
+  one spec + ADR-032/034/042 amendment (wrapper `-Model` param; Opus roles → wrapper dispatches).
 - **Wrapper-hygiene build SHIPPED 2026-08-01** (commits `d5d872f` ~/.claude · `ecd4a25` apex; handoff
   `docs/handoff/2026-08-01.md`). **Owner queue — 4 adjudication items** (details handoff § Owner
   adjudication; recommended: fold all into one small wave-3 "wrapper-hygiene follow-ups" spec):
