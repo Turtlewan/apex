@@ -44,7 +44,7 @@ when something fails (the ADR-030 ladder).
 |---|---|---|
 | Steward (Opus 5.5 host) | medium, held constant (cache) | high, per message, for adjudication |
 | Proposer (Opus 5.5) | high | xhigh when escalating (after a park) |
-| Architect check (Astra) | high | xhigh for High-risk plans only |
+| Architect check (gpt-6-sol, per role-redesign item 35; Astra trial later) | xhigh | — |
 | Builder (gpt-6-sol) | medium; low for Trivial | high → xhigh (ADR-030 ladder) |
 | Critic Low / Medium (Sonnet 5) | medium / high | — |
 | Critic High (Opus 5.5) | high | xhigh on a third strike |

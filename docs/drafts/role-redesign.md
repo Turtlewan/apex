@@ -169,56 +169,41 @@ apex-plan once the open items are resolved, and becomes ADR-048 plus staged spec
     10.5%. The largest saving is item 17 (gpt-6-sol writes specs), so the spec-author swap belongs
     in the first rollout stage.
 
-## Proposed (host recommendation — not yet confirmed)
+38. **Planner:** the Steward (host) writes plans itself, with effort raised to high per message (which
+    keeps the cache). There is no fresh planner agent, which avoids the re-read cost behind the
+    spec-author spend.
+39. **Scribe model:** gpt-6-luna at low, after a live probe (`codex exec -m gpt-6-luna "reply ok"`).
+    If the probe fails, fall back to gpt-6-sol at low.
+40. **Debugging:** the Steward reproduces and root-causes the bug. The fix then takes the normal path
+    (spec → Builder → Critic).
+41. **Host swap timing:** Fable 5.1 → Opus 5.5 moves to rollout stage 1, alongside the spec-author
+    swap. Verify Fable's price first, measure a week of sessions, and roll back if quality drops.
+    This supersedes "host swap last".
 
-**Roles: 5 model roles + 1 engine**
+## Final roster (consolidated 2026-09-30 from items 1–41; the items win on any conflict)
 
-| Role | Covers | Model |
+| Role | Covers | Model · effort |
 |---|---|---|
-| Steward | talking with you, decisions, exceptions, state and handoff, commit/merge gates | Claude host |
-| Architect | challenges plans, designs, writes specs/ADRs | Astra (High tier) or gpt-6-sol |
-| Builder | writes the code | gpt-6-sol, Sonnet 5 on OpenAI quota-out |
-| Critic | every review; never the same family as the author | Claude, model set by tier |
-| Scribe | CHANGELOG, README, inline docs, archival, map updates | gpt-6-luna |
-| Engine (not a model) | waves, dispatch, exit-code routing, retries, integration, ledger | wrapper code in `~/.claude` |
+| Steward | talking with the owner, intake labels, **plans** (item 38), **debug root-cause** (item 40), odd results, failure/clash diagnosis, handoff, status, commit gates | Opus 5.5 host · medium, high per message for plans and adjudication |
+| Spec author | writes every spec, fresh per spec (item 17) | gpt-6-sol · high (provisional, no effort-table row yet) |
+| Architect check | one plan cross-check, ≤2 reads (items 13, 35) | gpt-6-sol · xhigh (Astra trial later) |
+| Builder | writes the code | gpt-6-sol · medium, low for Trivial, ladder medium → high → xhigh; Sonnet 5 only on owner decision at quota-out (item 20) |
+| Critic | spec review + code review, fresh context, ≤3 rounds (items 15, 19, 25), checks Scribe map edits (item 30) | Sonnet 5 for Low/Medium, Opus 5.5 · high for High |
+| Scribe | CHANGELOG, README, inline docs, map section rewrites | gpt-6-luna · low (item 39) |
+| Engine (code) | waves, dispatch, worktrees, ledger, verify, retry ladder, cleanup, archival, size guard, receipt preflight | wrapper code in `~/.claude` |
 
-This replaces the spec author, `apex-build-orchestrator`, the three reviewer agents, both docs
-agents, `apex-coder` and `code-worker`.
+**Retired agent definitions:** `apex-build-orchestrator` → Engine · `apex-coder`, `code-worker` →
+Builder (Codex) · `apex-reviewer`, `apex-spec-reviewer`, `apex-wave-reviewer` → Critic ·
+`apex-docs-product-agent` → Scribe · `apex-docs-technical-agent` → Steward (handoff) + Engine
+(archival). Research/Explore subagents (2.4% of spend) are unchanged.
 
-**Planning gate**, which evolves the existing pre-draft Sol architecture pass
-(`apex-plan/SKILL.md:105`):
-- The plan holds approach, alternatives rejected, contracts between parts, slices and risks. No
-  implementation precision.
-- At most ~5–7 slices, otherwise split first. A soft length tripwire, not a line cap.
-- A required **Current system** section in which every claim cites the map.
-- Astra gets read-only access to **all** touched repos and does one read. Each finding is classed as
-  design, contract, decision (goes to the owner), wording (dropped) or grounding.
-- Fable adjudicates once, in writing. A second Astra read of the changed section only happens if the
-  approach changed. Maximum 2 reads, then pass or park.
-
-**Review tiers:**
-- Low: Sonnet
-- Medium: Sonnet
-- High: Opus 5.5, forced by wrapper, hooks, ledger or governance paths
-
-The Critic can raise a tier but never lower it.
-
-**Loop rule:**
-- Fixes are executed and re-verified before the next round.
-- One Claude review, then one Sol pass across families.
-- Round caps per tier: 1 / 2 / 3.
-- A third strike on the same defect class goes to the owner.
-
-**Rollout, staged:**
-1. Probes
+**Rollout** (item 37 + item 41; each stage measured):
+1. Host Fable 5.1 → Opus 5.5 **and** spec author → gpt-6-sol
 2. Builder A/B (gpt-6-sol vs gpt-5.6-sol)
-3. Scribe
+3. Scribe (after the Luna probe)
 4. Critic consolidation
-5. System map and planning gate
-6. Engine
-7. Host swap last
-
-Each stage is measured.
+5. Engine
+6. System map + planning gate
 
 ## Open
 
@@ -230,11 +215,13 @@ Stage 7 and item 22 were settled 2026-09-30 (items 26–29).
 
 Stage 8 was settled 2026-09-30 (items 30–33).
 
-All open items were settled 2026-09-30 (items 34–37).
+All open items were settled 2026-09-30 (items 34–41).
 
 ## Prerequisites (all resolved 2026-09-30)
 
 - Live probes (owner): `gpt-6-sol` PASSED 2026-09-30 (codex 0.157.1, replied ok, 4,617 tokens).
+  `gpt-6-luna` PASSED 2026-09-30 (replied ok, 9,302 tokens: ~2× Sol's overhead on the same trivial
+  call, so check real quota cost per doc task in rollout stage 3 before assuming Luna is cheaper).
   `gpt-6-astra` PASSED 2026-09-30 (replied ok, 17,174 tokens, ~3.7× Sol's overhead for the same
   trivial call, an early quota-burn signal for the item 35 trial).
 - ChatGPT plan tier: **Pro** (owner, 2026-09-30). B moves most of the quota load to OpenAI.
