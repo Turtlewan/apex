@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-19 _(records a decision made 2026-07-16; back-filled — the split had lived only in `~/.claude/CLAUDE.md` and memory)_
 **Status:** Accepted
-**Amended:** 2026-07-29 — see [ADR-046](./ADR-046-doctrine-audit-resolutions.md) (D1); 2026-08-02 -- v1 activation, close-out narrowed (ADR-046 D1 V1-PARTIAL)
+**Amended:** 2026-07-29 — see [ADR-046](./ADR-046-doctrine-audit-resolutions.md) (D1); 2026-08-02 -- v1 activation, close-out narrowed (ADR-046 D1 V1-PARTIAL); 2026-10-01 -- [ADR-048](./ADR-048-role-redesign.md): host is Opus 5.5, spec author is gpt-6-sol via the wrapper's `-AuthorSpec`, build orchestrator is Opus 5.5 (the Host / Spec author / Build orchestrator cells below are historical)
 **Supersedes:** [ADR-035](./ADR-035-host-direct-build.md) (host-direct build)
 **Related:** [ADR-038](./ADR-038-single-session.md) (one session, no modes), [ADR-032](./ADR-032-gpt56-role-split.md) / [ADR-034](./ADR-034-sol-default-coder.md) (GPT-5.6 role split + cross-family review), [ADR-027](./ADR-027-codex-primary-opus-fallback-deepseek-archived.md) (Codex-primary)
 

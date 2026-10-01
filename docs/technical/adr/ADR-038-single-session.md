@@ -6,6 +6,7 @@
 **Related:** ADR-036 (knowledge layer removed), ADR-037 (three context files)
 
 > **Fallback coder amended by [ADR-045](./ADR-045-four-role-split.md) (2026-07-19, A1 session-79b):** the Claude fallback coder is **Sonnet 5** (a fresh `model: sonnet` worker), **not Opus**. Opus holds the spec-author, build-orchestrator (owner amendment 2026-07-29), and high-risk-reviewer roles — not the coder role. Every "Opus fallback" / "Opus builds inline" statement below is historical. Sweep recorded in [ADR-046](./ADR-046-doctrine-audit-resolutions.md).
+> **Roles amended by [ADR-048](./ADR-048-role-redesign.md) (2026-10-01):** the host is **Opus 5.5** and specs are authored by **gpt-6-sol** through the wrapper's `-AuthorSpec`; Opus keeps only the build-orchestrator and high-risk-reviewer roles. The "spec-author" clause in the banner above is historical.
 
 ## Context
 

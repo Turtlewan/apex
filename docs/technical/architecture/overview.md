@@ -17,8 +17,9 @@ APEX sits between the developer and Claude Code and gives every session a known 
 1. **Orient** — at session start an orchestrator reads the project's live state, surfaces any
    in-flight work, sets the autonomy level, and routes to the right skill.
 2. **Plan** — judgment work (turning a request into a complete, unambiguous spec; writing
-   ADRs; design and research) is done by the host. The host reasons and decides; a `model: opus`
-   spec-author worker drafts the spec and ADR text from that plan (ADR-045).
+   ADRs; design and research) is done by the host. The host reasons and decides; a gpt-6-sol spec author,
+   dispatched through the wrapper's `-AuthorSpec`, writes every spec draft and revision from that plan;
+   the host never edits a draft (ADR-045, ADR-048).
 3. **Build** — literal execution of a frozen spec is dispatched to a coder (see below).
 4. **Hand off** — the build leaves a handoff doc; planning leaves a spec. State that must
    survive lives in durable artifacts, not in the conversation.
@@ -34,7 +35,7 @@ workflow skills remain.
 There are no modes, no `APEX_MODE`, no environment-detected backend swap, and no write-guard —
 the mode split and its hooks were all removed. Work is divided by **role**, not by session:
 
-- **Host (Fable)** — reasons, plans, and challenges. Dispatches every worker below; makes no
+- **Host (Opus 5.5, medium effort)** — reasons, plans, and challenges. Dispatches every worker below; makes no
   mechanical edits and writes no code, but owns the project's state-keeping (status.md,
   handoff, memory). Build-time mechanics — launching and monitoring subprocesses from the
   orchestrator's wave plan, executing the git operations it directs, and returning status — are
@@ -42,13 +43,16 @@ the mode split and its hooks were all removed. Work is divided by **role**, not 
   build they are the dispatched `apex-build-orchestrator`'s (ADR-045 as amended;
   ADR-046 D1); on an unattended build, and for close-out on every build, the host
   executes them.
-- **Spec author (Opus)** — a `model: opus` worker drafts specs and ADRs from the host's plan.
-- **Build orchestrator (Opus 5)** — a `model: opus` worker runs waves and routes exit codes (owner amendment 2026-07-29; was Sonnet).
+- **Spec author (gpt-6-sol)** — a fresh, stateless wrapper `-AuthorSpec` dispatch writes every draft
+  create and revise from the host's plan; revisions are digest-bound (`-ExpectedDigest`) (ADR-048).
+- **Build orchestrator (Opus 5.5)** — a `model: opus` worker runs waves and routes exit codes (owner amendment 2026-07-29; was Sonnet).
 - **Coder (Codex `gpt-5.6-sol`)** — dispatched per task as a `codex exec` subprocess (own auth,
   own quota). Verify-fail escalation climbs the reasoning-effort dial (`…→max→ultra`), then
   falls back to **Sonnet 5** (fresh `model: sonnet` worker) if Codex quota is exhausted.
-- **Review is cross-family, both directions** — Codex checks the host's plans/specs; Claude
-  reviews Codex's code. An agent never reviews its own output
+- **Review is cross-family, both directions** — the gpt-5.6-sol pre-draft architecture pass checks
+  the host's plans; Claude (`apex-spec-reviewer`) reviews gpt-6-sol-authored specs; Claude reviews
+  Codex's code. The gpt-5.6-sol cold read of a Sol-authored spec is an independent same-family read
+  (ADR-048). An agent never reviews its own output
   ([ADR-032](../adr/ADR-032-gpt56-role-split.md)/[ADR-034](../adr/ADR-034-sol-default-coder.md)/[ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md)).
 
 Roles communicate only through files, and every fact has exactly **one home**:
