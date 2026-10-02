@@ -10,13 +10,13 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/hooks/apex-session-context.md` (hook-injected), not here. See ADR-037.
 
-_Last updated:_ 2026-10-01
+_Last updated:_ 2026-10-02
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Role redesign stage 4 `critic-consolidation` (+ stage 5 prep) | stage 4 BUILT 2026-10-02: 12 tasks integrated UNCOMMITTED in ~/.claude, apex-critic reviews clean, family gate 0 ×12, host tasks 13–16 done, archived. Stage 5 `exec-manifest`: draft READY (3 Critic rounds + sol-1, round 3 clean) → OWNER digest. `engine-core`: PARKED for re-brief as walking skeleton on the manifest (owner chose a+b) | ~/.claude skills/agents/hook; apex docs; docs/drafts/exec-manifest.md (+ review.log, findings.json); handoff 2026-10-02 | OWNER: approve stage-4 commits (template: Task-9 hunks only, Aug-9 block stays uncommitted) → `exec-manifest` start build → engine-core spec. Restart not needed (apex-critic live) |
+| Role redesign stage 5 `exec-manifest` · BUILT, pending owner commit approval (2026-10-02) | All 5 coder tasks integrated (uncommitted) on ~/.claude main; HOST 6–8 written in apex; 10/10 verify suites green (88 spec-validate cases); critic r1 flag→fixed→r2 clean; family gate exit 0 tasks 1–5; spec archived to docs/changes/done/; handoff 2026-10-02 § Session 2 | ~/.claude: 5 skill files · apex: SKILL-HISTORY, ADR-048, overview, spec, trial log, handoff, status | OWNER: approve commits + Aug-9 block in/out; then owner-run teardown of .claude-wt/exec-manifest-{1..5} + codex/exec-manifest-{1..5}; next engine-core re-brief (walking skeleton on the manifest; arch findings in scratch codex-engine-core-arch-check-*.final) |
 
 <!-- CODING:END -->
 

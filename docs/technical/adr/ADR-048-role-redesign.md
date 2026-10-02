@@ -128,6 +128,7 @@ Spend showed the build orchestrator at 0.1%, so **cheap swaps go first** and the
 4. Critic consolidation
    - **Status 2026-10-02:** shipped by [critic-consolidation](../../changes/done/critic-consolidation.md) — one `apex-critic` agent (spec/code modes, risk-tiered model, 3-round cap with fix checks, owner escalation) replaced `apex-reviewer`, `apex-spec-reviewer` and `apex-wave-reviewer`; Low/doc-only specs skip both Sol reads. **Rollout-order amendment:** the owner approved building stage 4 before stages 2–3 (2026-10-01, "plan stage 4"); stages 2–3 remain measurement swaps to run later.
 5. Engine (absorbs `dispatch-receipt-preflight`; retires `apex-build-orchestrator`)
+   - **Stage-5 note 2026-10-02:** the owner decided (2026-10-02) that the spec **execution manifest** — the optional `## Execution manifest` `json apex-manifest` block added by [exec-manifest](../../changes/done/exec-manifest.md), checked by the validator's `EXEC-MANIFEST` check — is the Engine's input contract for tasks, files, operations and dependencies.
 6. System map + planning gate
 
 **Stage 1 in detail** (adjudicated after the Sol architecture check, 2026-09-30):

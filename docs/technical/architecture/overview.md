@@ -46,6 +46,7 @@ the mode split and its hooks were all removed. Work is divided by **role**, not 
 - **Spec author (gpt-6-sol)** — a fresh, stateless wrapper `-AuthorSpec` dispatch writes every draft
   create and revise from the host's plan; revisions are digest-bound (`-ExpectedDigest`) (ADR-048).
 - **Build orchestrator (Opus 5.5)** — a `model: opus` worker runs waves and routes exit codes (owner amendment 2026-07-29; was Sonnet).
+- **Spec execution manifest** — the optional `## Execution manifest` (`json apex-manifest`) block in a spec is the Engine's task, file, and dependency input, validated by `EXEC-MANIFEST` (ADR-048 stage 5).
 - **Coder (Codex `gpt-5.6-sol`)** — dispatched per task as a `codex exec` subprocess (own auth,
   own quota). Verify-fail escalation climbs the reasoning-effort dial (`…→max→ultra`), then
   falls back to **Sonnet 5** (fresh `model: sonnet` worker) if Codex quota is exhausted.
