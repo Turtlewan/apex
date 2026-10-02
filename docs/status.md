@@ -16,21 +16,20 @@ _Last updated:_ 2026-10-01
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| Role redesign stage 1 | wave 2 BUILT 2026-10-01: A `spec-author-routing` + B `routing-build-asides` + C `routing-session-hook` built (Codex), integrated UNCOMMITTED in ~/.claude, reviewed CLEAN, family gate 0; archived to done/; trial log + SKILL-HISTORY + doctrine sweep done (apex, uncommitted) | ~/.claude skills/apex-plan/**, apex-orchestrate/SKILL.md, apex-code/{SKILL.md,references/parallel-codex.md}, hooks/apex-session-context.md; apex docs (handoff 2026-10-01 § Wave 2) | Owner approves the drafted session-end commits (git add -f by name in ~/.claude) → D8 teardown (11 old + 5 new codex/* worktrees) |
+| Role redesign stage 4 `critic-consolidation` (+ stage 5 prep) | stage 4 BUILT 2026-10-02: 12 tasks integrated UNCOMMITTED in ~/.claude, apex-critic reviews clean, family gate 0 ×12, host tasks 13–16 done, archived. Stage 5 `exec-manifest`: draft READY (3 Critic rounds + sol-1, round 3 clean) → OWNER digest. `engine-core`: PARKED for re-brief as walking skeleton on the manifest (owner chose a+b) | ~/.claude skills/agents/hook; apex docs; docs/drafts/exec-manifest.md (+ review.log, findings.json); handoff 2026-10-02 | OWNER: approve stage-4 commits (template: Task-9 hunks only, Aug-9 block stays uncommitted) → `exec-manifest` start build → engine-core spec. Restart not needed (apex-critic live) |
 
 <!-- CODING:END -->
 
 <!-- PLANNING:START -->
 ## Queue (owner-ordered 2026-10-01; work top-down after "resume")
-1. **Wave 2 commits** (In-Flight row above): owner approval of the drafted commits, then D8 teardown.
-2. **Owner chores:** D8 teardown `! cd ~/.claude && for n in stage1-base synced-runtime-exclusion-{1..4} wrapper-model-author-{1..6}; do git worktree remove --force "C:/Users/User/.claude-wt/$n"; git branch -D "codex/$n"; done` · stop selecting Fable via /model · enable Windows Developer Mode (symlink tests).
-3. **Stage 4: Critic consolidation + review sized to risk** (priority; memory `review-ceremony-sized-to-risk`): Sonnet Low/Med, Opus High, retire 3 reviewer agents; doc-only/Low → 1 Claude review, no Sol cold read; simplify on repeated finding class; no prose splits.
-4. **Stage 2: Builder A/B** gpt-6-sol vs gpt-5.6-sol (wrapper `-Model` already ships both).
-5. **Stage 3: Scribe** on gpt-6-luna (measure per-task quota first; fallback gpt-6-sol low).
-6. **Stage 5: Engine** (waves/dispatch/retries/integration/cleanup as wrapper code; absorbs dispatch-receipt-preflight w/ author exemption; unattended queue drain: detached runner loop, per-spec park-and-continue, quota wait-resume, batched commit approval; review-before-task-commit binding).
-7. **Stage 6: system map + planning gate** (role-redesign items 6–14).
-8. **Follow-ups (fold into 4/5):** wave-2 (handoff 2026-10-01 § Wave 2): apex-orchestrate/SKILL.md:57 "Opus 5"→5.5 · apex-research external-repo-study-template.md:53 "(Opus/Fable)" · wrapper encoding scan skips tracked-but-ignored files (~/.claude "0 scanned") · hook/settings specs: plan owner-run dispatch+integration (classifier blocks host self-modification) · ~60 old artemis/Atlas -ListObligations rows · tree-pin exclude `.credentials.json`+`cache/` · scope-check marker-named-dir deletion · tree-pin.ps1 displaced comment · GetAttributes catch fail-closed · dispatch-author-test hardening (adopt replay branch etc., handoff 2026-10-01) · raise -NoOutputTimeoutMin for big generations.
-9. **~1 week after wave 2:** re-run spend-by-role; read trial log vs item-17 trigger (wave-2 rounds inflated by process).
+1. **Owner chores:** stop selecting Fable via /model · enable Windows Developer Mode (symlink tests).
+2. **Stage 4: Critic consolidation + review sized to risk** (priority; memory `review-ceremony-sized-to-risk`): Sonnet Low/Med, Opus High, retire 3 reviewer agents; doc-only/Low → 1 Claude review, no Sol cold read; simplify on repeated finding class; no prose splits.
+3. **Stage 2: Builder A/B** gpt-6-sol vs gpt-5.6-sol (wrapper `-Model` already ships both).
+4. **Stage 3: Scribe** on gpt-6-luna (measure per-task quota first; fallback gpt-6-sol low).
+5. **Stage 5: Engine** (waves/dispatch/retries/integration/cleanup as wrapper code; absorbs dispatch-receipt-preflight w/ author exemption; unattended queue drain: detached runner loop, per-spec park-and-continue, quota wait-resume, batched commit approval; review-before-task-commit binding).
+6. **Stage 6: system map + planning gate** (role-redesign items 6–14).
+7. **Follow-ups (fold into 4/5):** apex-orchestrate/SKILL.md:57 still "Opus 5" for the orchestrator (→5.5; retired anyway by Engine cutover) · stage-4 (handoff 2026-10-02): apex-plan doc-only Sol-skip sites omit `risk: high` precedence · owner `!` scripts must propagate exit codes · Critic dispatch prompts name files (no git) · artemis client has NO lifestyle/nutrition DTO (map sweep) · obligations: 50 stale ledger rows + 2 Atlas `git branch -d` (scratch followups/) · map-sweep finds (2026-10-02): 3 `apex-*` hooks are vendored get-shit-done (gsd 1.41.2; + 261-file get-shit-done/ tree) — absorb-then-remove per APEX-sole-workflow · `hooks/apex-ledger-append.ps1` untracked but permissioned in settings.json · APEX-README/CONTRIBUTING describe pre-ADR-036 world · wave-2 (handoff 2026-10-01 § Wave 2): apex-orchestrate/SKILL.md:57 "Opus 5"→5.5 · apex-research external-repo-study-template.md:53 "(Opus/Fable)" · wrapper encoding scan skips tracked-but-ignored files (~/.claude "0 scanned") · hook/settings specs: plan owner-run dispatch+integration (classifier blocks host self-modification) · ~60 old artemis/Atlas -ListObligations rows · tree-pin exclude `.credentials.json`+`cache/` · scope-check marker-named-dir deletion · tree-pin.ps1 displaced comment · GetAttributes catch fail-closed · dispatch-author-test hardening (adopt replay branch etc., handoff 2026-10-01) · raise -NoOutputTimeoutMin for big generations.
+8. **~1 week after wave 2:** re-run spend-by-role; read trial log vs item-17 trigger (wave-2 rounds inflated by process).
 
 ## Pending Specs
 | Spec | Summary |

@@ -60,9 +60,7 @@ review* — never written down.
 | **apex-build-orchestrator** | apex-code (host dispatch, attended builds) | Build-phase wave scheduling, dispatch parameters, exit-code routing, verify adjudication, integration order — reasoning only; close-out and AFK stay host-executed |
 | **apex-coder** | apex-code | Dependency analysis, wave grouping, parallel dispatch — **Claude-fallback path only** |
 | **code-worker** | apex-coder | One isolated task from a spec |
-| **apex-reviewer** | apex-code | Post-build advisory review vs acceptance criteria |
-| **apex-spec-reviewer** | apex-plan | Adversarial spec review — BLOCK / FLAG, evidence-cited |
-| **apex-wave-reviewer** | apex-code | Post-wave code review — BLOCK / FLAG / CLEAN |
+| **apex-critic** | apex-plan (`mode: spec`), apex-code (`mode: code`) | Advisory review of specs and code; full round 1, fix-check rounds 2–3; Agent tool `model: sonnet` for Low/Medium/doc-only, `model: opus` for High |
 
 Plus two process agents that write docs: `apex-docs-product-agent` (CHANGELOG/README) and
 `apex-docs-technical-agent` (handoff + spec archive).

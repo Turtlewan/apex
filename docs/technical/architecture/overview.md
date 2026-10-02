@@ -50,8 +50,9 @@ the mode split and its hooks were all removed. Work is divided by **role**, not 
   own quota). Verify-fail escalation climbs the reasoning-effort dial (`…→max→ultra`), then
   falls back to **Sonnet 5** (fresh `model: sonnet` worker) if Codex quota is exhausted.
 - **Review is cross-family, both directions** — the gpt-5.6-sol pre-draft architecture pass checks
-  the host's plans; Claude (`apex-spec-reviewer`) reviews gpt-6-sol-authored specs; Claude reviews
-  Codex's code. The gpt-5.6-sol cold read of a Sol-authored spec is an independent same-family read
+  the host's plans; the Claude `apex-critic` reviews gpt-6-sol-authored specs (`mode: spec`) and
+  Codex's code (`mode: code`), Sonnet for Low/Medium, Opus for High. Low and doc-only specs skip
+  both Sol reads. The gpt-5.6-sol cold read of a Sol-authored spec is an independent same-family read
   (ADR-048). An agent never reviews its own output
   ([ADR-032](../adr/ADR-032-gpt56-role-split.md)/[ADR-034](../adr/ADR-034-sol-default-coder.md)/[ADR-042](../adr/ADR-042-critical-file-confirmation-and-achievable-cross-family.md)).
 

@@ -126,6 +126,7 @@ Spend showed the build orchestrator at 0.1%, so **cheap swaps go first** and the
 2. Builder A/B (`gpt-6-sol` vs `gpt-5.6-sol`)
 3. Scribe (check Luna's real per-task quota cost)
 4. Critic consolidation
+   - **Status 2026-10-02:** shipped by [critic-consolidation](../../changes/done/critic-consolidation.md) — one `apex-critic` agent (spec/code modes, risk-tiered model, 3-round cap with fix checks, owner escalation) replaced `apex-reviewer`, `apex-spec-reviewer` and `apex-wave-reviewer`; Low/doc-only specs skip both Sol reads. **Rollout-order amendment:** the owner approved building stage 4 before stages 2–3 (2026-10-01, "plan stage 4"); stages 2–3 remain measurement swaps to run later.
 5. Engine (absorbs `dispatch-receipt-preflight`; retires `apex-build-orchestrator`)
 6. System map + planning gate
 

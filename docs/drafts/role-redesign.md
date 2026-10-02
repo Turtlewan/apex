@@ -264,3 +264,32 @@ All open items were settled 2026-09-30 (items 34–41).
   One stage at a time, with 2–4 questions each, each with a recommendation.
 - **After the design:** resolve the prerequisites (all four resolved 2026-09-30), then apex-plan → ADR-048 and the staged
   specs.
+
+## Stage 5 + 6 spec-level decisions (owner, 2026-10-01/02)
+
+**Stage 5 — Engine**
+42. **Engine form:** a new runner `skills/apex-code/scripts/apex-engine.ps1` reads a spec, plans waves
+    by file overlap and stated dependencies, calls the existing wrapper once per task, then runs
+    verify, integration and cleanup, logging to the ledger. `codex-dispatch.ps1` stays a
+    single-dispatch tool.
+43. **Where it runs:** its own process, outside Claude Code, started automatically. The owner
+    registers a Windows scheduled task once (one `!` command at build time); it watches a queue file
+    and picks up queued specs. The host only writes the queue file and never launches processes.
+44. **On failure:** the failed spec is parked with its worktree kept; dependents are skipped;
+    independent specs continue. On quota exhaustion the Engine waits for the reset and resumes, and
+    never falls back to another model on its own (item 20 still holds for the fallback decision).
+45. **Unattended review:** builds finish integrated and uncommitted; Critic code reviews run at the
+    attended close-out. No headless `claude -p` (separate capped credit pool).
+
+**Stage 6 — system map + planning gate**
+46. **First maps:** `~/.claude`, `artemis`, `Atlas` (not the apex docs repo).
+47. **Intake labels:** the host sets size and risk and shows them in one line; the owner is asked only
+    when the host proposes Big or High. Amends item 9's "owner decides" for Trivial/Normal and
+    Low/Medium. Labels can still be raised at any time, never lowered.
+48. **Planning-gate checker:** gpt-5.6-sol at xhigh for now (amends item 35's gpt-6-sol), pending
+    the builder A/B on 6 / 6.1-sol. Research: docs/research/model-refresh-2026-09/gpt6-sol-vs-56-builder-2026-10-01.md.
+49. **Map format:** one `docs/system-map.md`, a section per component; split into
+    `docs/system-map/<component>.md` plus an index if it passes ~400 lines.
+
+**Builder:** stays gpt-5.6-sol. Stage 2's A/B compares 6.1-sol (if real) or 6-sol against it on real
+tasks (owner-reviewed research verdict, 2026-10-01).
