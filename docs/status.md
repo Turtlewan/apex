@@ -18,6 +18,7 @@ _Last updated:_ 2026-10-02
 |------|-------|------|------|
 | `engine-hardening` (stage 5 wave 2a) | BUILT 2026-10-04: 6 tasks, code review r2 CLEAN, family gate PASS x6, hand-off into ~/.claude done (main fence 15/15, scope hashes OK); spec archived; handoff docs/handoff/2026-10-04.md | docs/changes/done/engine-hardening.md | COMMITTED ~/.claude a948a65 + apex b2f7651. OWNER: forced teardown of 7 `.claude-wt/engine-hardening-*` worktrees + `codex/engine-hardening-*` branches. Delete row after. NEXT: plan B = engine-high-risk-pause (risk high). |
 | `engine-high-risk-pause` (stage 5 wave 2b, risk HIGH) | BUILT 2026-10-05: wave reviews (Opus) W1 CLEAN, W2 FLAG -> fix -> CLEAN; family gate PASS x3; hand-off into ~/.claude done; spec archived; handoff appended to docs/handoff/2026-10-04.md | docs/changes/done/engine-high-risk-pause.md | OWNER: approve commits, then forced teardown of .claude-wt/engine-high-risk-pause-{1,2,3,base} (+ engine-hardening-* still pending). Delete row after. |
+| `engine-followups-ab` (builder A/B, risk low) | BUILT 2026-10-05: winners integrated (T1/T3 gpt-5.6-sol, T2/T4 gpt-6.1-sol), blind review + T1 review clean, family gate PASS x4, hand-off into ~/.claude done (T1 early); spec archived; handoff docs/handoff/2026-10-05.md | docs/changes/done/engine-followups-ab.md | main-tree fence + scope check, then OWNER commits + teardown of .claude-wt/engine-followups-ab-* |
 
 <!-- CODING:END -->
 
@@ -25,7 +26,8 @@ _Last updated:_ 2026-10-02
 ## Queue (owner-ordered 2026-10-01; work top-down after "resume")
 1. **Owner chores:** stop selecting Fable via /model · enable Windows Developer Mode (symlink tests).
 2. **Stage 4: Critic consolidation** — BUILT (e36b2ec); row kept only until the queue is renumbered.
-3. **Stage 2: Builder A/B** gpt-6-sol vs gpt-5.6-sol (wrapper `-Model` already ships both).
+3. **Stage 2: Builder A/B** — first blind A/B DONE 2026-10-05 (docs/research/builder-ab-2026-10.md): gpt-6.1-sol vs gpt-5.6-sol quality even (1-1-tie), 6.1 faster where verify scope matched; directional only. NEXT: alternate models per task on the next real specs with packs naming exact verify commands; switch default only if it holds.
+3b. **Dispatch-pipeline fixes** (diagnosed 2026-10-05, scratchpad dispatch-pipeline-diagnosis.md): AGENTS template Verify heading + prose-before-fence (NO_RECIPE/UNPARSEABLE; fix autoclicker, Ari, orion-v2, claude-cockpit AGENTS.md) · scope check -uall + gitignored bin/obj/TestResults/target exclusion (OWNER: ADR-044 D1 amendment yes/no) · event scope_exit mapping + empty scope_check capture · parallel-codex.md/ADR-046 still prescribe the guard-blocked checkout (document Engine copy + git apply fallback; guard gap git restore --source).
 4. **Stage 3: Scribe** on gpt-6-luna (measure per-task quota first; fallback gpt-6-sol low).
 5. **Stage 5: Engine** — waves 1, 2a (engine-hardening), 2b (engine-high-risk-pause) BUILT 2026-10-05. NEXT: in-run fix adoption (owner-deferred), cutover (default routing; retire apex-build-orchestrator), unattended queue drain (detached runner, per-spec park-and-continue, quota wait-resume, batched commit approval; absorbs dispatch-receipt-preflight).
 6. **Stage 6: system map + planning gate** (role-redesign items 6–14).
