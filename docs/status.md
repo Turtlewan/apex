@@ -10,7 +10,7 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/hooks/apex-session-context.md` (hook-injected), not here. See ADR-037.
 
-_Last updated:_ 2026-10-02
+_Last updated:_ 2026-10-06
 
 <!-- CODING:START -->
 ## In-Flight
@@ -19,7 +19,7 @@ _Last updated:_ 2026-10-02
 | `engine-hardening` (stage 5 wave 2a) | BUILT 2026-10-04: 6 tasks, code review r2 CLEAN, family gate PASS x6, hand-off into ~/.claude done (main fence 15/15, scope hashes OK); spec archived; handoff docs/handoff/2026-10-04.md | docs/changes/done/engine-hardening.md | COMMITTED ~/.claude a948a65 + apex b2f7651. OWNER: forced teardown of 7 `.claude-wt/engine-hardening-*` worktrees + `codex/engine-hardening-*` branches. Delete row after. NEXT: plan B = engine-high-risk-pause (risk high). |
 | `engine-high-risk-pause` (stage 5 wave 2b, risk HIGH) | BUILT 2026-10-05: wave reviews (Opus) W1 CLEAN, W2 FLAG -> fix -> CLEAN; family gate PASS x3; hand-off into ~/.claude done; spec archived; handoff appended to docs/handoff/2026-10-04.md | docs/changes/done/engine-high-risk-pause.md | OWNER: approve commits, then forced teardown of .claude-wt/engine-high-risk-pause-{1,2,3,base} (+ engine-hardening-* still pending). Delete row after. |
 | `engine-followups-ab` (builder A/B) | BUILT + COMMITTED ~/.claude 940d1f5, apex 7f8db12 | docs/changes/done/engine-followups-ab.md | OWNER: teardown .claude-wt/engine-followups-ab-* (+ engine-hardening-*, engine-high-risk-pause-* if not done). Delete row after. |
-| `dispatch-pipeline-fixes` (queue 3b, risk HIGH) | PLANNING 2026-10-05: owner chose Option 2 (per-repo declared `## Build outputs` in AGENTS.md, committed HEAD only). Brief + arch-1 (2 BLOCK/5 FLAG folded as A1-A7) in session scratch 04bd20ae…/scratchpad/brief-dispatch-pipeline-fixes.md; diagnosis …/dispatch-pipeline-diagnosis.md. Draft docs/drafts/dispatch-pipeline-fixes.md (digest 956adbe) under Opus spec review r1; sidecar .review.log | docs/drafts/dispatch-pipeline-fixes.md | r1 -> revise -> r2/r3 -> Sol cold read (blocking) -> owner digest -> build W1 [T1,T3,T5,T6,T7(critical: live confirm)] W2 [T2,T4]; hand-off only with no live dispatch. Follow-up spec engine-build-output-residue. |
+| `dispatch-pipeline-fixes` (queue 3b, risk HIGH) | PAUSED 2026-10-06 — ALL 7 code tasks BUILT + reviewed: W1 (T1,T3,T5,T6,T7) Opus r1 FLAG -> non-hook fix + guard fix (owner "yes guard fix") -> r2 CLEAN; W2 (T2,T4) Opus r1 CLEAN; 24/24 suites green; T4 host digest AC PASS. Integrated on codex/dispatch-pipeline-fixes-base @ aede44b (transient). Critic JSONs saved (apex/critic/dispatch-pipeline-fixes-{w1-round-1,w1-round-2,w2-round-1}.json). BLOCKED: family-gate review rows (9) — auto-mode classifier denies ledger append (audit tampering) incl. via allowed hooks/apex-ledger-append.ps1; OWNER must add autoMode.allow rule to ~/.claude/settings.json (text in docs/handoff/2026-10-05.md RESUME POINT) | docs/changes/dispatch-pipeline-fixes.md | OWNER adds rule -> host appends 9 review rows -> family gate per task -> hand-off into ~/.claude (no live Codex) -> HOST T8-T12 -> docs agent -> owner commit approval -> teardown |
 
 <!-- CODING:END -->
 
