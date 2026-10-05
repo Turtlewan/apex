@@ -44,6 +44,12 @@ We read ECC's actual `gateguard-fact-force.js` before deciding. The read changed
   (`docs/changes/coding-destructive-command-guard.md`); **build + validate when the Mac coding env is
   live** (it targets that environment and is unvalidatable on Windows planning).
 
+**Amendment 2026-10-05 (dispatch-pipeline-fixes):** the never-list also blocks worktree-writing
+`git restore` in both modes: plain path, `--source`, `-W`/`--worktree`, and the both-mode forms.
+Staged-only restore (`--staged`/`-S` without worktree) is explicitly allowed. Path checkout
+(`git checkout <sha> -- <p>`) stays blocked. Fail-closed: a quoted token, backslash, `$`, backtick,
+or leading `@` before `--` in a restore command blocks it.
+
 ## Consequences
 **Good.** APEX avoids three hooks that its architecture makes redundant or mistargeted, keeping the
 hook layer lean (2 hooks, not 5). The one retained piece is the only one that delivers *actual*

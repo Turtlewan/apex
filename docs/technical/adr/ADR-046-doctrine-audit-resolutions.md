@@ -106,9 +106,10 @@ The audit catalogued no further alternatives.
 **Ratified** — 2026-07-29.
 
 **Consequences** — The same doctrine/mechanics distinction applies to D8. The hook also intercepts
-the path-scoped `git checkout <branch> -- <files>` integration form and branch deletion. Its scoped
-mechanical change remains queued retro P5(c), outside this sweep; until that ships, a permitted
-teardown executes via the user's `!` one-liner handback.
+branch deletion. Amended 2026-10-05 (dispatch-pipeline-fixes): integration is the Engine byte copy
+(`Copy-EngineTaskFiles`) or, as the manual attended fallback, the indexed `git apply --index` pipe;
+path-scoped branch restore is not an integration form. P5(c) is narrowed to teardown only; until it
+ships, a permitted teardown executes via the user's `!` one-liner handback.
 
 ### D3 — Spec pre-authorization and critical paths
 
@@ -243,13 +244,13 @@ Other documents carry one summary sentence and cite this subsection rather than 
 
 **Deleted files (D7 interop):** a file whose spec Operation is `delete` counts as integrated when it is **ABSENT from both** trees; never run a content comparison against an absent path.
 
-**Ancestry checks are NOT valid evidence** — integration is path-scoped `git checkout <branch> -- <files>`, never `git merge`, so `git branch --merged` and `git merge-base --is-ancestor` false-negative on correctly-integrated branches.
+**Ancestry checks are NOT valid evidence** — integration is the Engine byte copy (`Copy-EngineTaskFiles`) or the indexed `git apply --index` pipe (manual attended fallback; amended 2026-10-05, dispatch-pipeline-fixes), never `git merge`, so `git branch --merged` and `git merge-base --is-ancestor` false-negative on correctly-integrated branches.
 
 **Also DOCTRINE-level, not a mechanical bypass:** `~/.claude/hooks/lib/destructive-detect.js`
-intercepts `git branch -d/-D` (denying or requiring confirmation per its rules), and intercepts the
-path-scoped `git checkout <branch> -- <files>` integration form as well. The
-`retro-wrapper-hygiene` spec ships the wrapper-side half of the scoped mechanical allowance; the
-`destructive-detect.js` hook change remains queued under retro P5(c).
+intercepts `git branch -d/-D` (denying or requiring confirmation per its rules). Amended 2026-10-05
+(dispatch-pipeline-fixes): integration is the Engine byte copy or the indexed `git apply --index`
+pipe, so the hook has no integration form to allow; the `destructive-detect.js` change queued under
+retro P5(c) is narrowed to teardown only.
 
 ### D8 amendment (2026-07-30) — wrapper-owned teardown channel
 
@@ -278,7 +279,8 @@ necessarily waits for the approved integration commit, exactly as clause (b) alr
   `apex-critical-files.ps1` change is a known, tracked follow-up rather than a silent
   inconsistency; until it ships, all audit-log appends route through the host.
 - D8 is doctrinally settled before its hook support ships. The wrapper finally-path may remove an
-  eligible worktree; until the queued retro P5(c) hook change ships, branch deletion remains a
+  eligible worktree; until the queued retro P5(c) hook change (teardown only, per the 2026-10-05
+  dispatch-pipeline-fixes amendment) ships, branch deletion remains a
   handback obligation and is never performed by the wrapper.
 - The build-orchestrator contract and permissions follow-ups remain queued; documented interim
   mechanics are necessary until they ship.

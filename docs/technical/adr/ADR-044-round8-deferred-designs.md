@@ -36,6 +36,18 @@ Six of the round-8 findings could not be closed by a mechanical fix because each
 > `.scratch` — its § A1 cluster 2; the three tool caches — `tree-pin.ps1 $toolCacheExclusions`
 > parity, not the ledger.
 
+> **Amendment 2026-10-05 (dispatch-pipeline-fixes, owner Option 2):** a THIRD exclusion class is
+> added to scope-check and tree-pin: the repo's own `## Build outputs` section, read from the HEAD
+> `AGENTS.md`. A path is excluded only when it is declared there AND ignored AND untracked AND not
+> host-curated; anything else keeps flagging. Tree-pin shares the class, so pin and scope-check agree.
+> The parser is duplicated in both scripts (no shared helper, per the self-contained rule above) and
+> guarded by a text-identity lockstep test. Rejected: global basename exclusions (an ignored name can
+> hide a hook in any repo). `**` is an invalid pattern. Exclusion remains content-blind (limit (i)
+> above applies to declared prefixes too). Caveat: an untracked nested `.gitignore` or
+> `.git/info/exclude` can itself create the ignored precondition inside a declared prefix. Leaf
+> enumeration is two-call `-uall` with the `!!` ignored rows unchanged; the scope snapshot moves to
+> snapshot format 2 (older snapshots fail closed by name).
+
 ### Context
 
 `tree-pin.ps1` `Get-PathDigest` (lines 93-117) spawns `git hash-object` per contained file when it fingerprints a dirty or untracked directory. Its enumeration is `git status --porcelain` **without** `--ignored` (line 144), so ignored files never enter the fingerprint. In `~/.claude` — a blanket `*` gitignore — most churn is ignored, so the pin is blind to nearly all of it. Adding `--ignored` naively would route `node_modules`-scale trees through per-file `git hash-object` — the exact process storm `codex-scope-check.ps1` already fixed (its lines 227-253) by switching to an in-process metadata digest.
