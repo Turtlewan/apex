@@ -37,15 +37,14 @@ the mode split and its hooks were all removed. Work is divided by **role**, not 
 
 - **Host (Opus 5.5, medium effort)** — reasons, plans, and challenges. Dispatches every worker below; makes no
   mechanical edits and writes no code, but owns the project's state-keeping (status.md,
-  handoff, memory). Build-time mechanics — launching and monitoring subprocesses from the
-  orchestrator's wave plan, executing the git operations it directs, and returning status — are
-  the host's; scheduling, routing, and verify adjudication are orchestrator-owned — on an ATTENDED
-  build they are the dispatched `apex-build-orchestrator`'s (ADR-045 as amended;
-  ADR-046 D1); on an unattended build, and for close-out on every build, the host
-  executes them.
+  handoff, memory). Build routing (Stage 5 cutover, 2026-10-06): eligible attended
+  builds run through the Engine (`apex-engine.ps1`, default), which owns deterministic scheduling,
+  routing, and verify adjudication; Engine-refused specs take the attended HOST manual path, where
+  the host adjudicates recovery. After Engine exit 0 the host runs Critic, Scribe, family gate, and
+  docs close-out against the integrated tip, then the owner-approved commit, then proof-gated
+  success teardown. Unattended builds are host-executed (ADR-045 as amended; ADR-046 D1 note; ADR-048).
 - **Spec author (gpt-6-sol)** — a fresh, stateless wrapper `-AuthorSpec` dispatch writes every draft
   create and revise from the host's plan; revisions are digest-bound (`-ExpectedDigest`) (ADR-048).
-- **Build orchestrator (Opus 5.5)** — a `model: opus` worker runs waves and routes exit codes (owner amendment 2026-07-29; was Sonnet).
 - **Spec execution manifest** — the optional `## Execution manifest` (`json apex-manifest`) block in a spec is the Engine's task, file, and dependency input, validated by `EXEC-MANIFEST` (ADR-048 stage 5).
 - **Coder (Codex `gpt-5.6-sol`)** — dispatched per task as a `codex exec` subprocess (own auth,
   own quota). Verify-fail escalation climbs the reasoning-effort dial (`…→max→ultra`), then
@@ -81,7 +80,7 @@ The handful of decisions that define APEX's architecture — each links to its A
 
 | Decision | Why (→ ADR) |
 |----------|-------------|
-| One session, no modes — host plans, executes verify mechanics from the orchestrator's plan, and reviews; the orchestrator adjudicates; workers build (ADR-046 D1); role split replaces the backend split | [ADR-038](../adr/ADR-038-single-session.md) · [ADR-045](../adr/ADR-045-four-role-split.md) |
+| One session, no modes — host plans and reviews; the Engine (or the HOST on the manual path) adjudicates the build; workers build (ADR-046 D1); role split replaces the backend split | [ADR-038](../adr/ADR-038-single-session.md) · [ADR-045](../adr/ADR-045-four-role-split.md) |
 | One home per fact; thin handoff drained to inbox-zero; spec = execution script | [ADR-003](../adr/ADR-003-pipeline-artifact-model.md) |
 | Three-file doctrine — CLAUDE.md (prefs) · AGENTS.md (build contract) · status.md (live state) | [ADR-037](../adr/ADR-037-three-context-files.md) |
 | Knowledge layer removed — 14 workflow skills, no domain skills, no registry | [ADR-036](../adr/ADR-036-remove-knowledge-layer.md) |

@@ -1,0 +1,6 @@
+| Round | Dispatched (UTC) | Reviewer | Spec digest | Verdict | Disposition |
+|---|---|---|---|---|---|
+| author | 2026-10-07T06:50Z | author:gpt-6-sol:create | - (create) | 0 | launched |
+| 1 | 2026-10-07T06:55Z | apex-critic:spec:sonnet | 234021d4f60679d2b629d574712040bf02e36e1a | clean | promote (1 note accepted) |
+| author | 2026-10-07T06:56Z | author:gpt-6-sol:revise | 234021d4f60679d2b629d574712040bf02e36e1a | 0 | launched |
+| 2 | 2026-10-07T06:58Z | apex-critic:spec:sonnet | 8c0b14fd62cb6c1f99724817556e56669bd2c035 | clean | promote |

@@ -1,0 +1,61 @@
+{
+  "findings": [
+    {
+      "severity": "BLOCK",
+      "file": "skills/apex-code/scripts/engine-dispatch.ps1",
+      "line": 545,
+      "criterion": "Step 4: schema retirement boundary",
+      "rationale": "The deleted schema is an Engine runtime dependency, not merely a test dependency. Every dispatch event is validated against it; deleting it while retargeting only dispatch-events-test.ps1 parks builds. The minimal surviving contract is one dedicated event schema containing the self-contained dispatch_result and refusal definitions, including their conditional rules. Add that schema and engine-dispatch.ps1 to the file map, retarget the event test, and retain engine-dispatch-test coverage. engine-state-schema.json is independent."
+    },
+    {
+      "severity": "FLAG",
+      "file": "skills/apex-code/scripts/engine-git.ps1",
+      "line": 648,
+      "criterion": "Host close-out and success teardown must compose",
+      "rationale": "Success teardown requires main HEAD and working files to match the recorded integration tip. A host Critic fix or Scribe inline-documentation edit to an Engine-built file breaks that proof, even after the approved final commit. Completed runs also reject -Discard. Planning must define cleanup ordering, explicit retention, or a prerequisite proof extension; unchanged host close-out plus ordinary final teardown is not a complete procedure. The live smoke should exercise this boundary."
+    },
+    {
+      "severity": "FLAG",
+      "file": "skills/apex-code/scripts/apex-engine.ps1",
+      "line": 1673,
+      "criterion": "Step 1: spec-defect recovery",
+      "rationale": "Resume requires the original spec digest and saved snapshot to remain unchanged. Adjusting a parked spec cannot repair that same run through -Resume. Distinguish unchanged-run recovery from amended-spec replacement or manual recovery, including disposition of partial work. Critic rejection likewise needs a defined fix path rather than only clean/reject review flags."
+    },
+    {
+      "severity": "FLAG",
+      "file": "skills/apex-code/scripts/engine-plan.ps1",
+      "line": 806,
+      "criterion": "Attended high-risk supervision boundary",
+      "rationale": "Wave packing considers dependencies and capacity, not risk; the runner launches every task in a wave before waiting. The proposed default can therefore run two high-risk tasks concurrently, contrary to parallel-codex.md:174-178, which prohibits intra-spec fan-out for that set. Preserve the rule through a host-side sequential invocation, such as -MaxParallel 1, or explicitly decide to amend it. A review pause after the wave does not enforce sequential supervision."
+    },
+    {
+      "severity": "FLAG",
+      "file": "skills/apex-code/scripts/apex-engine.ps1",
+      "line": 1408,
+      "criterion": "Step 1: exit/status contract",
+      "rationale": "The proposed exit table does not match the implementation. Quota exhaustion records status paused but exits 1 through the failed-wave path; partial runs also exit 1. Exit 2 comes from the awaiting-review gate. Host actions must inspect durable status and diagnosis. Exit 0 means Engine build/handoff completion, with host close-out still pending."
+    },
+    {
+      "severity": "FLAG",
+      "file": "skills/apex-code/SKILL.md",
+      "line": 289,
+      "criterion": "Engine versus manual escalation ownership",
+      "rationale": "Removing orchestrator mentions alone leaves incompatible instructions: this section escalates through max/ultra to automatic Sonnet, while Engine escalation stops at xhigh and parks. Engine also refuses coder_model: sonnet (engine-plan.ps1:518), despite the existing template supporting that pin. Explicitly assign these cases to the host manual path and preserve the owner decision at quota-out. Separate Engine behavior from manual recovery in the retained routing tables."
+    },
+    {
+      "severity": "FLAG",
+      "file": "hooks/apex-session-context.md",
+      "line": 43,
+      "criterion": "Step 5: injected authority and activation",
+      "rationale": "Updating the role table alone leaves the following injected ownership paragraph requiring the deleted agent and restricting the host to its directives. Include that paragraph in the cutover, with host judgment on the manual path and host close-out stated consistently. Successful owner-run integration of this protected file should be an activation condition before retirement is declared shipped."
+    },
+    {
+      "severity": "FLAG",
+      "file": "skills/apex-plan/SKILL.md",
+      "line": 177,
+      "criterion": "One spec versus decomposition",
+      "rationale": "The claimed prose exception is actually a doc-only exception; lines 214-216 explicitly exclude skills, references, templates, agents, hooks, and scripts. This plan does not qualify. Event-contract extraction is a natural small prerequisite. The remaining routing and retirement edits form one coherent cutover, so keeping them together is defensible through an explicit split-rule exception, rather than arbitrary splits by directory."
+    }
+  ],
+  "verdict": "BLOCK"
+}

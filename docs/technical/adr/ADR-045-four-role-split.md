@@ -99,3 +99,5 @@ weekly pool at Opus rates rather than Sonnet rates; the pool-economics argument 
 a Sonnet worker in this role is knowingly set aside in favour of stronger wave-level judgment.
 **The fallback CODER is unaffected** — it remains Sonnet 5 (A1, session-79b); this amendment
 touches the orchestrator role only.
+
+**Amendment note - 2026-10-06 (Stage 5 cutover):** The build-orchestrator rows and amendments above are historical. The live attended build route is the Engine (default, eligible specs) with an attended HOST manual path for Engine-refused specs; `apex-build-orchestrator` and its protocol schema are retired, and the HOST owns Critic/Scribe/family-gate/docs close-out against the integrated tip. See [ADR-048](./ADR-048-role-redesign.md) Stage 5 and the [ADR-046](./ADR-046-doctrine-audit-resolutions.md) D1 note. Original decision history is preserved unchanged.

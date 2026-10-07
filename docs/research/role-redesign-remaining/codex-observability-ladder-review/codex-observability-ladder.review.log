@@ -1,0 +1,4 @@
+| Round | Dispatched (UTC) | Reviewer | Spec digest | Verdict | Disposition |
+|---|---|---|---|---|---|
+| author | 2026-10-07T06:43Z | author:gpt-6-sol:create | - (create) | 0 | launched |
+| 1 | 2026-10-07T06:48Z | apex-critic:spec:sonnet | 758221a7c6f2a0ee6dbf65c6dad8ba02afab58e2 | clean | promote (1 note accepted: HOST inspects retention) |

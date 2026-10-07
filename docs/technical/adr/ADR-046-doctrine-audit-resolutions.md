@@ -89,6 +89,8 @@ The build-orchestrator **agent contract** (its prompt, its inputs/outputs, its r
 carried by the **queued retro P1–P7 spec set, not by this sweep**. This spec only makes the existing
 documents agree on who owns what.
 
+**Amendment - 2026-10-06: D1 superseded for the attended build owner (Stage 5 cutover).** The dispatched `apex-build-orchestrator` agent and its `orchestrator-protocol-schema.json` are retired. For eligible attended specs the Engine (`apex-engine.ps1`) is the default owner of scheduling, routing, and verify adjudication, parking and diagnosing via durable state; Engine-refused specs take the attended HOST manual path, where the HOST adjudicates recovery with the owner. The HOST owns close-out on every build (Critic, Scribe, family gate, docs) against the integrated tip, then the owner-approved commit and proof-gated success teardown. D3, D6, and D8 are unchanged, and the historical v1 text above is retained as history. See ADR-048 Stage 5.
+
 ### D2 — Named-PR merge authorization
 
 **Conflict** — `~/.claude/CLAUDE.md` permits a named-PR merge after live owner approval; governance

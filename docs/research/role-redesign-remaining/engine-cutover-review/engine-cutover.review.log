@@ -1,0 +1,12 @@
+Review-round record — engine-cutover (apex-plan § Convergence control)
+
+| Round | Dispatched (UTC) | Reviewer | Spec digest | Verdict | Disposition |
+|-------|------------------|----------|-------------|---------|-------------|
+| arch-1 | 2026-10-06T10:23Z | sol:gpt-6.1-sol:xhigh | — (pre-draft) | block (67): 1 BLOCK 7 FLAG | adjudicated into plan: split out prereq spec engine-event-schema; rest folded into brief |
+| author | 2026-10-06T12:18Z | author:gpt-6-sol:create | - (create) | 68 (concerns) | launched |
+| 1 | 2026-10-06T13:18Z | apex-critic:spec:sonnet | 2be676ff6bd0edc10847488d403c4fd687055147 | flag | adjudicated: accept all 2 FLAG + 2 NOTE; host adds: replace rg in verify block with Select-String (host PS lacks rg) -> author revise |
+| author | 2026-10-06T13:20Z | author:gpt-6-sol:revise | 2be676ff6bd0edc10847488d403c4fd687055147 | 0 | launched |
+| 2 | 2026-10-06T13:25Z | apex-critic:spec:sonnet | 434aa637fd5f6b5aca0bf6e1748c53ebb3ac06bd | clean | clean -> readiness gate + Sol cold read |
+| sol-1 | 2026-10-06T13:26Z | sol:wrapper-default:xhigh | 434aa637fd5f6b5aca0bf6e1748c53ebb3ac06bd | BLOCK (67): 3 BLOCK 3 FLAG | adjudicated: accept B1-B3 (verified vs apex-engine.ps1:1398, engine-git.ps1:633-648, :1765), F1-F2; reject F3 (template-level pointer, follow-up); host adds verify path drafts->changes -> author revise |
+| author | 2026-10-06T13:35Z | author:gpt-6-sol:revise | 434aa637fd5f6b5aca0bf6e1748c53ebb3ac06bd | 0 | launched |
+| 3 | 2026-10-06T13:42Z | apex-critic:spec:sonnet | 7bac4d5f2e99581a4751b968901c4e5b9f189cfb | clean | clean -> promote |

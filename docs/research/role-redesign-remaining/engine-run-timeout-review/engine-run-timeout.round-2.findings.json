@@ -1,0 +1,1 @@
+{"status":"clean","findings":[{"severity":"note","class":"verifiability","summary":"All four round-1 findings resolved; resume needs the bound flag beside lines 36-43 per the stated pattern."}]}

@@ -47,6 +47,11 @@ Six of the round-8 findings could not be closed by a mechanical fix because each
 > `.git/info/exclude` can itself create the ignored precondition inside a declared prefix. Leaf
 > enumeration is two-call `-uall` with the `!!` ignored rows unchanged; the scope snapshot moves to
 > snapshot format 2 (older snapshots fail closed by name).
+>
+> **Note 2026-10-06 (engine-build-outputs):** Engine joins the declared build-output class with the
+> same committed-HEAD parser (a third byte-identical lockstep copy in `apex-engine.ps1`), the same
+> `!!` ignored-row filter, and the same fail-closed lookup behavior (declarations fetched from the
+> integration worktree HEAD; a failed fetch refuses rather than excludes).
 
 ### Context
 

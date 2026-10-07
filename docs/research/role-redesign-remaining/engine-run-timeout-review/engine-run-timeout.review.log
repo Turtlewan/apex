@@ -1,0 +1,8 @@
+| Round | Dispatched (UTC) | Reviewer | Spec digest | Verdict | Disposition |
+|---|---|---|---|---|---|
+| author | 2026-10-07T08:09Z | author:gpt-6-sol:create | - (create) | 67 | launched (blocked: state schema scope; host adds schema file under owner "do everything") |
+| author | 2026-10-07T08:14Z | author:gpt-6-sol:create | - (create) | 68 | launched (concern: schema model enums) |
+| author | 2026-10-07T08:18Z | author:gpt-6-sol:revise | df5424e241530f8fe169bdd4ff7937590f9044d6 | 0 | launched |
+| 1 | 2026-10-07T08:20Z | apex-critic:spec:sonnet | db90de7cae8696ad134805c61f8edc2862523818 | flag | revise (all 4 accepted) |
+| author | 2026-10-07T08:22Z | author:gpt-6-sol:revise | db90de7cae8696ad134805c61f8edc2862523818 | 0 | launched |
+| 2 | 2026-10-07T08:25Z | apex-critic:spec:sonnet | 45c3c031a42bf359c3be8ed7a6970c85dedb2138 | clean | promote |

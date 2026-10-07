@@ -53,17 +53,18 @@ review* — never written down.
 
 ---
 
-## Agents (6)
+## Agents (5)
 
 | Agent | Spawned by | Job |
 |-------|-----------|-----|
-| **apex-build-orchestrator** | apex-code (host dispatch, attended builds) | Build-phase wave scheduling, dispatch parameters, exit-code routing, verify adjudication, integration order — reasoning only; close-out and AFK stay host-executed |
 | **apex-coder** | apex-code | Dependency analysis, wave grouping, parallel dispatch — **Claude-fallback path only** |
 | **code-worker** | apex-coder | One isolated task from a spec |
 | **apex-critic** | apex-plan (`mode: spec`), apex-code (`mode: code`) | Advisory review of specs and code; full round 1, fix-check rounds 2–3; Agent tool `model: sonnet` for Low/Medium/doc-only, `model: opus` for High |
 
-Plus two process agents that write docs: `apex-docs-product-agent` (CHANGELOG/README) and
-`apex-docs-technical-agent` (handoff + spec archive).
+**Build routing (Stage 5 cutover, 2026-10-06):** attended builds of eligible specs run through the Engine (`apex-engine.ps1`, default); Engine-refused specs use the attended HOST manual path. The HOST owns manual-path recovery/adjudication and close-out (Critic, Scribe, family gate, docs) against the integrated tip. No build-orchestrator agent exists.
+
+Plus process roles that write docs: the Codex Scribe (`gpt-6-luna`, `apex-code/references/scribe.md`)
+for CHANGELOG/README/inline docs and `apex-docs-technical-agent` (handoff + spec archive).
 
 The reviewers are **generic**. Their value is **evaluator-independence** — a fresh adversarial
 reader, not a rulebook. Findings must cite evidence (a file:line, a quoted spec clause, a concrete
