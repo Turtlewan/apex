@@ -1,0 +1,1 @@
+{"status":"clean","findings":[{"severity":"note","class":"verifiability","file":"docs/drafts/engine-acceptance-gate.md","line":"146","summary":"expected.tsv unchanged check names no command (e.g. git diff --quiet); HOST at close-out."}]}

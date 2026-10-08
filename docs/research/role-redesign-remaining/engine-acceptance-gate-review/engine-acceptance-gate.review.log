@@ -1,0 +1,13 @@
+| Round | Dispatched (UTC) | Reviewer | Spec digest | Verdict | Disposition |
+|---|---|---|---|---|---|
+| arch-1 | 2026-10-07T15:04:58Z | sol:gpt-5.6-sol:arch | — (pre-draft) | BLOCK (wrapper 67) | adjudicated: 3 BLOCK + 3 FLAG accepted into plan (advisory, medium) |
+| author | 2026-10-07T15:13:43Z | author:gpt-6-sol:create | - (create) | 0 | launched |
+| 1 | 2026-10-07T15:18:59Z | apex-critic:spec:sonnet | fe1b82f8c0b73787cbd2da7f71073fefce5de99d | flag | adjudicated: 7 flag + 3 note all accepted -> author revise |
+| author | 2026-10-07T15:23:17Z | author:gpt-6-sol:revise | fe1b82f8c0b73787cbd2da7f71073fefce5de99d | 0 | launched |
+| 2 | 2026-10-07T15:29:47Z | apex-critic:spec:sonnet | f6e49eb4215653dce184b4baf71f0668def55d06 | clean | clean (1 note accepted as-is) -> readiness gate |
+| sol-1 | 2026-10-07T15:30:39Z | sol:gpt-5.6-sol:cold-read | f6e49eb4215653dce184b4baf71f0668def55d06 | BLOCK (wrapper 67) | adjudicated (advisory, medium): 3 BLOCK accepted (B3 as trust-model wording), 6 FLAG accepted, 1 FLAG declined (split -> Task 1 effort high) -> author revise |
+| author | 2026-10-07T15:42:56Z | author:gpt-6-sol:revise | f6e49eb4215653dce184b4baf71f0668def55d06 | 0 | launched |
+| 3 | 2026-10-07T15:49:39Z | apex-critic:spec:sonnet | 348cd5413cd5d5ed7fea9879cc9060d455830db0 | flag | round-3 non-clean -> OWNER escalation |
+| owner | 2026-10-08T00:13:02Z | owner | 348cd5413cd5d5ed7fea9879cc9060d455830db0 | (b) | approved exactly one further fix-and-review cycle (round 4) |
+| author | 2026-10-08T00:13:05Z | author:gpt-6-sol:revise | 348cd5413cd5d5ed7fea9879cc9060d455830db0 | 0 | launched |
+| 4 | 2026-10-08T00:15:41Z | apex-critic:spec:sonnet | 02bd8a8e81b5cb588f70bd4bcf0e21e21de7ec25 | clean | clean (1 note: HOST runs git diff on expected.tsv at close-out) -> promote |
