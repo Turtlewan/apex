@@ -10,7 +10,7 @@ APEX carries **workflow, state, and gates**. It does **not** carry domain knowle
 
 The 36 domain skills — security, frontend, k8s, auth, python, aws, and the rest — were **deleted on
 2026-07-14** ([ADR-036](./docs/technical/adr/ADR-036-remove-knowledge-layer.md)). They were built for
-DeepSeek, a weak coder that needed rails. The coder is now Codex `gpt-5.6-sol` (Sonnet 5 on fallback),
+DeepSeek, a weak coder that needed rails. The coder is now Codex `gpt-6.1-sol` (Sonnet 5 on fallback),
 which knows all of it cold. Along with them went the keyword registry, which duplicated Claude
 Code's own description-matching.
 
