@@ -10,13 +10,13 @@ autonomy_level: L2
 > A row whose work is done gets **deleted**, not marked done. Model/provider routing lives in
 > `~/.claude/hooks/apex-session-context.md` (hook-injected), not here. See ADR-037.
 
-_Last updated:_ 2026-10-09
+_Last updated:_ 2026-10-11
 
 <!-- CODING:START -->
 ## In-Flight
 | What | State | File | Next |
 |------|-------|------|------|
-| OWNER teardown of leftover worktrees/branches (all builds COMMITTED) | Prior: engine-hardening, engine-high-risk-pause, engine-followups-ab, dispatch-pipeline-fixes, wrapper-model-luna, scribe-stage3, engine-build-outputs, engine-recipe-parity, engine-event-schema, engine-cutover (~/.claude 9f94073). New 2026-10-07: engine-task-dash (5d32a59), engine-run-timeout (ad4d4b9), codex-observability-ladder (504e016 + 80924f9), engine-acceptance-gate (16226b5), engine-accept-smoke (90199f3) | docs/changes/done/ | forced teardown of worktrees under `C:\Users\User\.claude-wt` (`engine-acceptance-gate-{fix1,scribe}`, `engine-accept-smoke-scribe`, `coder-default-gpt61-scribe`, `engine-task-dash-{m1,scribe}`, `engine-run-timeout-{m1,m2,scribe}`, `codex-observability-ladder-fix1`, plus prior-build `.claude-wt/*` worktrees above) and their matching `codex/*` branches (guard blocks host forced deletes). Delete row after. |
+| OWNER teardown of leftover worktrees/branches (all builds COMMITTED) | New 2026-10-11: drain-plan (`drain-plan-fix1`, `drain-plan-scribe`), engine-linked-worktree (`elw-salvage`, after HOST Engine `-Teardown 43437db9... -Discard -Reason`). Prior: engine-hardening, engine-high-risk-pause, engine-followups-ab, dispatch-pipeline-fixes, wrapper-model-luna, scribe-stage3, engine-build-outputs, engine-recipe-parity, engine-event-schema, engine-cutover (~/.claude 9f94073). New 2026-10-07: engine-task-dash (5d32a59), engine-run-timeout (ad4d4b9), codex-observability-ladder (504e016 + 80924f9), engine-acceptance-gate (16226b5), engine-accept-smoke (90199f3) | docs/changes/done/ | forced teardown of worktrees under `C:\Users\User\.claude-wt` (`engine-acceptance-gate-{fix1,scribe}`, `engine-accept-smoke-scribe`, `coder-default-gpt61-scribe`, `engine-task-dash-{m1,scribe}`, `engine-run-timeout-{m1,m2,scribe}`, `codex-observability-ladder-fix1`, plus prior-build `.claude-wt/*` worktrees above) and their matching `codex/*` branches (guard blocks host forced deletes). Delete row after. |
 
 <!-- CODING:END -->
 
@@ -24,7 +24,7 @@ _Last updated:_ 2026-10-09
 ## Queue (owner-ordered 2026-10-06: "queue everything"; research briefs + decisions in docs/research/role-redesign-remaining/; work top-down after "resume", each item starts when the one above ships)
 1. **Owner chores:** stop selecting Fable via /model · enable Windows Developer Mode (symlink tests).
 2. **Stage 3: Scribe** — BUILT 2026-10-06 (Luna low; first real Scribe run on the next product build — verify end to end).
-3. **Stage 5: Unattended queue drain** — ADR-049: `drain-plan` BUILT (2026-10-11); next `drain-runner` (HIGH, spec against drain-plan's real JSON), then `drain-close-out`; receipt check (ADR-047) is a later separate spec. Owner: on-demand trigger, quota wait ≤5h then park.
+3. **Stage 5: Unattended queue drain** — ADR-049 (amended 2026-10-11): `drain-plan` BUILT; `engine-linked-worktree` BUILT 2026-10-11 (Engine accepts a linked worktree as `-Repo`). Next: `engine-accept-timeout` (small Engine spec: the hard 10-min acceptance-check cap kills slow suites — engine-linked-worktree Task 2 failed 3x on it and was HOST-salvaged), then `drain-runner` (HIGH; adjudicated plan approved, brief + arch-1 in docs/drafts/drain-runner.review.log), then `drain-close-out`; receipt check (ADR-047) later. Owner: on-demand trigger, quota wait ≤5h then park.
 4. **Stage 6: System map + planning gate** — waves 6a map-core + 6b planning-gate → 6c Scribe map update + 6d Engine size guard → 6e first maps (~/.claude, artemis). Owner: medium specs keep the pre-draft Sol pass. per-repo `system-map.md`; Scribe map-section rewrites (stage-8 item 30) added to the Scribe here; Big-plan gpt-6-sol cross-check.
 5. **Stage 2 close: builder default** — alternate gpt-6.1-sol / gpt-5.6-sol per task on the next real specs (packs naming exact verify commands); switch default only if 6.1 holds; set 6.1-sol effort defaults (high risk-high, medium routine) + note in builder-ab-2026-10.md.
 6. **Stage 5 (owner-deferred): in-run fix adoption** — queued last; confirm still wanted before planning.

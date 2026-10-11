@@ -30,3 +30,15 @@ deterministic `engine-state.json`, uses per-run locks, and re-dispatches a quota
 - No Engine edits are needed for sorting: the sorter calls `Get-EnginePlan` directly and mirrors the Engine's capacity probe.
 - The drain runs outside Claude Code, so the harness guard and classifier do not cover it. Safety rests on the Engine's scope lock, the critical-file park, tree-pin digests and the fact that the drain branch never touches master. This is why `drain-runner` is risk high.
 - Existing specs whose Prerequisites sections are not in the new grammar sort as NEEDS YOU until they are rewritten. That is a safe failure.
+
+## Amendment 2026-10-11: drain-runner architecture pass
+
+The Sol pre-draft architecture pass on `drain-runner` returned 6 BLOCK and 3 FLAG findings. The owner approved the adjudicated plan at the High-risk gate. The Context claim that the Engine "can already target a linked worktree" was wrong: `engine-plan.ps1` refused any `-Repo` that is not string-equal to the manifest repo path, and `engine-git.ps1` validated hand-off paths against the main worktree.
+
+1. **Build order.** A new prerequisite spec, `engine-linked-worktree`, comes first. The Engine accepts `-Repo` as a linked worktree of the manifest repo when both share one git common directory and `-Repo` is a worktree root. Path safety follows the target worktree, not the main one. `drain-runner` is specced only after it ships.
+2. **No teardown in the drain.** Engine runs stay up until attended close-out tears them down, so that close-out reviews still bind to the task-worktree digests. The drain never force-deletes anything.
+3. **Durable run tracking.** The drain finds its Engine run by scanning the state root for the spec and the drain worktree, not by reading stdout. `-Resume` recovers a run that is live, one that completed but was not committed, and one that was committed but not yet recorded.
+4. **Child quiescence.** The next spec starts only after every recorded Codex child of the previous run has exited.
+5. **Verify-to-commit identity.** The full verify fence runs on the drain worktree. The tree digest must not change between before the fence and after it. The commit is path-scoped, and its blobs must equal the verified files.
+6. **Park recovery.** On any park, every manifest path in the drain worktree is restored to HEAD, and files the spec created are deleted.
+7. **Single drain.** Only one drain runs at a time. The worker takes the global lock and confirms it owns the reservation, and a failed launch is reported.
