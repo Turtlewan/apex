@@ -24,7 +24,7 @@ _Last updated:_ 2026-10-09
 ## Queue (owner-ordered 2026-10-06: "queue everything"; research briefs + decisions in docs/research/role-redesign-remaining/; work top-down after "resume", each item starts when the one above ships)
 1. **Owner chores:** stop selecting Fable via /model · enable Windows Developer Mode (symlink tests).
 2. **Stage 3: Scribe** — BUILT 2026-10-06 (Luna low; first real Scribe run on the next product build — verify end to end).
-3. **Stage 5: Unattended queue drain** — specs `queue-drain-runner` (HIGH) then `drain-close-out-and-receipt` (absorbs dispatch-receipt-preflight, re-planned smaller). Owner: on-demand trigger, quota wait ≤5h then park.
+3. **Stage 5: Unattended queue drain** — ADR-049: `drain-plan` BUILT (2026-10-11); next `drain-runner` (HIGH, spec against drain-plan's real JSON), then `drain-close-out`; receipt check (ADR-047) is a later separate spec. Owner: on-demand trigger, quota wait ≤5h then park.
 4. **Stage 6: System map + planning gate** — waves 6a map-core + 6b planning-gate → 6c Scribe map update + 6d Engine size guard → 6e first maps (~/.claude, artemis). Owner: medium specs keep the pre-draft Sol pass. per-repo `system-map.md`; Scribe map-section rewrites (stage-8 item 30) added to the Scribe here; Big-plan gpt-6-sol cross-check.
 5. **Stage 2 close: builder default** — alternate gpt-6.1-sol / gpt-5.6-sol per task on the next real specs (packs naming exact verify commands); switch default only if 6.1 holds; set 6.1-sol effort defaults (high risk-high, medium routine) + note in builder-ab-2026-10.md.
 6. **Stage 5 (owner-deferred): in-run fix adoption** — queued last; confirm still wanted before planning.
