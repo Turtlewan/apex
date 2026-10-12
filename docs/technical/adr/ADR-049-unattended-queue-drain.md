@@ -42,3 +42,23 @@ The Sol pre-draft architecture pass on `drain-runner` returned 6 BLOCK and 3 FLA
 5. **Verify-to-commit identity.** The full verify fence runs on the drain worktree. The tree digest must not change between before the fence and after it. The commit is path-scoped, and its blobs must equal the verified files.
 6. **Park recovery.** On any park, every manifest path in the drain worktree is restored to HEAD, and files the spec created are deleted.
 7. **Single drain.** Only one drain runs at a time. The worker takes the global lock and confirms it owns the reservation, and a failed launch is reported.
+
+## Amendment 2026-10-12: drain-runner review decisions
+
+The `drain-runner` spec went through three Critic rounds and four Sol cold reads. The owner chose to simplify the design and remove causes instead of adding guards. These are the decisions that review added on top of the architecture pass:
+
+1. **One production state root.** Production uses a single state root: `APEX_STATE_DIR`, or `%LOCALAPPDATA%\apex` when it is unset. `-StateRoot` exists only on the internal worker `-Run`. A state root inside a worktree is refused before any side effect.
+2. **Lock and ownership.** A global `drain.lock` with an owner record guards each state root. Each build repo, identified by its git common directory, also gets `apex-drain.lock` and a durable `apex-drain-owner.json` (`state_root`, `drain_id`). The owner record is removed only when the drain completes. A start or `-Resume` scans every reservation for live identities, including ledger rows, before it proceeds. An owner record whose state is missing or unreadable refuses with `build repo owned by unknown drain`.
+3. **Quota budget.** The 300-minute quota budget resets on each `-Resume` of a `stopped-quota` drain. The report records each reset.
+4. **Spec identity.** The drain uses the Engine's digest algorithm (LF-normalized strict UTF-8). The Engine run's `spec.original_digest` must equal the sorter digest. A spec that changes after sorting parks as `spec-changed` and is never resumed.
+5. **Commit integrity.** Each commit is guarded by:
+   - assertions on HEAD and the symbolic ref;
+   - a pre-commit blob identity check;
+   - a residue check on the porcelain status after the fence;
+   - a trailer-recognition check on resume, covering the parent, a single parent and the set of diff-tree paths.
+
+   Drain git commands run with hooks disabled and literal pathspecs. A tracked baseline must be clean before each Engine launch. Branches may be adopted only when they are absent from the ref snapshot taken at start. On restart, a live Engine owner is waited on with no cap; the 4 h 15 min quiescence cap applies only to children still alive after the Engine exits.
+6. **Accepted limitations.**
+   - Fence child processes are not tracked across a worker crash, so `-Resume` re-runs the fence from scratch.
+   - Engine runs inherit the build repo's hooks.
+   - The wrapper's scope check and tree-pin do not handle non-ASCII or C-quoted paths. Specs touching such paths park rather than build. This is deferred to a separate follow-up spec.

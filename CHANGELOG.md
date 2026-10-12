@@ -5,6 +5,9 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Unattended drain runner (2026-10-12, drain-runner, apex-code 2.24.0): new `apex-drain.ps1 -Project <abs>` builds a project's sorted WILL BUILD queue serially through the Engine on a local `codex/drain-<id>` branch per build repo (never master, never pushed), commits each spec path-scoped after the full verify fence and blob identity checks, parks and restores failed specs and skips their dependents, waits out quota for at most 300 minutes, and writes only `docs/drain/<id>.md`; `-Resume <id>` continues a stopped drain. One drain per state root and build repo through durable lock and owner records. Wave 2 of the unattended drain (ADR-049).
+
 ### Changed
 - Engine acceptance timeout (2026-10-11, engine-accept-timeout): the Engine's per-check acceptance timeout is now `-AcceptTimeoutMin` (1–240, default 60) instead of a hard 10 minutes, stored in the run state and overridable on `-Resume`; the expiry message names the actual minutes.
 - Engine linked worktree (2026-10-11, engine-linked-worktree): the Engine builds with `-Repo` set to a linked worktree of the manifest repo (same git common directory), and hand-off path safety checks the target worktree instead of the main one; prerequisite for the unattended drain runner.
