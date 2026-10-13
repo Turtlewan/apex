@@ -6,6 +6,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Drain close-out plan (2026-10-13, drain-close-out, apex-code 2.25.0): read-only `apex-drain-close.ps1 -Plan <drain-id> [-Json]` checks a complete drain end to end (commit chain, Engine identities, spec digests, blob identity, family-gate run IDs) and prints the ordered per-repo, per-spec close-out plan without writing anything; the attended five-step close-out sequence now lives in `apex-code/references/drain-close-out.md`. Per-spec Scribe is deferred for drained specs (ADR-049 decision 9). Wave 3 of the unattended drain.
 - Unattended drain runner (2026-10-12, drain-runner, apex-code 2.24.0): new `apex-drain.ps1 -Project <abs>` builds a project's sorted WILL BUILD queue serially through the Engine on a local `codex/drain-<id>` branch per build repo (never master, never pushed), commits each spec path-scoped after the full verify fence and blob identity checks, parks and restores failed specs and skips their dependents, waits out quota for at most 300 minutes, and writes only `docs/drain/<id>.md`; `-Resume <id>` continues a stopped drain. One drain per state root and build repo through durable lock and owner records. Wave 2 of the unattended drain (ADR-049).
 
 ### Changed

@@ -23,7 +23,7 @@ deterministic `engine-state.json`, uses per-run locks, and re-dispatches a quota
 6. **Quota.** The drain waits on a fixed backoff schedule and resumes with `-Resume`, for at most 5 hours in total. After that it stops and lists the rest as NEEDS YOU. It never switches models.
 7. **Serial specs.** Specs build one at a time, and the existing per-wave parallelism cap still applies.
 8. **Reporting.** A report file only, `docs/drain/<drain-id>.md`. There is no notification and no time limit.
-9. **Close-out.** Close-out stays attended and HOST-run: Critic, Scribe, family gate and docs per spec, then one whole-queue Opus end-gate, then batched commit approval.
+9. **Close-out.** Close-out stays attended and HOST-run: Critic, family gate and docs per spec, then one whole-queue Opus end-gate, then batched commit approval. *(Amended 2026-10-13, drain-close-out:)* per-spec Scribe does not run for drained specs in v1; a queue-mode Scribe requires a follow-up spec. Close-out documentation comes from the HOST tasks and the apex-docs-technical-agent handoff. The Scribe contract itself is unchanged. The attended sequence is `~/.claude/skills/apex-code/references/drain-close-out.md`, driven by the read-only `apex-drain-close.ps1 -Plan <drain-id>`.
 
 ## Consequences
 
