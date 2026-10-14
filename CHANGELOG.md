@@ -6,6 +6,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Bug Fix mode reference cleanup (2026-10-14, bugfix-mode-refs, apex-plan reference, session-context hook): remove the retired mode from the Checker routing row and ADR/status procedures while retaining Light rules.
 - Scribe map update v2 (2026-10-14, scribe-map-update-v2, apex-code 2.27.0): a separate attended map dispatch updates affected system-map sections from the full build delta, receives its own Critic and family gates, and passes cover repairs and skipped sections to the technical-docs handoff.
 - Critic plan-slice inputs (2026-10-14, critic-plan-inputs, apex-code 2.26.0, apex-critic agent): optional bounded plan-slice inputs (plan path as reference only, slice section, cross-slice contracts, cited map sections) for the Critic in spec mode, in code mode via the normal apex-code dispatch, and in the AFK whole-build pass, triggered by the spec's `plan: … · slice: …` Intent line; gate findings and other plan narrative stay excluded.
 - Planning gate check (2026-10-14, planning-gate-check, apex-plan reference): Big changes get a gpt-6.1-sol xhigh planning-gate read in place of the pre-draft architecture pass, with digest-bound `gate-N` rows kept in a `docs/plans/<plan>.md` plan artifact (per-slice sections, wave column, In-Flight pointer, archive to `docs/plans/done/`); each eligible slice keeps an independent post-readiness cold read; the session hook Checker row names the gate.
