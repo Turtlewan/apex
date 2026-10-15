@@ -6,6 +6,10 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- apex-plan re-encode (2026-10-15, apex-plan-reencode, apex-plan 2.9.3): repair double-encoded punctuation (middle dots, dashes, arrows, section signs) left by an earlier Windows-1252 mis-decode.
+- Skill text tidy (2026-10-15, skill-text-tidy, apex-debug 1.5.1, apex-plan 2.9.2, apex-orchestrate 2.7.1): post-v5 wording fixes — debug fix-through-spec record, plan pre-draft recipe pointer and High approval gate, orchestrate in-flight antecedent.
+- Engine dispatch arguments UTF-8 (2026-10-15, engine-args-utf8, apex-code scripts): decode dispatch arguments and wrapper .final reports explicitly as UTF-8; cover non-ASCII prompt passage through the PowerShell 5.1 child bridge.
+- Critic pack dedupe (2026-10-15, critic-pack-dedupe, apex-plan 2.9.1): remove the Critic-pack sentence made redundant by planning-intake-v5's tiered pack rule.
 - Planning intake v5 (2026-10-14, planning-intake-v5, apex-plan 2.9.0, apex-debug 1.5.0, apex-orchestrate 2.7.0): size/risk Intake routes Trivial, Normal and Big work (system maps, Big slices through the C1 planning gate and slice review); bug fixes hand the confirmed root cause back to Intake; a C4 plan pointer drives wave resume; an active Big plan stops on a label rise or contract change until owner re-approval.
 - Bug Fix mode reference cleanup (2026-10-14, bugfix-mode-refs, apex-plan reference, session-context hook): remove the retired mode from the Checker routing row and ADR/status procedures while retaining Light rules.
 - Scribe map update v2 (2026-10-14, scribe-map-update-v2, apex-code 2.27.0): a separate attended map dispatch updates affected system-map sections from the full build delta, receives its own Critic and family gates, and passes cover repairs and skipped sections to the technical-docs handoff.
