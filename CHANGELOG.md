@@ -6,6 +6,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Planning intake v5 (2026-10-14, planning-intake-v5, apex-plan 2.9.0, apex-debug 1.5.0, apex-orchestrate 2.7.0): size/risk Intake routes Trivial, Normal and Big work (system maps, Big slices through the C1 planning gate and slice review); bug fixes hand the confirmed root cause back to Intake; a C4 plan pointer drives wave resume; an active Big plan stops on a label rise or contract change until owner re-approval.
 - Bug Fix mode reference cleanup (2026-10-14, bugfix-mode-refs, apex-plan reference, session-context hook): remove the retired mode from the Checker routing row and ADR/status procedures while retaining Light rules.
 - Scribe map update v2 (2026-10-14, scribe-map-update-v2, apex-code 2.27.0): a separate attended map dispatch updates affected system-map sections from the full build delta, receives its own Critic and family gates, and passes cover repairs and skipped sections to the technical-docs handoff.
 - Critic plan-slice inputs (2026-10-14, critic-plan-inputs, apex-code 2.26.0, apex-critic agent): optional bounded plan-slice inputs (plan path as reference only, slice section, cross-slice contracts, cited map sections) for the Critic in spec mode, in code mode via the normal apex-code dispatch, and in the AFK whole-build pass, triggered by the spec's `plan: … · slice: …` Intent line; gate findings and other plan narrative stay excluded.
