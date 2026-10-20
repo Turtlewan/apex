@@ -26,4 +26,6 @@ All six runs: status done, zero scope violations, no blocked or concerns reports
 
 Do not switch yet. Run gpt-6.1-sol as the builder on the next two or three real specs, alternating with gpt-5.6-sol per task, and keep the blind-review step. Switch the default if quality stays even and the speed/token edge holds once verification scope is controlled. To control it, make the dispatch pack name the exact verify commands, so both models run the same suites.
 
+**Decision (owner, 2026-10-19):** no alternation — gpt-6.1-sol is the coder for all builds. Wrapper and Engine already default to it; effort defaults stay medium (routine) / high (`risk: high`). gpt-5.6-sol remains only as an explicit per-spec pin.
+
 Measurement method: wall-clock is ledger `started`→`ended`. Tokens are the last `turn.completed` usage in each run's Codex JSONL log (cumulative for the session). The Codex plan-quota percentage was not captured per run.
