@@ -1,0 +1,14 @@
+| Round | Dispatched (UTC) | Reviewer | Spec digest | Verdict | Disposition |
+|---|---|---|---|---|---|
+| arch-1 | 2026-10-20T16:27:37Z | sol:gpt-6.1-sol:arch | — (pre-draft) | BLOCK (2 BLOCK, 3 FLAG) | adjudicated: exit 85 -> reuse 72 (owner); scratch doctrine deferred (owner); uv-cache via writable_roots (probed ok); cleanup on wrapper final 0; gate only for real codex + test force switch |
+| author | 2026-10-21T01:19:39Z | author:gpt-6.1-sol:create | - (create) | 68 | launched |
+| 1 | 2026-10-21T01:24:13Z | apex-critic:spec:sonnet | 9a50537154b664745cbcc9d3ef01565960046b2a | flag | adjudicated: all 6 accepted -> author revise |
+| author | 2026-10-21T01:27:28Z | author:gpt-6.1-sol:revise | 9a50537154b664745cbcc9d3ef01565960046b2a | 0 | launched |
+| 2 | 2026-10-21T01:30:40Z | apex-critic:spec:sonnet | 625afd1bdc6e43ea82b843d096dc37217303960c | clean | 1 note accepted (Deny/pass ACE path untested; H3 covers pass) -> readiness gate |
+| author | 2026-10-21T01:31:49Z | author:gpt-6.1-sol:revise | 625afd1bdc6e43ea82b843d096dc37217303960c | 0 | launched |
+| 3 | 2026-10-21T01:32:53Z | apex-critic:spec:sonnet | 8fc9fcf9a6d77ddcdbbfd93458d0e1a67964eedd | clean | same accepted note -> Sol cold read |
+| sol-1 | 2026-10-21T01:33:25Z | sol:gpt-6.1-sol:cold | 8fc9fcf9a6d77ddcdbbfd93458d0e1a67964eedd | BLOCK (1 BLOCK, 3 FLAG) | all 4 accepted -> author revise |
+| owner | 2026-10-21T01:45:15Z | owner | 8fc9fcf9a6d77ddcdbbfd93458d0e1a67964eedd | approve | one further fix-and-review cycle (round 4) for Sol cold-read fixes |
+| author | 2026-10-21T01:45:15Z | author:gpt-6.1-sol:revise | 8fc9fcf9a6d77ddcdbbfd93458d0e1a67964eedd | 65 | launched (false positive: concurrent artemis3 session appended spec-author-trial.md rows; owner accepted draft) |
+| 4 | 2026-10-21T01:54:34Z | apex-critic:spec:sonnet | 42668e804214fd6de849bd3f9fb34eb6748ca025 | flag | not clean after extra cycle -> owner (accept or park) |
+| owner | 2026-10-21T01:57:45Z | owner | 42668e804214fd6de849bd3f9fb34eb6748ca025 | park | round 4 flag (non-creating inside-repo check) left open; revisit with fresh author pass + new review |

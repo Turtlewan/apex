@@ -97,3 +97,17 @@ Proposals only; nothing was changed.
 7. Is gpt-6-sol the right author model given two "at capacity" failures in one day, or should the author role fall back to gpt-6.1-sol automatically after one capacity failure (this changes the owner rule "ask before switching model")?
 8. Luna map and Scribe work needed a Sol retry once and Critic rejection twice. Keep Luna for map dispatches, or move them to a stronger model?
 9. Do you want the earlier `artemis` queue ("build everything, come back in 20 hours") to continue as the unattended pattern? It used a staging branch and held every commit for your approval; that worked, but the integration and teardown it left were all manual.
+
+## Owner decisions (2026-10-21)
+
+| Q | Decision |
+|---|----------|
+| 1 | Review continues automatically while a BLOCKING finding is open, up to a per-risk ceiling (proposal: high 10, low 3); owner asked only at the ceiling; flags/notes never extend it. (Owner's earlier overrides were deliberate "keep reviewing" calls on open blocks — the cap was too low, not the overrides wrong.) |
+| 2 | Only behaviour/contract changes re-open plan approval; test-only edits and fixture relabels are noted, not re-approved. |
+| 3 | Replacement-spec prerequisite and plan slice-table renames happen automatically at promotion, logged in the handoff. |
+| 4 | Permanent sandbox temp/cache setup approved (dedicated sandbox temp dir, fresh pytest basetemp per run, one-time uv cache grant); owner runs the one-time commands. |
+| 5 | Engine learns a declared shared-file task chain and runs it as one task. |
+| 6 | One supported administrator cleanup script (lists, then deletes) replaces hand deletions. |
+| 7 | Spec author moves to gpt-6.1-sol by default (supersedes gpt-6-sol as author). |
+| 8 | Luna stays default for map/Scribe; on a Critic reject, retry once on Sol automatically. |
+| 9 | Unattended queue stays the pattern; the run also prepares integration and teardown so close-out is one approval sitting. |
