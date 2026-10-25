@@ -6,6 +6,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- Administrator cleanup (2026-10-24, admin-cleanup, apex-code 2.27.2, apex-governance 2.3.3): `apex-cleanup.ps1` lists leftover codex/* branches, worktrees, Engine run history and test temp directories without writing anything; `-Apply` from an administrator shell removes only items a recorded run owns and proves dead, integrated and in bounds, re-proved under the run-ledger mutex (temp folders in batches of up to 500 per hold); earlier quarantines need the owner's per-path y/n via `-RemoveQuarantine`. Post-build step 7 runs it in list mode, and ADR-046 D8 is amended for host and administrator cleanup.
 - apex-plan re-encode (2026-10-15, apex-plan-reencode, apex-plan 2.9.3): repair double-encoded punctuation (middle dots, dashes, arrows, section signs) left by an earlier Windows-1252 mis-decode.
 - Skill text tidy (2026-10-15, skill-text-tidy, apex-debug 1.5.1, apex-plan 2.9.2, apex-orchestrate 2.7.1): post-v5 wording fixes — debug fix-through-spec record, plan pre-draft recipe pointer and High approval gate, orchestrate in-flight antecedent.
 - Engine dispatch arguments UTF-8 (2026-10-15, engine-args-utf8, apex-code scripts): decode dispatch arguments and wrapper .final reports explicitly as UTF-8; cover non-ASCII prompt passage through the PowerShell 5.1 child bridge.

@@ -266,6 +266,55 @@ The sequencing split is exact and refines the post-integration wording above for
 on nothing else — it does NOT wait for verified integration**. It is **branch deletion alone** that
 necessarily waits for the approved integration commit, exactly as clause (b) already sequences it.
 
+### D8 amendment (2026-10-24) — owner-authorized host removal and administrator cleanup
+
+Earlier D8 text is retained as history; this amendment supersedes it only within the two channels
+below. **Engine-owned teardown is unchanged**: `apex-engine.ps1 -Teardown` keeps its own proofs.
+The wrapper channel of the 2026-07-30 amendment is also unchanged, including its
+`branch_teardown_obligation` records.
+
+- **Owner-authorized host worktree removal.** When the owner says "remove", the host may remove a
+  build worktree only after proving that nothing in it is lost against the main checkout's
+  committed HEAD: every tracked change is in that commit, the index and the working files match it,
+  no untracked file holds content that commit lacks, and no ignored content exists that is not
+  reproducible build or cache output. Once that proof holds, removal may use `--force` to get past
+  disposable ignored output. Branch deletion stays with the owner.
+- **Administrator cleanup** (`skills/apex-code/scripts/apex-cleanup.ps1`, spec `admin-cleanup`) is
+  the single executor for leftover branches, worktrees, run history and test temp directories. It
+  lists by default and changes nothing; `-Apply` runs only from an elevated shell.
+  - *Ownership and liveness.* It removes an item only when a recorded run or ledger row in an
+    inventoried state root owns it, and every owner process, recorded acceptance child and unclosed
+    dispatch, lease or teardown reservation naming it is proven dead by PID plus start time.
+    Unknown owners and unresolved identities always stay.
+  - *Content.* A worktree's index, working files and HEAD must match the main checkout's HEAD with
+    no unique untracked or non-disposable ignored content; a branch must be integrated and not
+    checked out by a kept worktree; Engine run history has its own age, recovery-patch and
+    children-gone conditions; orphaned registrations are proven the same way without an age limit.
+  - *Machine-wide guard.* Before the first change, before each item, during locked reproof, before
+    temp deletion and before each owner-named quarantine removal, it trips if any live Engine owner,
+    acceptance child or unclosed dispatch or lease row exists in any inventoried root, or any
+    process runs the Engine, dispatch, drain or cleanup scripts, including encoded-command launches.
+    The guard has known limits: a build that starts between the last guard check and a rename is
+    not excluded; the run-ledger mutex is session-local, so it gives no exclusion across Windows
+    sessions; and an idle Engine inside a launcher whose command line names none of those scripts,
+    with state under a root this run does not inventory, is not seen. The owner therefore runs
+    Apply only when no builds are running and passes `-StateRoot` for any non-default state
+    directory.
+  - *Locking and removal.* Each item is re-proved under the run-ledger mutex, one item per lock
+    hold, except that a repository-wide prune re-proves its whole set of proven registrations under
+    one hold and refuses if the prune would touch any unproven registration, and that temp folders
+    are re-proved in batches (owner decision 2026-10-25, after one full inventory measured about
+    20 s against about 36,700 leaked temp folders): each batch takes one hold, one guard check and
+    one fresh full inventory, then re-proves and quarantines up to 500 folders, releasing the hold
+    once item processing passes 20 s. A folder that needs a permission repair is re-proved alone
+    after the batch's hold is released. Items are then moved
+    into a timestamped quarantine inside the deletion boundary before deletion; links are unlinked,
+    never followed, and reparse points outside disposable cache directories block removal.
+    Access-denied folders get a narrow, re-verified permission repair one folder at a time.
+  - *Earlier quarantines.* Quarantines left by an earlier run are never removed automatically:
+    they are listed for the owner, and each is removed only on the owner's per-path yes through
+    `-RemoveQuarantine`, recorded in an append-only journal.
+
 ## Consequences
 
 **Good**
