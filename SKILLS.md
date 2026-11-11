@@ -81,4 +81,5 @@ failing scenario), not a skill rule. Cross-family routing holds: Codex builds â†
 | Agents | `~/.claude/agents/` |
 | Templates | `~/.claude/skills/apex-orchestrate/templates/` |
 | Design workflow | `~/.claude/skills/apex-plan/references/design-workflow.md` |
+| Component shelf (owner's approved UI libraries) | `~/.claude/style-library/COMPONENTS.md` |
 | Verification Recipe | **the project's** `AGENTS.md` â€” a per-project fact, not a skill |
